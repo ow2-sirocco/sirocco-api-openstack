@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+   SIROCCO
+   Copyright (C) 2013 France Telecom
+   Contact: sirocco@ow2.org
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+   You should have received a copy of the GNU Lesser General Public
+   License along with this library; if not, write to the Free Software
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+   USA
+
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         id="WebApp_ID" version="2.5">
+
+    <display-name>SIROCCO::APIS::OPENSTACK</display-name>
+
+    <servlet>
+        <servlet-name>SiroccoRestOpenStackervlet</servlet-name>
+        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>org.ow2.sirocco.cimi.server.Application</param-value>
+        </init-param>
+        <!-- <init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>org.ow2.sirocco.cimi.server.resource org.ow2.sirocco.cimi.server.resource.extension org.ow2.sirocco.cimi.server.provider</param-value>
+		</init-param> -->
+        <init-param>
+            <param-name>jersey.config.server.provider.classnames</param-name>
+            <param-value>org.codehaus.jackson.jaxrs.JacksonJsonProvider</param-value>
+        </init-param>
+        <init-param>
+            <param-name>jersey.config.disableMoxyJson</param-name>
+            <param-value>true</param-value>
+        </init-param>
+
+        <!-- Configure Jersey to use JSON marshalling -->
+        <!-- <init-param>
+            <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+            <param-value>true</param-value>
+        </init-param> -->
+        <!-- Format serialized data -->
+        <init-param>
+            <param-name>com.sun.jersey.config.feature.Formatted</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <!-- Logging request/response and entities, remove this in production -->
+        <!-- <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerRequestFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
+        </init-param>
+        <init-param>
+            <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+            <param-value>com.sun.jersey.api.container.filter.LoggingFilter</param-value>
+        </init-param>
+        <init-param>
+             <param-name>com.sun.jersey.config.feature.logging.DisableEntitylogging</param-name>
+             <param-value>false</param-value>
+         </init-param> -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SiroccoRestOpenStackervlet</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+
+

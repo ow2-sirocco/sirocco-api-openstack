@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SIROCCO
+  Copyright (C) 2013 France Telecom
+  Contact: sirocco@ow2.org
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+  USA
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>sirocco-cloudmanager-project</artifactId>
+        <groupId>org.ow2.sirocco.cloudmanager</groupId>
+        <version>0.6.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+    <artifactId>sirocco-api-openstack</artifactId>
+    <packaging>pom</packaging>
+
+    <version>1.0-SNAPSHOT</version>
+
+    <name>SIROCCO :: OpenStack API :: Parent</name>
+    <description>OpenStack API implementation for OW2 Sirocco</description>
+
+    <properties>
+        <jersey.version>2.2</jersey.version>
+    </properties>
+
+    <modules>
+        <module>sirocco-api-openstack-api</module>
+        <module>sirocco-api-openstack-nova</module>
+        <module>sirocco-api-openstack-commons</module>
+        <module>sirocco-api-openstack-server</module>
+        <module>sirocco-api-openstack-keystone</module>
+        <module>sirocco-api-openstack-webapp</module>
+        <module>sirocco-api-openstack-apitest</module>
+    </modules>
+
+    <scm>
+        <connection>scm:git:git://github.com/ow2-sirocco/sirocco-api-openstack.git</connection>
+        <developerConnection>scm:git:git@github.com:ow2-sirocco/sirocco-api-openstack.git</developerConnection>
+        <url>https://github.com/ow2-sirocco/sirocco-api-openstack</url>
+        <tag>HEAD</tag>
+    </scm>
+
+</project>

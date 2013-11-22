@@ -1,0 +1,1 @@
+Contains the JSON samples from the official API openstack documentation (http://api.openstack.org/api-ref-compute.html)
