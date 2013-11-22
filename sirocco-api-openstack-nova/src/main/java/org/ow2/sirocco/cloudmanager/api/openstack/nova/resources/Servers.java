@@ -20,8 +20,9 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.resources;
 
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,7 +33,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path(value = Constants.SERVERS_PATH)
+@Path(value = Constants.Nova.SERVERS_PATH)
 public interface Servers {
 
     /**
@@ -80,7 +81,8 @@ public interface Servers {
      */
     @PUT
     @Path("/{server_id}")
-    Response update(@PathParam("server_id") String id);
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response update(@PathParam("server_id") String id, ServerForUpdate update);
 
     /**
      * Deletes a specified server.

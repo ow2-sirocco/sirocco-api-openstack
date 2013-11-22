@@ -20,7 +20,7 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.resources;
 
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -35,7 +35,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path(Constants.FLAVORS_PATH)
+@Path(Constants.Nova.FLAVORS_PATH)
 public interface Flavors {
 
     /**

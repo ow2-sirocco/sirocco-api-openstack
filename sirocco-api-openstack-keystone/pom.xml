@@ -12,9 +12,29 @@
     <artifactId>sirocco-api-openstack-keystone</artifactId>
     <dependencies>
         <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-cloudmanager-core-api</artifactId>
+            <version>${sirocco.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-api-openstack-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.interceptor</groupId>
+            <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+            <version>1.0.0.Alpha3</version>
         </dependency>
     </dependencies>
 

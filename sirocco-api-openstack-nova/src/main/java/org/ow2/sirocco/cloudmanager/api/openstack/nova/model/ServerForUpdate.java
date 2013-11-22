@@ -18,22 +18,49 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-package org.ow2.sirocco.cloudmanager.api.openstack.nova;
+
+package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
+
+import org.codehaus.jackson.map.annotate.JsonRootName;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public interface Constants {
+@JsonRootName("server")
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+public class ServerForUpdate {
 
-    public static final String BASE_PATH = "/v2";
+    private String name;
 
-    public static final String TENANT_ID_PATH_PARAMETER = "tenant_id";
+    private String accessIPv4;
 
-    public static final String SERVER_ID_PATH_PARAMETER = "server_id";
+    private String accessIPv6;
 
-    public static final String TENANT_PATH_TEMPLATE = BASE_PATH + "/{" + TENANT_ID_PATH_PARAMETER + "}";
+    public ServerForUpdate() {
+    }
 
-    public static final String SERVERS_PATH = TENANT_PATH_TEMPLATE + "/servers";
+    public String getName() {
+        return name;
+    }
 
-    public static final String FLAVORS_PATH = BASE_PATH + "/flavors";
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getAccessIPv4() {
+        return accessIPv4;
+    }
+
+    public void setAccessIPv4(String accessIPv4) {
+        this.accessIPv4 = accessIPv4;
+    }
+
+    public String getAccessIPv6() {
+        return accessIPv6;
+    }
+
+    public void setAccessIPv6(String accessIPv6) {
+        this.accessIPv6 = accessIPv6;
+    }
 }

@@ -23,16 +23,19 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 import com.google.common.collect.Lists;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineToServer;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerCreateToMachineCreate;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerToMachine;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerForUpdateToMachineUpdate;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Job;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.slf4j.Logger;
@@ -40,10 +43,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 import java.util.List;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -63,11 +66,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response list() {
-
         JaxRsRequestInfos infos = getJaxRsRequestInfos();
-        LOGGER.debug("TENANT : " + infos.getUriInfo().getPathParameters().getFirst(Constants.TENANT_ID_PATH_PARAMETER));
-        LOGGER.debug("QUERY : " + infos.getUriInfo().getQueryParameters());
-
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
             // TODO : Filter machine from input
@@ -108,9 +107,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
             response.links.add(new Link(href, "self"));
             response.links.add(new Link(href, "bookmark"));
-
-            // TODO : Check the required response payload
-            return Response.accepted(server).build();
+            return Response.accepted(server).header("Location", href).build();
         } catch (CloudProviderException e) {
             final String error = "Error while getting servers";
             if (LOGGER.isDebugEnabled()) {
@@ -153,10 +150,12 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
         try {
             Machine machine = machineManager.getMachineById(id);
             if (machine == null) {
-                return notFound();
+                return resourceNotFoundException("server", id, new ResourceNotFoundException("Server not found"));
             } else {
                 return Response.ok(new MachineToServer(true).apply(machine)).build();
             }
+        } catch (ResourceNotFoundException rnf) {
+            return resourceNotFoundException("server", id, rnf);
         } catch (CloudProviderException e) {
             final String error = "Error while getting server details";
             if (LOGGER.isDebugEnabled()) {
@@ -169,19 +168,16 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
     }
 
     @Override
-    public Response update(String id) {
-        // get the input data
-
-        Server server = new Server();
-        server.id = id;
-        // TODO : get from HTTP request
-
+    public Response update(String id, ServerForUpdate update) {
         try {
-            Job job = machineManager.updateMachine(new ServerToMachine().apply(server));
+            Job job = machineManager.updateMachine(new ServerForUpdateToMachineUpdate().apply(update));
             // In the better case we can get the updated data right now
             // in the worst case, we must wait for the job to complte...
             // TODO : Check job progress
+            LOGGER.warn("TODO : Check machine update progress before return");
             return Response.ok(new MachineToServer(true).apply(machineManager.getMachineById(id))).build();
+        } catch (ResourceNotFoundException rnf) {
+            return resourceNotFoundException("server", id, rnf);
         } catch (CloudProviderException e) {
             final String error = "Error while updating server information";
             if (LOGGER.isDebugEnabled()) {
@@ -195,10 +191,11 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response delete(String id) {
-
         try {
             // TODO : manage error codes, check operation doc for more details
             machineManager.deleteMachine(id);
+        } catch (ResourceNotFoundException rnf) {
+            return resourceNotFoundException("server", id, rnf);
         } catch (CloudProviderException e) {
             final String error = "Error while updating server information";
             if (LOGGER.isDebugEnabled()) {

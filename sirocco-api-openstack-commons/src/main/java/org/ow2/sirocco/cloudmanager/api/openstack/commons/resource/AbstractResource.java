@@ -21,10 +21,11 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.UriInfo;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.*;
 
 /**
  * Code from org.ow2.sirocco.cimi.server.resource.RestResourceAbstract. To be moved in commons.
@@ -35,6 +36,8 @@ import javax.ws.rs.core.UriInfo;
  */
 @ResourceInterceptorBinding
 public class AbstractResource {
+
+    private static Logger LOG = LoggerFactory.getLogger(AbstractResource.class);
 
     @Context
     private UriInfo uriInfo;
@@ -105,5 +108,14 @@ public class AbstractResource {
         public Request getRequest() {
             return AbstractResource.this.request;
         }
+    }
+
+    public Response resourceNotFoundException(String type, String id, Exception e) {
+        LOG.debug("Resource has not been found", e);
+        String message = "Resource not found";
+        if (e != null) {
+            message = e.getLocalizedMessage();
+        }
+        return ResponseHelper.fault(FaultBuilder.itemNotFound(type + " " + id + " not found", 0, message));
     }
 }
