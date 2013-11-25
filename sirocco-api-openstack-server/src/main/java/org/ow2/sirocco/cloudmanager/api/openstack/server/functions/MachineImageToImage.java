@@ -22,6 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
 
 import com.google.common.base.Function;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Image;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
 
@@ -41,12 +42,23 @@ public class MachineImageToImage implements Function<MachineImage, Image> {
     @Override
     public Image apply(org.ow2.sirocco.cloudmanager.model.cimi.MachineImage input) {
         Image image = new Image();
-        image.id = "" + input.getId();
-        image.name = input.getName();
+        image.setId("" + input.getId());
+        image.setName(input.getName());
+
+        // TODO
+        image.getLinks().add(new Link("http://TODO", "bookmark"));
 
         // TODO
         if (details) {
-
+            //image.setCreated(input.getCreated());
+            //image.setMetadata();
+            //image.setMinDisk();
+            //image.setMinRam();
+            //image.setProgress();
+            //image.setSize();
+            // TODO : Mapping between sirocco and openstack
+            image.setStatus(input.getState().toString());
+            //image.setUpdated();
         }
         return image;
     }

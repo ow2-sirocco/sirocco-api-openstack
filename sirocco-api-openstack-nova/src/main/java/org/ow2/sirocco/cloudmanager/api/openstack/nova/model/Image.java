@@ -21,10 +21,13 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.*;
 
 /**
  * Image resource
@@ -35,5 +38,115 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonRootName(value = "image")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Image extends Identifiable {
-    public String name;
+
+    private String id;
+
+    private String status;
+
+    private String name;
+
+    private Integer progress;
+
+    private Integer minRam;
+
+    private Integer minDisk;
+
+    private Calendar created;
+
+    private Calendar updated;
+
+    @JsonProperty("OS-EXT-IMG-SIZE:size")
+    private Long size;
+
+    private Map<String, String> metadata = new HashMap<String, String>();
+
+    private List<Link> links = new ArrayList<Link>();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
+    public Integer getMinRam() {
+        return minRam;
+    }
+
+    public void setMinRam(Integer minRam) {
+        this.minRam = minRam;
+    }
+
+    public Integer getMinDisk() {
+        return minDisk;
+    }
+
+    public void setMinDisk(Integer minDisk) {
+        this.minDisk = minDisk;
+    }
+
+    public Calendar getCreated() {
+        return created;
+    }
+
+    public void setCreated(Calendar created) {
+        this.created = created;
+    }
+
+    public Calendar getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(Calendar updated) {
+        this.updated = updated;
+    }
+
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 }
