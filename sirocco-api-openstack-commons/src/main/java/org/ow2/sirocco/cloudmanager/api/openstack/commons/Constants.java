@@ -40,6 +40,8 @@ public final class Constants {
 
         public static final String FLAVORS_PATH = BASE_PATH + "/flavors";
 
+        public static final String IMAGES_PATH = BASE_PATH + "/images";
+
         /**
          * Server status
          * cf https://github.com/openstack/api-site/blob/master/api-ref/src/wadls/compute-api/src/xsd/server.xsd
