@@ -20,7 +20,7 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources;
 
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestInfo;
 
 /**
  * Get all the HTTP request information in this container.
@@ -29,7 +29,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResou
  */
 public class RequestContext {
 
-    public static RequestContext build(AbstractResource.JaxRsRequestInfos infos, String resourceId, Object input) {
+    public static RequestContext build(JaxRsRequestInfo infos, String resourceId, Object input) {
         return new RequestContext();
     }
 
@@ -41,7 +41,7 @@ public class RequestContext {
     /**
      * Input request information
      */
-    private AbstractResource.JaxRsRequestInfos requestInfos;
+    private JaxRsRequestInfo requestInfos;
 
     /**
      * The input object (for example when updating a resource, etc...)
@@ -59,11 +59,11 @@ public class RequestContext {
         this.resourceId = resourceId;
     }
 
-    public AbstractResource.JaxRsRequestInfos getRequestInfos() {
+    public JaxRsRequestInfo getRequestInfos() {
         return requestInfos;
     }
 
-    public void setRequestInfos(AbstractResource.JaxRsRequestInfos requestInfos) {
+    public void setRequestInfos(JaxRsRequestInfo requestInfos) {
         this.requestInfos = requestInfos;
     }
 

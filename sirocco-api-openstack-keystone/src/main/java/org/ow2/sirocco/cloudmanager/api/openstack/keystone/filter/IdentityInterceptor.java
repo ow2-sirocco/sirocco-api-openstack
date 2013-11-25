@@ -49,7 +49,7 @@ public class IdentityInterceptor implements Serializable {
         if (ctx.getTarget() instanceof AbstractResource) {
             AbstractResource resourceBase = (AbstractResource) ctx.getTarget();
 
-            String tenant = RequestHelper.getTenant(resourceBase.getJaxRsRequestInfos());
+            String tenant = RequestHelper.getTenant(resourceBase.getJaxRsRequestInfo());
             if (tenant != null) {
                 this.identityContext.setTenantId(tenant);
             }

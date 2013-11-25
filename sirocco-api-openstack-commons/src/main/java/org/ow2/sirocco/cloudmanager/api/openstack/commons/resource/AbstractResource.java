@@ -48,13 +48,13 @@ public class AbstractResource {
     @Context
     private Request request;
 
-    private JaxRsRequestInfos infos;
+    private JaxRsRequestInfo info;
 
     /**
      *
      */
     public AbstractResource() {
-        this.infos = new JaxRsRequestInfos();
+        this.info = new JaxRsRequestInfo(this);
     }
 
     /**
@@ -82,32 +82,8 @@ public class AbstractResource {
      * @return the request information.
      * This is used to introspect incoming request values.
      */
-    public JaxRsRequestInfos getJaxRsRequestInfos() {
-        return this.infos;
-    }
-
-    public class JaxRsRequestInfos {
-
-        /**
-         * @return the uriInfo
-         */
-        public UriInfo getUriInfo() {
-            return AbstractResource.this.uriInfo;
-        }
-
-        /**
-         * @return the headers
-         */
-        public HttpHeaders getHeaders() {
-            return AbstractResource.this.headers;
-        }
-
-        /**
-         * @return the request
-         */
-        public Request getRequest() {
-            return AbstractResource.this.request;
-        }
+    public JaxRsRequestInfo getJaxRsRequestInfo() {
+        return this.info;
     }
 
     public Response resourceNotFoundException(String type, String id, Exception e) {

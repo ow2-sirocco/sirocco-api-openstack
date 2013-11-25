@@ -33,6 +33,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineToServer;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerCreateToMachineCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerForUpdateToMachineUpdate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
@@ -66,11 +67,9 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response list() {
-        JaxRsRequestInfos infos = getJaxRsRequestInfos();
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
-            // TODO : Filter machine from input
-            List<Machine> machines = machineManager.getMachines().getItems();
+            List<Machine> machines = machineManager.getMachines(new ServerListQuery().apply(getJaxRsRequestInfo())).getItems();
 
             if (machines == null || machines.size() == 0) {
                 // TODO : Check openstack API for empty response.
@@ -123,8 +122,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
     public Response details() {
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
-            // TODO : Filter machine from input
-            List<Machine> machines = machineManager.getMachines().getItems();
+            List<Machine> machines = machineManager.getMachines(new ServerListQuery().apply(getJaxRsRequestInfo())).getItems();
 
             if (machines == null || machines.size() == 0) {
                 // TODO : Check openstack API for empty response.

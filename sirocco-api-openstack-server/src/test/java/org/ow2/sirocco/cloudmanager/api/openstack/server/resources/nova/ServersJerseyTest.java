@@ -33,6 +33,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.keystone.filter.KeystoneFilter
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 import org.ow2.sirocco.cloudmanager.core.api.QueryResult;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.slf4j.LoggerFactory;
@@ -114,7 +115,8 @@ public class ServersJerseyTest extends JerseyTest {
         QueryResult<Machine> result = new QueryResult<Machine>(list.size(), list);
         result.setItems(list);
 
-        EasyMock.expect(this.service.getMachines()).andReturn(result).once();
+        QueryParams query = EasyMock.createMock(QueryParams.class);
+        EasyMock.expect(this.service.getMachines((QueryParams) null)).andReturn(result).once();
         EasyMock.replay(this.service);
 
         Response response = this.target().path("/v2/1234567/servers").request(MediaType.APPLICATION_JSON_TYPE).get();

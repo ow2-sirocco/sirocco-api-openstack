@@ -40,5 +40,13 @@ public final class Constants {
 
         public static final String FLAVORS_PATH = BASE_PATH + "/flavors";
 
+        /**
+         * Server status
+         * cf https://github.com/openstack/api-site/blob/master/api-ref/src/wadls/compute-api/src/xsd/server.xsd
+         */
+        public enum Status {
+            ACTIVE, SUSPENDED, DELETED, RESIZE, VERIFY_RESIZE, REVERT_RESIZE, ERROR, BUILD, PASSWORD, REBUILD, REBOOT, HARD_REBOOT, UNKNOWN
+        }
+
     }
 }
