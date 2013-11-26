@@ -20,15 +20,24 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
+import com.google.common.collect.Lists;
 import org.glassfish.jersey.process.internal.RequestScoped;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineConfigurationToFlavor;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.FlavorListQuery;
+import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.PathParam;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
+
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -37,19 +46,66 @@ import java.util.List;
 @RequestScoped
 public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Flavors {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(Servers.class);
+
+    @Inject
+    private IMachineManager machineManager;
+
     @Override
     public Response list() {
-        List<Flavor> flavors = new ArrayList<Flavor>();
-        return Response.ok(flavors).build();
+        return getFlavors(false);
     }
 
     @Override
     public Response details() {
-        return Response.ok().build();
+        return getFlavors(true);
     }
 
     @Override
-    public Response details(@PathParam("id") String id) {
-        return Response.ok().build();
+    public Response details(String id) {
+        org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor();
+        try {
+            MachineConfiguration config = machineManager.getMachineConfigurationById(id);
+            if (config == null) {
+                // TODO : Check openstack API for empty response.
+                return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
+            } else {
+                return Response.ok(new MachineConfigurationToFlavor(true).apply(config)).build();
+            }
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting flavor";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(error, e);
+            } else {
+                LOGGER.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }
+    }
+
+    protected Response getFlavors(boolean details) {
+        org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavors result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavors();
+        try {
+            List<MachineConfiguration> configs = machineManager.getMachineConfigurations(new FlavorListQuery().apply(getJaxRsRequestInfo())).getItems();
+            if (configs == null || configs.size() == 0) {
+                // TODO : Check openstack API for empty response.
+                return Response.ok(result).build();
+            } else {
+                result.setFlavors(Lists.transform(configs, new MachineConfigurationToFlavor(details)));
+                return Response.ok(result).build();
+            }
+
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting flavors";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(error, e);
+            } else {
+                LOGGER.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }
+
     }
 }

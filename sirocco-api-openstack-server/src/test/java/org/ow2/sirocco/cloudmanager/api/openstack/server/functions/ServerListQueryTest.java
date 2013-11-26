@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestInfo;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 
 import javax.ws.rs.core.MultivaluedHashMap;

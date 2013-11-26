@@ -31,7 +31,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineToServer;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerCreateToMachineCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerForUpdateToMachineUpdate;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerListQuery;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;

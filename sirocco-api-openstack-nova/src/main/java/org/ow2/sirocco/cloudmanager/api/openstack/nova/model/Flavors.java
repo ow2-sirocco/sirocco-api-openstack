@@ -25,6 +25,7 @@ import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +40,7 @@ public class Flavors {
     private List<Flavor> flavors;
 
     public Flavors() {
+        flavors = new ArrayList<Flavor>();
     }
 
     @JsonValue

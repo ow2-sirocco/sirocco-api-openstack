@@ -19,26 +19,18 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestInfo;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.RequestHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;
-import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class ServerListQuery implements Function<JaxRsRequestInfo, QueryParams> {
+public class ServerListQuery extends AbstractQuery {
 
     /**
      * Key is the Openstack param name, Value is the Sirocco one
@@ -75,65 +67,17 @@ public class ServerListQuery implements Function<JaxRsRequestInfo, QueryParams> 
         STATUS.put(org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status.VERIFY_RESIZE, null);
     }
 
-    /**
-     *
-     * @param input
-     * @return
-     *  null if there are no input parameters
-     *  queryparams with filter values if there are any valid filter in the incoming request parameter
-     */
     @Override
-    public QueryParams apply(JaxRsRequestInfo input) {
-        if (RequestHelper.getQueryParameters(input).size() == 0) {
-            return null;
-        }
-
-        // let's get all parameters and map to the sirocco model...
-        Map<String, List<String>> params = RequestHelper.getQueryParameters(input);
-        final Map<String, String> p = Maps.transformValues(params, new Function<List<String>, String>() {
-            @Override
-            public String apply(List<String> input) {
-                return input.get(0);
-            }
-        });
-
-        List<Query> filter = Lists.newArrayList(Iterators.filter(Iterators.transform(p.keySet().iterator(), new Function<String, Query>() {
-            @Override
-            public Query apply(String key) {
-                Query q = new Query();
-                // key may be null. Will not applied if null.
-                q.name = mapping.get(key.toLowerCase());
-                // TODO : Operator depends in the input type
-                q.operator = "=";
-                q.value = p.get(key);
-                return q;
-            }
-        }), new Predicate<Query>() {
-            // do not keep query with null names. It means that there is no mapping between openstack and sirocco...
-            @Override
-            public boolean apply(org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerListQuery.Query input) {
-                return input.name != null;
-            }
-        }));
-
-        List<String> f = Lists.transform(filter, new Function<Query, String>() {
-            @Override
-            public String apply(org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerListQuery.Query input) {
-                return input.toString();
-            }
-        });
-
-        return new QueryParams.Builder().filters(f).build();
+    protected String getSiroccoParamName(String openstackParamName) {
+        return mapping.get(openstackParamName);
     }
 
-    public class Query {
-        String name;
-        String operator;
-        String value;
-
-        @Override
-        public String toString() {
-            return name + operator + value;
+    @Override
+    protected String getSiroccoParamValue(String openstackParamName, String openstackParamValue) {
+        if (openstackParamName != null && openstackParamName.equalsIgnoreCase("status")) {
+            return STATUS.get(openstackParamValue).toString();
         }
+
+        return openstackParamValue;
     }
 }

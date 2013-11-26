@@ -21,10 +21,14 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Flavor resource
@@ -36,5 +40,33 @@ import javax.xml.bind.annotation.XmlRootElement;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Flavor extends Identifiable {
     public String name;
+
+    public List<Link> links = new ArrayList<Link>();
+
+    public String vcpus;
+
+    public Integer ram;
+
+    public String disk;
+
+    @JsonProperty("OS-FLV-EXT-DATA:ephemeral")
+    public Integer ephemeral;
+
+    public String swap;
+
+    @JsonProperty("rxtx_factor")
+    public Float rxtxFactor;
+
+    @JsonProperty("OS-FLV-DISABLED:disabled")
+    public Boolean disabled;
+
+    @JsonProperty("rxtx_quota")
+    public Integer rxtxQuota;
+
+    @JsonProperty("rxtx_cap")
+    public Integer rxtxCap;
+
+    @JsonProperty("os-flavor-access:is_public")
+    public Boolean isPublic;
 
 }
