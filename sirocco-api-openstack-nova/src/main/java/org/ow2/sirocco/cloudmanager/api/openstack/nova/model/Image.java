@@ -27,7 +27,9 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * Image resource
@@ -58,7 +60,7 @@ public class Image extends Identifiable {
     @JsonProperty("OS-EXT-IMG-SIZE:size")
     private Long size;
 
-    private Map<String, String> metadata = new HashMap<String, String>();
+    private Metadata metadata;
 
     private List<Link> links = new ArrayList<Link>();
 
@@ -134,11 +136,11 @@ public class Image extends Identifiable {
         this.size = size;
     }
 
-    public Map<String, String> getMetadata() {
+    public Metadata getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(Map<String, String> metadata) {
+    public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
     }
 

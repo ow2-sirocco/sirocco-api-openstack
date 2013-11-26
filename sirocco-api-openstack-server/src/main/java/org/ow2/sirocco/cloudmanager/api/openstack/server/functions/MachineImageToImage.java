@@ -51,7 +51,9 @@ public class MachineImageToImage implements Function<MachineImage, Image> {
         // TODO
         if (details) {
             //image.setCreated(input.getCreated());
-            //image.setMetadata();
+            if (input.getProperties() != null) {
+                image.setMetadata(new MapToMetadata().apply(input.getProperties()));
+            }
             //image.setMinDisk();
             //image.setMinRam();
             //image.setProgress();
