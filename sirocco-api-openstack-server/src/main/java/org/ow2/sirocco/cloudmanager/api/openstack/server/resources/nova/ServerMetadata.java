@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
+import com.google.common.collect.ImmutableMap;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.RequestHelper;
@@ -38,8 +39,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -87,16 +87,34 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
 
     @Override
     public Response get(@PathParam("key") String key) {
-        return notImplemented("metadata", "getkey");
-    }
+        try {
+            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            if (meta != null && meta.get(key) != null) {
+                return ok(new MapToMetadata().apply(ImmutableMap.of(key, meta.get(key))));
+            } else {
+                return notFound();
+            }
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("server", getServerId(), rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting server metadata";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(error, e);
+            } else {
+                LOGGER.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }    }
 
     @Override
     public Response set(@PathParam("key") String key, String value) {
+        // TODO : Check how to modify a property in sirocco
         return notImplemented("metadata", "setkey");
     }
 
     @Override
     public Response delete(@PathParam("key") String key) {
+        // TODO : Check how to delete a property in sirocco
         return notImplemented("metadata", "deletekey");
     }
 
