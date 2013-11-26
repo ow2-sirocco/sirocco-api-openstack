@@ -61,10 +61,10 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
 
             if (images == null || images.size() == 0) {
                 // TODO : Check openstack API for empty response.
-                return Response.ok(result).build();
+                return ok(result);
             } else {
                 result.setImages(Lists.transform(images, new MachineImageToImage(false)));
-                return Response.ok(result).build();
+                return ok(result);
             }
 
         } catch (CloudProviderException e) {
@@ -86,10 +86,10 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
 
             if (images == null || images.size() == 0) {
                 // TODO : Check openstack API for empty response.
-                return Response.ok(result).build();
+                return ok(result);
             } else {
                 result.setImages(Lists.transform(images, new MachineImageToImage(true)));
-                return Response.ok(result).build();
+                return ok(result);
             }
 
         } catch (CloudProviderException e) {
@@ -110,7 +110,7 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
             if (image == null) {
                 return resourceNotFoundException("image", imageId, new ResourceNotFoundException("Image not found"));
             } else {
-                return Response.ok(new MachineImageToImage(true).apply(image)).build();
+                return ok(new MachineImageToImage(true).apply(image));
             }
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("image", imageId, new ResourceNotFoundException("Image not found"));

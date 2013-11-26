@@ -71,10 +71,10 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
             if (machines == null || machines.size() == 0) {
                 // TODO : Check openstack API for empty response.
-                return Response.ok(result).build();
+                return ok(result);
             } else {
                 result.setServers(Lists.transform(machines, new MachineToServer(false)));
-                return Response.ok(result).build();
+                return ok(result);
             }
 
         } catch (CloudProviderException e) {
@@ -124,10 +124,10 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
             if (machines == null || machines.size() == 0) {
                 // TODO : Check openstack API for empty response.
-                return Response.ok(result).build();
+                return ok(result);
             } else {
                 result.setServers(Lists.transform(machines, new MachineToServer(true)));
-                return Response.ok(result).build();
+                return ok(result);
             }
 
         } catch (CloudProviderException e) {
@@ -148,7 +148,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             if (machine == null) {
                 return resourceNotFoundException("server", id, new ResourceNotFoundException("Server not found"));
             } else {
-                return Response.ok(new MachineToServer(true).apply(machine)).build();
+                return ok(new MachineToServer(true).apply(machine));
             }
         } catch (ResourceNotFoundException rnf) {
             return resourceNotFoundException("server", id, rnf);
@@ -171,7 +171,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             // in the worst case, we must wait for the job to complte...
             // TODO : Check job progress
             LOGGER.warn("TODO : Check machine update progress before return");
-            return Response.ok(new MachineToServer(true).apply(machineManager.getMachineById(id))).build();
+            return ok(new MachineToServer(true).apply(machineManager.getMachineById(id)));
         } catch (ResourceNotFoundException rnf) {
             return resourceNotFoundException("server", id, rnf);
         } catch (CloudProviderException e) {

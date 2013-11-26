@@ -70,7 +70,7 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
                 // TODO : Check openstack API for empty response.
                 return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
             } else {
-                return Response.ok(new MachineConfigurationToFlavor(true).apply(config)).build();
+                return ok(new MachineConfigurationToFlavor(true).apply(config));
             }
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
@@ -91,10 +91,10 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
             List<MachineConfiguration> configs = machineManager.getMachineConfigurations(new FlavorListQuery().apply(getJaxRsRequestInfo())).getItems();
             if (configs == null || configs.size() == 0) {
                 // TODO : Check openstack API for empty response.
-                return Response.ok(result).build();
+                return ok(result);
             } else {
                 result.setFlavors(Lists.transform(configs, new MachineConfigurationToFlavor(details)));
-                return Response.ok(result).build();
+                return ok(result);
             }
 
         } catch (CloudProviderException e) {
