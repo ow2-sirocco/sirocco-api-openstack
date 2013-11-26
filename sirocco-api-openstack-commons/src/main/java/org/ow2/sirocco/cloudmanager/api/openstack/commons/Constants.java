@@ -34,6 +34,8 @@ public final class Constants {
 
         public static final String SERVER_ID_PATH_PARAMETER = "server_id";
 
+        public static final String IMAGE_ID_PATH_PARAMETER = "image_id";
+
         public static final String TENANT_PATH_TEMPLATE = BASE_PATH + "/{" + TENANT_ID_PATH_PARAMETER + "}";
 
         public static final String SERVERS_PATH = TENANT_PATH_TEMPLATE + "/servers";
@@ -43,6 +45,8 @@ public final class Constants {
         public static final String FLAVORS_PATH = BASE_PATH + "/flavors";
 
         public static final String IMAGES_PATH = BASE_PATH + "/images";
+
+        public static final String IMAGE_METADATA_PATH = BASE_PATH + "/{" + TENANT_ID_PATH_PARAMETER + "}/images/{" + IMAGE_ID_PATH_PARAMETER + "}/metadata";
 
         /**
          * Server status

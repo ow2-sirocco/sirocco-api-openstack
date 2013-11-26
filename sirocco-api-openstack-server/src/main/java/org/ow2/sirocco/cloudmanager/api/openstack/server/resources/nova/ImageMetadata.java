@@ -1,0 +1,131 @@
+/**
+ * SIROCCO
+ * Copyright (C) 2013 France Telecom
+ * Contact: sirocco@ow2.org
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA
+ */
+
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
+
+import com.google.common.collect.ImmutableMap;
+import org.glassfish.jersey.process.internal.RequestScoped;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.RequestHelper;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MapToMetadata;
+import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+import java.util.Map;
+
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
+
+/**
+ * @author Christophe Hamerling - chamerling@linagora.com
+ */
+@ResourceInterceptorBinding
+@RequestScoped
+public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.ImageMetadata {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageMetadata.class);
+
+    @Inject
+    private IMachineImageManager manager;
+
+    @Override
+    public Response get() {
+        try {
+            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            if (meta != null) {
+                return ok(new MapToMetadata().apply(meta));
+            } else {
+                return ok(new Metadata());
+            }
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("image", getImageId(), rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting image metadata";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(error, e);
+            } else {
+                LOGGER.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response update(Metadata metadata) {
+        return notImplemented("metadata", "update");
+    }
+
+    @Override
+    public Response set(Metadata metadata) {
+        return notImplemented("metadata", "set");
+    }
+
+    @Override
+    public Response get(@PathParam("key") String key) {
+        try {
+            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            if (meta != null && meta.get(key) != null) {
+                return ok(new MapToMetadata().apply(ImmutableMap.of(key, meta.get(key))));
+            } else {
+                return notFound();
+            }
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("image", getImageId(), rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting image metadata";
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug(error, e);
+            } else {
+                LOGGER.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }    }
+
+    @Override
+    public Response set(@PathParam("key") String key, String value) {
+        // TODO : Check how to modify a property in sirocco
+        return notImplemented("image.metadata", "setkey");
+    }
+
+    @Override
+    public Response delete(@PathParam("key") String key) {
+        // TODO : Check how to delete a property in sirocco
+        return notImplemented("image.metadata", "deletekey");
+    }
+
+    /**
+     * Get the current image ID from the URL
+     *
+     * @return
+     */
+    protected String getImageId() {
+        return RequestHelper.getPathParameter(getJaxRsRequestInfo(),
+                org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.IMAGE_ID_PATH_PARAMETER);
+    }
+
+}

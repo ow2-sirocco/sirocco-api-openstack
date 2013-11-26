@@ -26,13 +26,11 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import javax.ws.rs.Path;
 
 /**
- * Server metadata resource.
- *
- * Documentation is at http://api.openstack.org/api-ref-compute.html#compute_server_metadata
+ * Image metadata resource.
+ * API Documentation at http://api.openstack.org/api-ref-compute.html#compute_image_metadata
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path(value = Constants.Nova.SERVER_METADATA_PATH)
-public interface ServerMetadata extends MetadataResource {
-
+@Path(value = Constants.Nova.IMAGE_METADATA_PATH)
+public interface ImageMetadata extends MetadataResource {
 }
