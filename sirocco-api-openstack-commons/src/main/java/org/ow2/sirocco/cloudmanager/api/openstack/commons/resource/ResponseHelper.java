@@ -91,4 +91,14 @@ public class ResponseHelper {
         return fault(FaultBuilder.computeFault(message, code, details));
     }
 
+    /**
+     *
+     * @param resource
+     * @param operation
+     * @return
+     */
+    public static final Response notImplemented(String resource, String operation) {
+        return fault("Not implemented", FaultBuilder.fault("Not implemented", 500, operation + " is not implemented for " + resource));
+    }
+
 }

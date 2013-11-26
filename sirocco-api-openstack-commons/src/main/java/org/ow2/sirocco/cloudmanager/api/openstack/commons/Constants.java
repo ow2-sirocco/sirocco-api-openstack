@@ -38,6 +38,8 @@ public final class Constants {
 
         public static final String SERVERS_PATH = TENANT_PATH_TEMPLATE + "/servers";
 
+        public static final String SERVER_METADATA_PATH = SERVERS_PATH + "/{" + SERVER_ID_PATH_PARAMETER + "}/metadata";
+
         public static final String FLAVORS_PATH = BASE_PATH + "/flavors";
 
         public static final String IMAGES_PATH = BASE_PATH + "/images";

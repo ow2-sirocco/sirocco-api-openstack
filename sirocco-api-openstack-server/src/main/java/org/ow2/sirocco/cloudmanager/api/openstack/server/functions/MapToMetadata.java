@@ -22,39 +22,20 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
-import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
+
+import java.util.Map;
 
 /**
- * Transform a Sirocco Machine to an Openstack Server
+ * Transform Sirocco map to Openstack metadata
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class MachineToServer implements Function<Machine, Server> {
-
-    boolean details;
-
-    public MachineToServer() {
-        this(false);
-    }
-
-    public MachineToServer(boolean details) {
-        this.details = details;
-    }
+public class MapToMetadata implements Function<Map<String, String>, Metadata> {
 
     @Override
-    public Server apply(org.ow2.sirocco.cloudmanager.model.cimi.Machine machine) {
-        Server server = new Server();
-        server.id = "" + machine.getId();
-        server.name = machine.getName();
-        Link link = new Link();
-        link.rel = "self";
-        link.href = "http://TODO/v2/openstack/servers/" + server.id;
-        server.links.add(link);
-        if (details) {
-            // TODO
-            server.metadata = new MapToMetadata().apply(machine.getProperties());
-        }
-        return server;
+    public Metadata apply(Map<String, String> input) {
+        return new Metadata(input);
     }
+
 }

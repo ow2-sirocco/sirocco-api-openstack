@@ -86,6 +86,13 @@ public class AbstractResource {
         return this.info;
     }
 
+    /**
+     *
+     * @param type
+     * @param id
+     * @param e
+     * @return
+     */
     public Response resourceNotFoundException(String type, String id, Exception e) {
         LOG.debug("Resource has not been found", e);
         String message = "Resource not found";
@@ -93,5 +100,14 @@ public class AbstractResource {
             message = e.getLocalizedMessage();
         }
         return ResponseHelper.fault(FaultBuilder.itemNotFound(type + " " + id + " not found", 0, message));
+    }
+
+    /**
+     *
+     * @param entity
+     * @return
+     */
+    public Response ok(Object entity) {
+        return Response.ok(entity).build();
     }
 }

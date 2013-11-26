@@ -49,7 +49,7 @@ public class RequestHelper {
         }
     }
 
-    public static String getPathParamater(JaxRsRequestInfo requestInfos, String name) {
+    public static String getPathParameter(JaxRsRequestInfo requestInfos, String name) {
         Map<String, List<String>> params = getPathParameters(requestInfos);
         if (params.get(name) != null && params.get(name).size() > 0) {
             return params.get(name).get(0);

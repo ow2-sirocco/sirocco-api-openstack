@@ -58,7 +58,7 @@ public class Server extends Identifiable {
 
     public Image image;
 
-    //public Metadata metadata;
+    public Metadata metadata;
 
     public Integer progress;
     public String status;
