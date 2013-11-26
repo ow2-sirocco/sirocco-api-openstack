@@ -48,6 +48,8 @@ public final class Constants {
 
         public static final String IMAGE_METADATA_PATH = BASE_PATH + "/{" + TENANT_ID_PATH_PARAMETER + "}/images/{" + IMAGE_ID_PATH_PARAMETER + "}/metadata";
 
+        public static final String SERVER_ADDRESSES_PATH = SERVERS_PATH + "/{" + SERVER_ID_PATH_PARAMETER + "}/ips";
+
         /**
          * Server status
          * cf https://github.com/openstack/api-site/blob/master/api-ref/src/wadls/compute-api/src/xsd/server.xsd
