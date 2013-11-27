@@ -22,14 +22,15 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
 import org.glassfish.jersey.process.internal.RequestScoped;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
-
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -42,7 +43,13 @@ public class Versions extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response get() {
-        return notImplemented("Versions", "get");
+        org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Versions versions = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Versions();
+        org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Version v2 = new Version();
+        v2.id = "v2.0";
+        v2.status = "CURRENT";
+        v2.links.add(new Link(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF));
+        versions.getVersions().add(v2);
+        return ok(versions);
     }
 
 }
