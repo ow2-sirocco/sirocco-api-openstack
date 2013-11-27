@@ -21,10 +21,14 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.glassfish.jersey.process.internal.RequestScoped;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LinkHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Image;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineImageToImage;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
@@ -55,31 +59,15 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
 
     @Override
     public Response list() {
-        try {
-            org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Images result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Images();
-            List<MachineImage> images = machineImageManager.getMachineImages();
-
-            if (images == null || images.size() == 0) {
-                // TODO : Check openstack API for empty response.
-                return ok(result);
-            } else {
-                result.setImages(Lists.transform(images, new MachineImageToImage(false)));
-                return ok(result);
-            }
-
-        } catch (CloudProviderException e) {
-            final String error = "Error while getting images";
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(error, e);
-            } else {
-                LOGGER.error(error);
-            }
-            return computeFault("Server Error", 500, e.getMessage());
-        }
+        return getImages(false);
     }
 
     @Override
     public Response details() {
+        return getImages(true);
+    }
+
+    protected Response getImages(boolean details) {
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Images result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Images();
             List<MachineImage> images = machineImageManager.getMachineImages();
@@ -88,7 +76,15 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
                 // TODO : Check openstack API for empty response.
                 return ok(result);
             } else {
-                result.setImages(Lists.transform(images, new MachineImageToImage(true)));
+                List<Image> list = Lists.transform(images, new MachineImageToImage(details));
+                list = Lists.transform(list, new Function<Image, Image>() {
+                    @Override
+                    public Image apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Image input) {
+                        input.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.getId()));
+                        return input;
+                    }
+                });
+                result.setImages(list);
                 return ok(result);
             }
 
@@ -110,7 +106,9 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
             if (image == null) {
                 return resourceNotFoundException("image", imageId, new ResourceNotFoundException("Image not found"));
             } else {
-                return ok(new MachineImageToImage(true).apply(image));
+                Image result = new MachineImageToImage(true).apply(image);
+                result.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+                return ok(result);
             }
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("image", imageId, new ResourceNotFoundException("Image not found"));

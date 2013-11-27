@@ -20,10 +20,12 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.glassfish.jersey.process.internal.RequestScoped;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LinkHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
@@ -65,6 +67,10 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response list() {
+        return getServers(false);
+    }
+
+    protected Response getServers(boolean details) {
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
             List<Machine> machines = machineManager.getMachines(new ServerListQuery().apply(getJaxRsRequestInfo())).getItems();
@@ -73,7 +79,17 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
                 // TODO : Check openstack API for empty response.
                 return ok(result);
             } else {
-                result.setServers(Lists.transform(machines, new MachineToServer(false)));
+                List<Server> servers = Lists.transform(machines, new MachineToServer(details));
+                // generate links
+                // TODO : Get other links from generator
+                servers = Lists.transform(servers, new Function<Server, Server>() {
+                    @Override
+                    public Server apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server input) {
+                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
+                        return input;
+                    }
+                });
+                result.setServers(servers);
                 return ok(result);
             }
 
@@ -96,15 +112,12 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
         try {
             Job job = machineManager.createMachine(new ServerCreateToMachineCreate().apply(server));
 
-            Server response = new Server();
-            response.id = "" + job.getId();
-            response.adminPass = "TODO";
+            Machine machine = new Machine();
+            machine.setId(job.getId());
+            machine.setName(job.getName());
 
-            String href = "http://TODO";
-
-            response.links.add(new Link(href, "self"));
-            response.links.add(new Link(href, "bookmark"));
-            return Response.accepted(server).header("Location", href).build();
+            Server result = new MachineToServer(false).apply(machine);
+            return Response.accepted(result).header("Location", result.links.get(0).href).build();
         } catch (CloudProviderException e) {
             final String error = "Error while getting servers";
             if (LOGGER.isDebugEnabled()) {
@@ -118,27 +131,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response details() {
-        try {
-            org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
-            List<Machine> machines = machineManager.getMachines(new ServerListQuery().apply(getJaxRsRequestInfo())).getItems();
-
-            if (machines == null || machines.size() == 0) {
-                // TODO : Check openstack API for empty response.
-                return ok(result);
-            } else {
-                result.setServers(Lists.transform(machines, new MachineToServer(true)));
-                return ok(result);
-            }
-
-        } catch (CloudProviderException e) {
-            final String error = "Error while getting servers";
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug(error, e);
-            } else {
-                LOGGER.error(error);
-            }
-            return computeFault("Server Error", 500, e.getMessage());
-        }
+        return getServers(true);
     }
 
     @Override
@@ -148,7 +141,9 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             if (machine == null) {
                 return resourceNotFoundException("server", id, new ResourceNotFoundException("Server not found"));
             } else {
-                return ok(new MachineToServer(true).apply(machine));
+                Server s = new MachineToServer(true).apply(machine);
+                s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+                return ok(s);
             }
         } catch (ResourceNotFoundException rnf) {
             return resourceNotFoundException("server", id, rnf);
@@ -171,7 +166,11 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             // in the worst case, we must wait for the job to complte...
             // TODO : Check job progress
             LOGGER.warn("TODO : Check machine update progress before return");
-            return ok(new MachineToServer(true).apply(machineManager.getMachineById(id)));
+
+            Server s = new MachineToServer(true).apply(machineManager.getMachineById(id));
+            s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+
+            return ok(s);
         } catch (ResourceNotFoundException rnf) {
             return resourceNotFoundException("server", id, rnf);
         } catch (CloudProviderException e) {

@@ -22,7 +22,6 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 
@@ -34,10 +33,17 @@ public class MachineToServer implements Function<Machine, Server> {
 
     boolean details;
 
+    /**
+     *
+     */
     public MachineToServer() {
         this(false);
     }
 
+    /**
+     *
+     * @param details
+     */
     public MachineToServer(boolean details) {
         this.details = details;
     }
@@ -47,10 +53,7 @@ public class MachineToServer implements Function<Machine, Server> {
         Server server = new Server();
         server.id = "" + machine.getId();
         server.name = machine.getName();
-        Link link = new Link();
-        link.rel = "self";
-        link.href = "http://TODO/v2/openstack/servers/" + server.id;
-        server.links.add(link);
+
         if (details) {
             // TODO
             server.metadata = new MapToMetadata().apply(machine.getProperties());

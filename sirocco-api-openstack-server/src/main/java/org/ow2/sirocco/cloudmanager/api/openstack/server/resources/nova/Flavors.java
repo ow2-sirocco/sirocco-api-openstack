@@ -20,10 +20,14 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.glassfish.jersey.process.internal.RequestScoped;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LinkHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineConfigurationToFlavor;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.FlavorListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
@@ -63,13 +67,14 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response details(String id) {
-        org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor();
         try {
             MachineConfiguration config = machineManager.getMachineConfigurationById(id);
             if (config == null) {
                 // TODO : Check openstack API for empty response.
                 return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
             } else {
+                Flavor result = new MachineConfigurationToFlavor(true).apply(config);
+                result.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
                 return ok(new MachineConfigurationToFlavor(true).apply(config));
             }
         } catch (ResourceNotFoundException rnfe) {
@@ -93,7 +98,15 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
                 // TODO : Check openstack API for empty response.
                 return ok(result);
             } else {
-                result.setFlavors(Lists.transform(configs, new MachineConfigurationToFlavor(details)));
+                List<Flavor> flavors = Lists.transform(configs, new MachineConfigurationToFlavor(details));
+                flavors = Lists.transform(flavors, new Function<Flavor, Flavor>() {
+                    @Override
+                    public Flavor apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor input) {
+                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
+                        return input;
+                    }
+                });
+                result.setFlavors(flavors);
                 return ok(result);
             }
 

@@ -26,6 +26,12 @@ package org.ow2.sirocco.cloudmanager.api.openstack.commons;
  */
 public final class Constants {
 
+    public static final class Link {
+        public static final String BOOKMARK = "bookmark";
+
+        public static final String SELF = "self";
+    }
+
     public static final class Nova {
 
         public static final String BASE_PATH = "/v2";
