@@ -30,11 +30,18 @@ public class Link {
 
     public String href;
 
+    public String type;
+
     public String rel;
 
-    public Link(String href, String rel) {
+    public Link(String href, String rel, String type) {
         this.href = href;
         this.rel = rel;
+        this.type = type;
+    }
+
+    public Link(String href, String rel) {
+        this(href, rel, null);
     }
 
     public Link() {
