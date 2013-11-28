@@ -35,6 +35,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineToServ
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerCreateToMachineCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Job;
@@ -72,7 +73,13 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
     protected Response getServers(boolean details) {
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
-            List<Machine> machines = machineManager.getMachines(new ServerListQuery().apply(getJaxRsRequestInfo())).getItems();
+            QueryParams query = new ServerListQuery().apply(getJaxRsRequestInfo());
+            List<Machine> machines = null;
+            if (query == null) {
+                machines = machineManager.getMachines().getItems();
+            } else {
+                machines = machineManager.getMachines(query).getItems();
+            }
 
             if (machines == null || machines.size() == 0) {
                 // TODO : Check openstack API for empty response.
