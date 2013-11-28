@@ -112,7 +112,7 @@ public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryP
 
         @Override
         public String toString() {
-            return name + operator + value;
+            return name + operator + "'" + value + "'";
         }
     }
 
