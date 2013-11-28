@@ -21,6 +21,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
@@ -32,7 +33,6 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineToServer;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerCreateToMachineCreate;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerForUpdateToMachineUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
@@ -46,8 +46,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -161,16 +160,16 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
     @Override
     public Response update(String id, ServerForUpdate update) {
         try {
-            Job job = machineManager.updateMachine(new ServerForUpdateToMachineUpdate().apply(update));
-            // In the better case we can get the updated data right now
-            // in the worst case, we must wait for the job to complte...
-            // TODO : Check job progress
-            LOGGER.warn("TODO : Check machine update progress before return");
+            if (update != null && update.getName() != null) {
+                //Job job = machineManager.updateMachine(new ServerForUpdateToMachineUpdate().apply(update));
 
-            Server s = new MachineToServer(true).apply(machineManager.getMachineById(id));
-            s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
-
-            return ok(s);
+                machineManager.updateMachineAttributes(id, ImmutableMap.<String, Object>of("name", update.getName()));
+                Server s = new MachineToServer(true).apply(machineManager.getMachineById(id));
+                s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+                return ok(s);
+            } else {
+                return badRequest("server", "update");
+            }
         } catch (ResourceNotFoundException rnf) {
             return resourceNotFoundException("server", id, rnf);
         } catch (CloudProviderException e) {

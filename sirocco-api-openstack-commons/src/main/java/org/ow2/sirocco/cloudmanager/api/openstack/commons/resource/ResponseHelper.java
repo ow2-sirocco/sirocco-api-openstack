@@ -101,4 +101,15 @@ public class ResponseHelper {
         return fault("Not implemented", FaultBuilder.fault("Not implemented", 500, operation + " is not implemented for " + resource));
     }
 
+    /**
+     * Bad request, HTTP 400
+     *
+     * @param resource
+     * @param operation
+     * @return
+     */
+    public static final Response badRequest(String resource, String operation) {
+        return fault("Bad Request", FaultBuilder.fault("Bad Request", 500, "Bad request for " + operation + " on " + resource));
+    }
+
 }
