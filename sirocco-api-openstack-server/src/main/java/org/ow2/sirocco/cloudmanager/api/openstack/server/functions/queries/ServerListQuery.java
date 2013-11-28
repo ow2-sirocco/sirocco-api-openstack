@@ -46,7 +46,7 @@ public class ServerListQuery extends AbstractQuery {
         mapping.put(Constants.REQUEST_CHANGESSINCE, null);
         mapping.put(Constants.REQUEST_FLAVOR, null);
         mapping.put(Constants.REQUEST_HOST, null);
-        mapping.put(Constants.REQUEST_IMAGE, "image.id");
+        mapping.put(Constants.REQUEST_IMAGE, "image.uuid");
         mapping.put(Constants.REQUEST_LIMIT, null);
         mapping.put(Constants.REQUEST_MARKER, null);
         mapping.put(Constants.REQUEST_NAME, "name");
