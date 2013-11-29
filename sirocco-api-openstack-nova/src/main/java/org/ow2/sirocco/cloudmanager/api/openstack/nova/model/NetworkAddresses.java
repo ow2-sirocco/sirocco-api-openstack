@@ -21,36 +21,34 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 
-import org.codehaus.jackson.annotate.JsonAnySetter;
-import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Addresses resource, composed of network
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@XmlRootElement(name = "addresses")
-@JsonRootName("addresses")
-public class Addresses {
+@JsonRootName("network")
+public class NetworkAddresses {
 
-    private Map<String, List<Address>> addresses = new HashMap<String, List<Address>>();
+    public String id;
 
-    @JsonAnySetter
-    public void add(String key, List<Address> value) {
-        addresses.put(key, value);
+    public List<Address> ip = new ArrayList<>();
+
+    public String getId() {
+        return id;
     }
 
-    /**
-     * @return the ip address List Map
-     */
-    @JsonValue
-    public Map<String, List<Address>> getAddresses() {
-        return addresses;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<Address> getIp() {
+        return ip;
+    }
+
+    public void setIp(List<Address> ip) {
+        this.ip = ip;
     }
 }

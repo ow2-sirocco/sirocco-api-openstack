@@ -22,12 +22,26 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
 import org.glassfish.jersey.process.internal.RequestScoped;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Addresses;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.NetworkAddresses;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.NetworkInterfacesToAddresses;
+import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
+import org.ow2.sirocco.cloudmanager.model.cimi.MachineNetworkInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder.itemNotFound;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -36,13 +50,51 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Respon
 @RequestScoped
 public class ServerAddresses extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.ServerAddresses {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerAddresses.class);
+
+    @Inject
+    private IMachineManager machineManager;
+
     @Override
     public Response list() {
-        return notImplemented("ServerAddresses", "list");
+        String server = getPathParamValue(Constants.Nova.SERVER_ID_PATH_PARAMETER);
+        try {
+            List<MachineNetworkInterface> list = machineManager.getMachineNetworkInterfaces(server).getItems();
+            return ok(new NetworkInterfacesToAddresses().apply(list));
+        } catch (InvalidRequestException ire) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Error while getting network interfaces for server " + server, ire);
+            }
+            return badRequest("server addresses", "list");
+        } catch (CloudProviderException e) {
+            return computeFault("Server Error", 500, e.getMessage());
+        }
     }
 
     @Override
     public Response list(String network) {
-        return notImplemented("ServerAddresses", "list.network");
+        String server = getPathParamValue(Constants.Nova.SERVER_ID_PATH_PARAMETER);
+        try {
+            List<MachineNetworkInterface> list = machineManager.getMachineNetworkInterfaces(server).getItems();
+            Addresses addresses = new NetworkInterfacesToAddresses().apply(list);
+
+            List<Address> networkAddresses = addresses.getAddresses().get(network);
+            if (networkAddresses != null && networkAddresses.size() > 0) {
+                NetworkAddresses result = new NetworkAddresses();
+                result.setId(network);
+                result.getIp().addAll(networkAddresses);
+                return ok(result);
+            } else {
+                return fault(itemNotFound("Not found", 404, "No address for network " + network));
+            }
+
+        } catch (InvalidRequestException ire) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Error while getting network interfaces for server " + server, ire);
+            }
+            return badRequest("server addresses", "list");
+        } catch (CloudProviderException e) {
+            return computeFault("Server Error", 500, e.getMessage());
+        }
     }
 }

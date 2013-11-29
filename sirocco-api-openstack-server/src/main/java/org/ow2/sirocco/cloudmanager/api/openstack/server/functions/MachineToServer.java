@@ -56,7 +56,14 @@ public class MachineToServer implements Function<Machine, Server> {
 
         if (details) {
             // TODO
-            server.metadata = new MapToMetadata().apply(machine.getProperties());
+            if (machine.getProperties() != null) {
+                server.metadata = new MapToMetadata().apply(machine.getProperties());
+            }
+
+            if (machine.getNetworkInterfaces() != null) {
+                server.addresses = new NetworkInterfacesToAddresses().apply(machine.getNetworkInterfaces());
+            }
+
         }
         return server;
     }

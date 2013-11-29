@@ -19,38 +19,24 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
 
-import org.codehaus.jackson.annotate.JsonAnySetter;
-import org.codehaus.jackson.annotate.JsonValue;
-import org.codehaus.jackson.map.annotate.JsonRootName;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Function;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
 
 /**
- * Addresses resource, composed of network
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@XmlRootElement(name = "addresses")
-@JsonRootName("addresses")
-public class Addresses {
+public class CimiAddressToAddress implements Function<org.ow2.sirocco.cloudmanager.model.cimi.Address, Address> {
 
-    private Map<String, List<Address>> addresses = new HashMap<String, List<Address>>();
-
-    @JsonAnySetter
-    public void add(String key, List<Address> value) {
-        addresses.put(key, value);
+    public CimiAddressToAddress() {
     }
 
-    /**
-     * @return the ip address List Map
-     */
-    @JsonValue
-    public Map<String, List<Address>> getAddresses() {
-        return addresses;
+    @Override
+    public Address apply(org.ow2.sirocco.cloudmanager.model.cimi.Address address) {
+        Address result = new Address();
+        result.setAddr(address.getIp());
+        result.setVersion(address.getProtocol());
+        return result;
     }
 }
