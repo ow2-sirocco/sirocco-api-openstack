@@ -24,7 +24,6 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 import com.google.common.collect.ImmutableMap;
 import org.glassfish.jersey.process.internal.RequestScoped;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.RequestHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MapToMetadata;
@@ -218,7 +217,6 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
      * @return
      */
     protected String getServerId() {
-       return RequestHelper.getPathParameter(getJaxRsRequestInfo(),
-               org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.SERVER_ID_PATH_PARAMETER);
+       return getPathParamValue(org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.SERVER_ID_PATH_PARAMETER);
     }
 }

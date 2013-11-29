@@ -29,8 +29,6 @@ import javax.ws.rs.core.*;
 
 /**
  * Code from org.ow2.sirocco.cimi.server.resource.RestResourceAbstract. To be moved in commons.
- * <p/>
- * TODO : Get the project name from the URL (cf tenant_id path parameter)
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
@@ -109,5 +107,32 @@ public class AbstractResource {
      */
     public Response ok(Object entity) {
         return Response.ok(entity).build();
+    }
+
+    /**
+     * Get the path param value
+     *
+     * @param paramName
+     * @return the param value or null if not found
+     */
+    public String getPathParamValue(String paramName) {
+        if (paramName == null) {
+            return null;
+        }
+        return RequestHelper.getPathParameter(getJaxRsRequestInfo(),paramName);
+    }
+
+    /**
+     * Get the query param value for the current request
+     *
+     * @param paramName
+     * @return the query value or null if not found
+     */
+    public String getQueryParamValue(String paramName) {
+        if (paramName == null) {
+            return null;
+        }
+
+        return RequestHelper.getQueryParamater(getJaxRsRequestInfo(), paramName);
     }
 }
