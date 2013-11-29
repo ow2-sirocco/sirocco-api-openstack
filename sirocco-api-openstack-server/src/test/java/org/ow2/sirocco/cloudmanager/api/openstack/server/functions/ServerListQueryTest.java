@@ -75,7 +75,7 @@ public class ServerListQueryTest {
         assertTrue(params.getFilters().size() > 0);
         assertEquals(1, params.getFilters().size());
 
-        assertEquals("name=azerty", params.getFilters().get(0));
+        assertEquals("name='azerty'", params.getFilters().get(0));
     }
 
     @Test
@@ -134,8 +134,8 @@ public class ServerListQueryTest {
         assertNotNull(params);
         assertEquals(2, params.getFilters().size());
 
-        assertTrue(params.getFilters().contains("name=azerty"));
-        assertTrue(params.getFilters().contains("image.id=123456789"));
+        assertTrue(params.getFilters().contains("name='azerty'"));
+        assertTrue(params.getFilters().contains("image.uuid='123456789'"));
 
     }
 

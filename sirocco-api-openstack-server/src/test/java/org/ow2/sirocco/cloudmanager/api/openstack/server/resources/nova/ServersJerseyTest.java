@@ -29,8 +29,6 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.filter.KeystoneFilter;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
@@ -50,7 +48,6 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -116,7 +113,7 @@ public class ServersJerseyTest extends JerseyTest {
         result.setItems(list);
 
         QueryParams query = EasyMock.createMock(QueryParams.class);
-        EasyMock.expect(this.service.getMachines((QueryParams) null)).andReturn(result).once();
+        EasyMock.expect(this.service.getMachines()).andReturn(result).once();
         EasyMock.replay(this.service);
 
         Response response = this.target().path("/v2/1234567/servers").request(MediaType.APPLICATION_JSON_TYPE).get();
