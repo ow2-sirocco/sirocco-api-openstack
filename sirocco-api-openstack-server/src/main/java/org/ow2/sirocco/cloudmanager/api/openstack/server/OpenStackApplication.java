@@ -23,8 +23,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server;
 
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.Flavors;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.Servers;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.*;
 
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -37,13 +36,21 @@ public class OpenStackApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<Class<?>>();
+        Set<Class<?>> classes = new HashSet<>();
 
         classes.add(JacksonConfigurator.class);
         classes.add(JacksonJsonProvider.class);
 
-        classes.add(Servers.class);
+        // NOVA
+        classes.add(Extensions.class);
         classes.add(Flavors.class);
+        classes.add(ImageMetadata.class);
+        classes.add(Images.class);
+        classes.add(ServerActions.class);
+        classes.add(ServerAddresses.class);
+        classes.add(ServerMetadata.class);
+        classes.add(Servers.class);
+        classes.add(Versions.class);
 
         return classes;
     }
