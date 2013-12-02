@@ -21,7 +21,6 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.resources;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerAction;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -29,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 
 /**
  * Performs actions for a specified server, including change administrator password, reboot, rebuild, resize, and create image from server.
@@ -40,13 +40,14 @@ import javax.ws.rs.core.Response;
 public interface ServerActions {
 
     /**
-     *
+     * Generic server action. The payload will define the action to invoke.
+     * Up to the implementation to read the input stream and dispatch to an action handler.
      *
      * @return HTTP 202 with JSON payload depending on the action type.
      */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    Response action(ServerAction action);
+    Response action(InputStream stream);
 
 }
