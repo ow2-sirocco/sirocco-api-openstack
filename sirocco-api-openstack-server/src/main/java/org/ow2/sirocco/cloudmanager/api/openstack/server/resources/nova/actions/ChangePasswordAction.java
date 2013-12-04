@@ -31,7 +31,7 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Respon
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class ChangePasswordAction implements Action {
+public class ChangePasswordAction extends AbstractAction implements Action {
 
     public static final String ACTION = "changePassword";
 
