@@ -52,4 +52,8 @@ public abstract class AbstractAction implements Action {
         LOG.debug("Server side error", e);
         return computeFault("Server Error", 500, e.getMessage());
     }
+
+    public Response notImplemented() {
+        return computeFault("Action not available", 500, getName() + " is not implemented");
+    }
 }
