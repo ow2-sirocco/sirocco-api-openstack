@@ -29,7 +29,7 @@ import org.glassfish.jersey.process.internal.RequestScoped;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.Action;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;

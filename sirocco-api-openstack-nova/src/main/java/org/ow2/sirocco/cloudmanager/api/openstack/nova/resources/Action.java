@@ -18,7 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions;
+package org.ow2.sirocco.cloudmanager.api.openstack.nova.resources;
 
 import org.codehaus.jackson.JsonNode;
 
@@ -26,7 +26,7 @@ import javax.ws.rs.core.Response;
 
 /**
  * Action interface.
- * Any action must implement it to be retrieved from {@link org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.ServerActions}
+ * Any action must implement it to be retrieved from {@link ServerActions}
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */

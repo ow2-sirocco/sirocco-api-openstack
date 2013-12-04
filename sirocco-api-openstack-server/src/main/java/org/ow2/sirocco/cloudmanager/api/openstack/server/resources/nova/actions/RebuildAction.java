@@ -22,6 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions;
 
 import org.codehaus.jackson.JsonNode;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 
 import javax.ws.rs.core.Response;
 

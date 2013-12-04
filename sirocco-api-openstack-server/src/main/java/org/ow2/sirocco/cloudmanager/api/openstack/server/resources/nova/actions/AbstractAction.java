@@ -23,6 +23,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
