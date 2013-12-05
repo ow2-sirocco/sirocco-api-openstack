@@ -22,8 +22,8 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
@@ -72,7 +72,7 @@ public abstract class AbstractAction implements Action {
     }
 
     public <T> T getBean(JsonNode node, Class<T> clazz) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(node, clazz);
+        JacksonConfigurator configurator = new JacksonConfigurator();
+        return configurator.getContext(clazz).readValue(node, clazz);
     }
 }
