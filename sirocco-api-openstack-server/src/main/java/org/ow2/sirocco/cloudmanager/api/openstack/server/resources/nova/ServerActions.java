@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.badRequest;
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
 
 /**
@@ -52,6 +53,10 @@ public class ServerActions extends AbstractResource implements org.ow2.sirocco.c
 
     @Override
     public Response action(InputStream stream) {
+        if (stream == null) {
+            return badRequest("ServerAction", "undefined : empty payload");
+        }
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = null; // src can be a File, URL, InputStream etc
         try {
@@ -75,7 +80,7 @@ public class ServerActions extends AbstractResource implements org.ow2.sirocco.c
      * @return
      */
     protected Action getAction(final String actionName) {
-        if (actionName == null) {
+        if (actionName == null || actions == null) {
             return null;
         }
         return Iterators.tryFind(actions.iterator(), new Predicate<Action>() {

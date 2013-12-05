@@ -63,6 +63,7 @@ public abstract class ServerAction {
 
     }
 
+
     @JsonRootName("reboot")
     public static final class Reboot extends ServerAction {
 

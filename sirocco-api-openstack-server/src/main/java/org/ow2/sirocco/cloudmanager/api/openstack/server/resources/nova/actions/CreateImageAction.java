@@ -59,7 +59,6 @@ public class CreateImageAction extends AbstractAction implements Action {
     @Override
     public Response invoke(String serverId, JsonNode payload) {
 
-
         try {
             ServerAction.CreateImage create = getBean(payload, ServerAction.CreateImage.class);
             Job job = manager.createMachineImage(new Function<ServerAction.CreateImage, MachineImage>() {
