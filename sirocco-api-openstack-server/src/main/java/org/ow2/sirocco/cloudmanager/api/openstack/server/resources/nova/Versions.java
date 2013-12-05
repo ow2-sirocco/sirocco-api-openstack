@@ -21,7 +21,6 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
-import org.glassfish.jersey.process.internal.RequestScoped;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
@@ -30,6 +29,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.Response;
 
 /**
