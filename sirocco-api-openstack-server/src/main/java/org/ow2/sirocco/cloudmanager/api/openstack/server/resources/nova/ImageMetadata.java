@@ -55,7 +55,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     @Override
     public Response get() {
         try {
-            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             if (meta != null) {
                 return ok(new MapToMetadata().apply(meta));
             } else {
@@ -77,7 +77,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     @Override
     public Response update(Metadata metadata) {
         try {
-            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
@@ -106,7 +106,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     @Override
     public Response set(Metadata metadata) {
         try {
-            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
@@ -133,7 +133,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     @Override
     public Response get(String key) {
         try {
-            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             if (meta != null && meta.get(key) != null) {
                 return ok(new MapToMetadata().apply(ImmutableMap.of(key, meta.get(key))));
             } else {
@@ -155,7 +155,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     public Response set(String key, String value) {
         // get all the values and replace the given one with the given value
         try {
-            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             if (meta.get(key) != null) {
                 meta.put(key, value);
                 manager.updateMachineImageAttributes(getImageId(), ImmutableMap.<String, Object>of("properties", meta));
@@ -183,7 +183,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     public Response delete(String key) {
         // get all the values and replace the given one with the given value
         try {
-            Map<String, String> meta = manager.getMachineImageById(getImageId()).getProperties();
+            Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             if (meta.get(key) != null) {
                 meta.remove(key);
                 manager.updateMachineImageAttributes(getImageId(), ImmutableMap.<String, Object>of("properties", meta));

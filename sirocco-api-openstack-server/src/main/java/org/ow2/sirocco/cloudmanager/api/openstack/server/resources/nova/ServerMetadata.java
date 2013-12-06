@@ -56,7 +56,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     @Override
     public Response get() {
         try {
-            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta != null) {
                 return ok(new MapToMetadata().apply(meta));
             } else {
@@ -81,7 +81,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
         // so we need to merge them from the client
 
         try {
-            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
@@ -110,7 +110,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     @Override
     public Response set(Metadata metadata) {
         try {
-            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
@@ -137,7 +137,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     @Override
     public Response get(@PathParam("key") String key) {
         try {
-            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta != null && meta.get(key) != null) {
                 return ok(new MapToMetadata().apply(ImmutableMap.of(key, meta.get(key))));
             } else {
@@ -161,7 +161,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
 
         // get all the values and replace the given one with the given value
         try {
-            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta.get(key) != null) {
                 meta.put(key, value);
                 machineManager.updateMachineAttributes(getServerId(), ImmutableMap.<String, Object>of("properties", meta));
@@ -189,7 +189,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     public Response delete(@PathParam("key") String key) {
         // get all the values and replace the given one with the given value
         try {
-            Map<String, String> meta = machineManager.getMachineById(getServerId()).getProperties();
+            Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta.get(key) != null) {
                 meta.remove(key);
                 machineManager.updateMachineAttributes(getServerId(), ImmutableMap.<String, Object>of("properties", meta));

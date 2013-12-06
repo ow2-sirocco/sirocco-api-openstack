@@ -31,15 +31,15 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
-import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
-import org.ow2.sirocco.cloudmanager.core.api.QueryResult;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;
@@ -94,15 +94,15 @@ public class MetadataJerseyTest extends JerseyTest {
         meta.put("bar", "baz");
 
         Machine machine = new Machine();
-        machine.setId(123);
+        machine.setUuid("123");
         machine.setName("foobar");
         machine.setState(Machine.State.STARTED);
         machine.setProperties(meta);
 
-        EasyMock.expect(this.service.getMachineById("" + machine.getId())).andReturn(machine).once();
+        EasyMock.expect(this.service.getMachineByUuid(machine.getUuid())).andReturn(machine).once();
         EasyMock.replay(this.service);
 
-        Response response = this.target().path("/v2/tenant_123/servers/" + machine.getId() + "/metadata").request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response response = this.target().path("/v2/tenant_123/servers/" + machine.getUuid() + "/metadata").request(MediaType.APPLICATION_JSON_TYPE).get();
         EasyMock.verify(this.service);
         LOGGER.info("Response status %s", response.getStatus());
         assertEquals(200, response.getStatus());

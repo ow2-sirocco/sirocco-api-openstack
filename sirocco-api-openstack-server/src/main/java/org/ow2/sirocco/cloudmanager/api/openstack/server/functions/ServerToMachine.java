@@ -35,7 +35,7 @@ public class ServerToMachine implements Function<Server, Machine> {
     @Override
     public Machine apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server server) {
         Machine machine = new Machine();
-        machine.setId(Integer.parseInt(server.id));
+        machine.setUuid(server.id);
         machine.setName(server.name);
         // TODO
         return machine;

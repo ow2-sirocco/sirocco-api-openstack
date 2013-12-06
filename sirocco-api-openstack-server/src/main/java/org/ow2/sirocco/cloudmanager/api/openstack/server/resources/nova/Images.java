@@ -102,7 +102,7 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
     @Override
     public Response details(String imageId) {
         try {
-            MachineImage image = machineImageManager.getMachineImageById(imageId);
+            MachineImage image = machineImageManager.getMachineImageByUuid(imageId);
             if (image == null) {
                 return resourceNotFoundException("image", imageId, new ResourceNotFoundException("Image not found"));
             } else {

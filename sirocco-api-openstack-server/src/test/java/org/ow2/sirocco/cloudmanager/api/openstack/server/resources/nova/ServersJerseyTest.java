@@ -134,7 +134,7 @@ public class ServersJerseyTest extends JerseyTest {
         item.setName("foobar");
         item.setState(Machine.State.STARTED);
 
-        EasyMock.expect(this.service.getMachineById("123")).andReturn(item).once();
+        EasyMock.expect(this.service.getMachineByUuid("123")).andReturn(item).once();
         EasyMock.replay(this.service);
 
         Response response = this.target().path("/v2/1234567/servers/123").request(MediaType.APPLICATION_JSON_TYPE).get();

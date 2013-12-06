@@ -94,14 +94,14 @@ public class ImageMetadataJerseyTest extends JerseyTest {
         meta.put("bar", "baz");
 
         MachineImage image = new MachineImage();
-        image.setId(123);
+        image.setUuid("123");
         image.setName("foobar");
         image.setProperties(meta);
 
-        EasyMock.expect(this.service.getMachineImageById("" + image.getId())).andReturn(image).anyTimes();
+        EasyMock.expect(this.service.getMachineImageByUuid(image.getUuid())).andReturn(image).anyTimes();
         EasyMock.replay(this.service);
 
-        Response response = this.target().path("/v2/tenant_123/images/" + image.getId() + "/metadata").request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response response = this.target().path("/v2/tenant_123/images/" + image.getUuid() + "/metadata").request(MediaType.APPLICATION_JSON_TYPE).get();
         EasyMock.verify(this.service);
         LOGGER.info("Response status %s", response.getStatus());
         assertEquals(200, response.getStatus());

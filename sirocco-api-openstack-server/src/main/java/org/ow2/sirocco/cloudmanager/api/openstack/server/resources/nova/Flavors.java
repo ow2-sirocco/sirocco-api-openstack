@@ -68,7 +68,7 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
     @Override
     public Response details(String id) {
         try {
-            MachineConfiguration config = machineManager.getMachineConfigurationById(id);
+            MachineConfiguration config = machineManager.getMachineConfigurationByUuid(id);
             if (config == null) {
                 // TODO : Check openstack API for empty response.
                 return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));

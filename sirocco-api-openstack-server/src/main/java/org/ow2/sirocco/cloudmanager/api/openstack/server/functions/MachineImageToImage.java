@@ -42,7 +42,7 @@ public class MachineImageToImage implements Function<MachineImage, Image> {
     @Override
     public Image apply(org.ow2.sirocco.cloudmanager.model.cimi.MachineImage input) {
         Image image = new Image();
-        image.setId("" + input.getId());
+        image.setId(input.getUuid());
         image.setName(input.getName());
 
         // TODO

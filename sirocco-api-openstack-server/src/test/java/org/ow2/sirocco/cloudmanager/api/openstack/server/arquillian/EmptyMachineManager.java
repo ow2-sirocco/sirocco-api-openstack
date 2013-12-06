@@ -38,6 +38,7 @@ import java.util.Map;
  */
 public class EmptyMachineManager implements IMachineManager {
 
+
     @Override
     public Job startMachine(String s, Map<String, String> stringStringMap) throws ResourceNotFoundException, CloudProviderException {
         return null;
@@ -104,7 +105,12 @@ public class EmptyMachineManager implements IMachineManager {
     }
 
     @Override
-    public Machine getMachineById(String s) throws ResourceNotFoundException, CloudProviderException {
+    public Machine getMachineById(int i) throws ResourceNotFoundException, CloudProviderException {
+        return null;
+    }
+
+    @Override
+    public Machine getMachineByUuid(String s) throws ResourceNotFoundException, CloudProviderException {
         return null;
     }
 
@@ -119,11 +125,11 @@ public class EmptyMachineManager implements IMachineManager {
     }
 
     @Override
-    public void updateMachineState(String s, Machine.State state) throws CloudProviderException {
+    public void updateMachineState(int i, Machine.State state) throws CloudProviderException {
     }
 
     @Override
-    public void updateMachineVolumeState(String s, MachineVolume.State state) throws CloudProviderException {
+    public void updateMachineVolumeState(int i, MachineVolume.State state) throws CloudProviderException {
     }
 
     @Override
@@ -137,11 +143,11 @@ public class EmptyMachineManager implements IMachineManager {
     }
 
     @Override
-    public void syncMachine(String s, Machine machine, String s2) throws CloudProviderException {
+    public void syncMachine(int i, Machine machine, int i2) throws CloudProviderException {
     }
 
     @Override
-    public void syncVolumeAttachment(String s, MachineVolume machineVolume, String s2) {
+    public void syncVolumeAttachment(int i, MachineVolume machineVolume, int i2) {
     }
 
     @Override
@@ -155,7 +161,12 @@ public class EmptyMachineManager implements IMachineManager {
     }
 
     @Override
-    public MachineConfiguration getMachineConfigurationById(String s) throws ResourceNotFoundException, CloudProviderException {
+    public MachineConfiguration getMachineConfigurationById(int i) throws ResourceNotFoundException, CloudProviderException {
+        return null;
+    }
+
+    @Override
+    public MachineConfiguration getMachineConfigurationByUuid(String s) throws ResourceNotFoundException, CloudProviderException {
         return null;
     }
 
@@ -192,7 +203,12 @@ public class EmptyMachineManager implements IMachineManager {
     }
 
     @Override
-    public MachineTemplate getMachineTemplateById(String s) throws ResourceNotFoundException, CloudProviderException {
+    public MachineTemplate getMachineTemplateById(int i) throws ResourceNotFoundException, CloudProviderException {
+        return null;
+    }
+
+    @Override
+    public MachineTemplate getMachineTemplateByUuid(String s) throws ResourceNotFoundException, CloudProviderException {
         return null;
     }
 

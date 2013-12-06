@@ -143,7 +143,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
     @Override
     public Response details(String id) {
         try {
-            Machine machine = machineManager.getMachineById(id);
+            Machine machine = machineManager.getMachineByUuid(id);
             if (machine == null) {
                 return resourceNotFoundException("server", id, new ResourceNotFoundException("Server not found"));
             } else {
@@ -171,7 +171,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
                 //Job job = machineManager.updateMachine(new ServerForUpdateToMachineUpdate().apply(update));
 
                 machineManager.updateMachineAttributes(id, ImmutableMap.<String, Object>of("name", update.getName()));
-                Server s = new MachineToServer(true).apply(machineManager.getMachineById(id));
+                Server s = new MachineToServer(true).apply(machineManager.getMachineByUuid(id));
                 s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
                 return ok(s);
             } else {

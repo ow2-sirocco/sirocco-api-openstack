@@ -51,7 +51,7 @@ public class MachineToServer implements Function<Machine, Server> {
     @Override
     public Server apply(org.ow2.sirocco.cloudmanager.model.cimi.Machine machine) {
         Server server = new Server();
-        server.id = "" + machine.getId();
+        server.id = machine.getUuid();
         server.name = machine.getName();
 
         if (details) {
