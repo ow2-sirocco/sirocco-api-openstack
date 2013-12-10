@@ -1,0 +1,31 @@
+{
+    "access" : {
+        "token" : {
+            "id" : "ab48a9efdfedb23ty3494",
+            "issued_at" : "2013-12-10T09:25:24.759Z",
+            "expires" : "2013-12-11T09:25:24.759Z",
+            "tenant" : {
+                "name" : "sirocco-tenant",
+                "enabled" : true
+            }
+        },
+        "serviceCatalog" : [ {
+            "type" : "compute",
+            "name" : "Sirocco Compute",
+            "endpoints" : [ {
+                "region" : "region",
+                "publicURL" : "http://locahost:30303/internal",
+                "internalURL" : "http://locahost:30303/internal",
+                "adminURL" : "http://locahost:30303/admin"
+            } ]
+        } ],
+        "user" : {
+            "name" : "Sirocco Test",
+            "username" : "sirocco",
+            "roles" : [ {
+                "id" : "123",
+                "name" : "sirocco-test"
+            } ]
+        }
+    }
+}
