@@ -22,11 +22,10 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server;
 
 import com.google.common.collect.Lists;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.api.KeystoneServer;
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Tenant;
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Token;
@@ -36,11 +35,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.RuntimeDelegate;
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
 
@@ -53,12 +48,9 @@ import static junit.framework.Assert.assertEquals;
 public class ApplicationTest {
 
     @Test
-    public void testCreateContainer() throws IOException, InterruptedException {
+    public void testPostToken() throws IOException, InterruptedException {
 
-        URI uri = UriBuilder.fromUri("http://localhost/").port(5000).build();
-        HttpServer server = HttpServer.create(new InetSocketAddress(uri.getPort()), 0);
-        HttpHandler handler = RuntimeDelegate.getInstance().createEndpoint(new Application(getAccess()), HttpHandler.class);
-        server.createContext(uri.getPath(), handler);
+        KeystoneServer server = new KeystoneServerImpl(5000, getAccess());
         server.start();
 
         Client client = ClientBuilder.newClient();
@@ -77,7 +69,7 @@ public class ApplicationTest {
         System.out.println(response.readEntity(String.class));
         assertEquals(200, response.getStatus());
 
-        server.stop(0);
+        server.stop();
     }
 
     protected Access getAccess() {
