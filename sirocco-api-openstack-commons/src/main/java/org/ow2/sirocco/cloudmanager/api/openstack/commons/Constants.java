@@ -58,6 +58,8 @@ public final class Constants {
 
         public static final String SERVER_ADDRESSES_PATH = SERVERS_PATH + "/{" + SERVER_ID_PATH_PARAMETER + "}/ips";
 
+        public static final String EXTENSIONS_PATH = BASE_PATH + "/{" + TENANT_ID_PATH_PARAMETER + "}/extensions";
+
         /**
          * Server status
          * cf https://github.com/openstack/api-site/blob/master/api-ref/src/wadls/compute-api/src/xsd/server.xsd

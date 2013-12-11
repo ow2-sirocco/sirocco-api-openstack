@@ -38,7 +38,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path(Constants.Nova.BASE_PATH)
+@Path(Constants.Nova.EXTENSIONS_PATH)
 public interface Extensions {
 
     /**
