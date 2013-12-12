@@ -18,20 +18,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
+
 package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
-import javax.interceptor.InterceptorBinding;
-import java.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+import java.io.Serializable;
 
 /**
- * Interceptor annnotation. To be used in REST resources
+ * Simple logging interceptor
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Inherited
-@InterceptorBinding
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ResourceInterceptorBinding {
+@Interceptor
+@ResourceInterceptorBinding
+public class LogInterceptor implements Serializable {
 
+    private static Logger LOG = LoggerFactory.getLogger(LogInterceptor.class);
+
+    @AroundInvoke
+    public Object log(final InvocationContext ctx) throws Exception {
+        LOG.debug("Calling : " + ctx.getMethod());
+        return ctx.proceed();
+    }
 }
