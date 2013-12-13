@@ -27,17 +27,18 @@
       http://java.sun.com/xml/ns/javaee
       http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-    <servlet>
-        <servlet-name>Jersey Web Application</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>org.ow2.sirocco.cloudmanager.api.openstack.server.OpenStackApplication</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Jersey Web Application</servlet-name>
-        <url-pattern>/openstack/*</url-pattern>
-    </servlet-mapping>
+    <!--
+    <persistence-context-ref>
+        <persistence-context-ref-name>org.ow2.sirocco.cloudmanager.api.openstack.apitest.DbManagerBean/em</persistence-context-ref-name>
+        <persistence-unit-name>siroccoPersistenceUnit</persistence-unit-name>
+        <mapped-name>siroccoPersistenceUnit</mapped-name>
+    </persistence-context-ref>
+
+-->
+    <persistence-context-ref>
+        <persistence-context-ref-name>org.ow2.sirocco.cloudmanager.core.impl.DatabaseManager/em</persistence-context-ref-name>
+        <persistence-unit-name>siroccoPersistenceUnit</persistence-unit-name>
+        <mapped-name>siroccoPersistenceUnit</mapped-name>
+    </persistence-context-ref>
+
 </web-app>

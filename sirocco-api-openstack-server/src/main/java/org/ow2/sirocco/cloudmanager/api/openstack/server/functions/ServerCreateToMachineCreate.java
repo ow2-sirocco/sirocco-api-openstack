@@ -39,7 +39,6 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
         MachineCreate machine = new MachineCreate();
         machine.setName(server.getName());
 
-
         MachineTemplate template = new MachineTemplate();
 
 //        template.setCredential(credentials);

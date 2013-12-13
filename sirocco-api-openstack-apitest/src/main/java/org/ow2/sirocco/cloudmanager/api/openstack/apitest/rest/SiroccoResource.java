@@ -18,22 +18,42 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-package org.ow2.sirocco.cloudmanager.api.openstack.server;
 
-import org.glassfish.jersey.message.MessageProperties;
-import org.glassfish.jersey.server.ResourceConfig;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.rest;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 /**
- * The REST JerseyApplication
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class JerseyApplication extends ResourceConfig {
+@RequestScoped
+@Path("/sirocco")
+@ResourceInterceptorBinding
+public class SiroccoResource {
 
-    public JerseyApplication() {
-        // exposes packages. Will introspect to instanciate resources
-        this.packages("org.ow2.sirocco.cloudmanager.api.openstack.server.resources.jclouds;org.ow2.sirocco.cloudmanager.api.openstack.commons.provider");
-        this.property(MessageProperties.XML_FORMAT_OUTPUT, true);
+    @Inject
+    private TestBean bean;
+
+    /**
+     *
+     * @return
+     */
+    @GET
+    @Path("/hello")
+    public Response hello() {
+
+        if (bean == null) {
+            return Response.serverError().entity("Bean has not been injected").build();
+        }
+        System.out.println("Hello called " + bean.getCalled());
+        return Response.ok("Hello " + bean.getCalled()).build();
     }
+
+
+
 
 }

@@ -19,10 +19,8 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.filter;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.interceptors;
 
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.RequestHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.core.api.IdentityContext;
 import org.slf4j.Logger;
@@ -35,38 +33,28 @@ import javax.interceptor.InvocationContext;
 import java.io.Serializable;
 
 /**
- * Interceptor to fill tenant and user information from incoming HTTP request
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @Interceptor
 @ResourceInterceptorBinding
-public class IdentityInterceptor implements Serializable {
-
-    private static Logger LOG = LoggerFactory.getLogger(IdentityInterceptor.class);
+public class TestInterceptor implements Serializable {
 
     @Inject
-    IdentityContext identityContext;
+    protected IdentityContext context;
+
+    private static Logger LOG = LoggerFactory.getLogger(TestInterceptor.class);
 
     @AroundInvoke
-    public Object retrieveUserNameAndTenantId(final InvocationContext ctx) throws Exception {
-        LOG.debug("Trying to get username and tenant from context");
-        System.out.println("CALLED!!!");
-        if (ctx.getTarget() instanceof AbstractResource) {
-            AbstractResource resourceBase = (AbstractResource) ctx.getTarget();
+    public Object log(final InvocationContext ctx) throws Exception {
+        LOG.debug(">>> Calling : " + ctx.getMethod());
 
-            String tenant = RequestHelper.getTenant(resourceBase.getJaxRsRequestInfo());
-            if (tenant != null) {
-                this.identityContext.setTenantId(tenant);
-            }
-            //values = headers.getRequestHeader("Authorization");
-            //if (values != null && !values.isEmpty()) {
-                //tring userPassword[] = RequestHelper.decode(values.get(0));
-                //this.identityContext.setUserName(userPassword[0]);
-            //}
+        if (context != null) {
+            context.setTenantName("trial");
+            context.setUserName("guest");
         } else {
-
+            LOG.warn("Context is null, tests will fail...");
         }
+
         return ctx.proceed();
     }
 }

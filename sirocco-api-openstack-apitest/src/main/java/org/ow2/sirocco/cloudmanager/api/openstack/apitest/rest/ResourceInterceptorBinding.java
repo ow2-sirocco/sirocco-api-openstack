@@ -18,22 +18,17 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA
  */
-package org.ow2.sirocco.cloudmanager.api.openstack.server;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.rest;
 
-import org.glassfish.jersey.message.MessageProperties;
-import org.glassfish.jersey.server.ResourceConfig;
+import javax.interceptor.InterceptorBinding;
+import java.lang.annotation.*;
 
 /**
- * The REST JerseyApplication
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class JerseyApplication extends ResourceConfig {
-
-    public JerseyApplication() {
-        // exposes packages. Will introspect to instanciate resources
-        this.packages("org.ow2.sirocco.cloudmanager.api.openstack.server.resources.jclouds;org.ow2.sirocco.cloudmanager.api.openstack.commons.provider");
-        this.property(MessageProperties.XML_FORMAT_OUTPUT, true);
-    }
-
+@Inherited
+@InterceptorBinding
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ResourceInterceptorBinding {
 }

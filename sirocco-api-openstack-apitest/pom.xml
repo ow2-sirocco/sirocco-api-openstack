@@ -1,3 +1,24 @@
+<!--
+  SIROCCO
+  Copyright (C) 2013 France Telecom
+  Contact: sirocco@ow2.org
+
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or any later version.
+
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+  USA
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
@@ -9,24 +30,36 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sirocco-api-openstack-apitest</artifactId>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>sirocco-api-openstack-apitest</name>
 
-    <build>
-        <finalName>sirocco-api-openstack-apitest</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Downgrade arquillian version for a dependency injection bug introduced in 1.0.4
+        tested with 1.1.1 Final and 1.1.2 final, still have the same issue
+        cf http://stackoverflow.com/questions/17806480/arquillian-fails-to-inject-dependencies-after-the-first-test-class
+        cf https://community.jboss.org/message/830718
+        -->
+        <!-- <org.jboss.arquillian.version>1.1.1.Final</org.jboss.arquillian.version>   -->
+        <org.jboss.arquillian.version>1.0.3.Final</org.jboss.arquillian.version>
+        <!-- WORKS with 1.1.1 <version.shrinkwrap.resolvers>2.0.0</version.shrinkwrap.resolvers> -->
+        <version.shrinkwrap.resolvers>2.0.0-alpha-3</version.shrinkwrap.resolvers>
+        <jclouds.version>1.6.3</jclouds.version>
+        <jersey.version>2.4.1</jersey.version>
+
+        <!-- Tests -->
+        <!-- keystone endpoint -->
+        <test.openstack-nova.endpoint>http://localhost:5000/v2.0/</test.openstack-nova.endpoint>
+        <!-- keystone version -->
+        <test.openstack-nova.api-version>1.1</test.openstack-nova.api-version>
+        <test.openstack-nova.build-version />
+        <test.openstack-nova.identity>sirocco</test.openstack-nova.identity>
+        <test.openstack-nova.credential>sirocco</test.openstack-nova.credential>
+        <test.openstack-nova.template />
+        <test.jclouds.openstack-nova.auto-allocate-floating-ips>false</test.jclouds.openstack-nova.auto-allocate-floating-ips>
+        <test.jclouds.keystone.credential-type>passwordCredentials</test.jclouds.keystone.credential-type>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -37,30 +70,304 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>${version.shrinkwrap.resolvers}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${org.jboss.arquillian.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-servlet-core</artifactId>
-            <!-- use the following artifactId if you don't need servlet 2.x compatibility -->
-            <!-- artifactId>jersey-container-servlet</artifactId -->
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sirocco-api-openstack-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sirocco-api-openstack-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sirocco-api-openstack-nova</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sirocco-api-openstack-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
+
+        <!-- OPENSTACK API -->
+
+        <!--
+        <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-api-openstack-server</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        -->
+
+        <!-- SIROCCO -->
+
+        <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-cloudmanager-core-api</artifactId>
+            <version>${sirocco.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-cloudmanager-core-manager</artifactId>
+            <version>${sirocco.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-cloudmanager-connector-mock</artifactId>
+            <version>${sirocco.version}</version>
+        </dependency>
+
+        <!-- ARQUILLIAN -->
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.protocol</groupId>
+            <artifactId>arquillian-protocol-servlet</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+
+        <!-- JCLOUDS -->
+
+        <dependency>
+            <groupId>org.apache.jclouds</groupId>
+            <artifactId>jclouds-compute</artifactId>
+            <version>${jclouds.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jclouds.api</groupId>
+            <artifactId>openstack-nova</artifactId>
+            <version>${jclouds.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jclouds.driver</groupId>
+            <artifactId>jclouds-slf4j</artifactId>
+            <version>${jclouds.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Misc -->
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.1</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.11</version>
+            <scope>test</scope>
         </dependency>
-        <!-- uncomment this to get JSON support
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-moxy</artifactId>
-        </dependency>
-        -->
     </dependencies>
-    <properties>
-        <jersey.version>2.4.1</jersey.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12</version>
+                <configuration>
+                    <argLine>-Xms800m -Xmx800m -XX:MaxPermSize=500m</argLine>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/entities</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>glassfish-embedded-arquillian</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.glassfish.main.extras</groupId>
+                    <artifactId>glassfish-embedded-all</artifactId>
+                    <version>4.0</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jersey.core</groupId>
+                    <artifactId>jersey-client</artifactId>
+                    <version>2.4</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss.arquillian.container</groupId>
+                    <artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+                    <version>1.0.0.CR4</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                    <version>1.3.174</version>
+                    <scope>test</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.glassfish.jersey.containers.glassfish</groupId>
+                    <artifactId>jersey-gf-cdi</artifactId>
+                    <version>${jersey.version}</version>
+                </dependency>
+            </dependencies>
+            <!--
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>integration</id>
+                                <phase>integration-test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <groups>org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.LiveTest</groups>
+                                    <systemPropertyVariables>
+                                        <test.openstack-jclouds.endpoint>${test.openstack-jclouds.endpoint}</test.openstack-jclouds.endpoint>
+                                        <test.openstack-jclouds.api-version>${test.openstack-jclouds.api-version}</test.openstack-jclouds.api-version>
+                                        <test.openstack-jclouds.build-version>${test.openstack-jclouds.build-version}</test.openstack-jclouds.build-version>
+                                        <test.openstack-jclouds.identity>${test.openstack-jclouds.identity}</test.openstack-jclouds.identity>
+                                        <test.openstack-jclouds.credential>${test.openstack-jclouds.credential}</test.openstack-jclouds.credential>
+                                        <test.openstack-jclouds.template>${test.openstack-jclouds.template}</test.openstack-jclouds.template>
+                                        <test.jclouds.openstack-jclouds.auto-allocate-floating-ips>${test.jclouds.openstack-jclouds.auto-allocate-floating-ips}</test.jclouds.openstack-jclouds.auto-allocate-floating-ips>
+                                        <test.jclouds.keystone.credential-type>${test.jclouds.keystone.credential-type}</test.jclouds.keystone.credential-type>
+                                    </systemPropertyVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            -->
+        </profile>
+    </profiles>
+
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus-snapshots</id>
+            <name>Codehaus Snapshots</name>
+            <url>http://nexus.codehaus.org/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>codehaus-snapshots</id>
+            <name>Codehaus Snapshots</name>
+            <url>http://nexus.codehaus.org/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+
 </project>
