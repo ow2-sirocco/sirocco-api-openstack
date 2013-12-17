@@ -45,7 +45,17 @@ public class Access implements Serializable {
 			
 			private String adminURL;
 
-			/**
+            private String tenantName;
+
+            public String getTenantName() {
+                return tenantName;
+            }
+
+            public void setTenantName(String tenantName) {
+                this.tenantName = tenantName;
+            }
+
+            /**
 			 * @return the region
 			 */
 			public String getRegion() {

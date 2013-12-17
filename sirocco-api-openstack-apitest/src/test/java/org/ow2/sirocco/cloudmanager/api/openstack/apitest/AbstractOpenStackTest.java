@@ -73,7 +73,7 @@ public class AbstractOpenStackTest {
     protected IMachineImageManager machineImageManager;
 
     protected String identity;
-    protected String credential;
+    protected String password;
     protected String endpoint;
     protected String apiVersion;
     protected String provider;
@@ -97,7 +97,7 @@ public class AbstractOpenStackTest {
         overrides.setProperty(PROPERTY_TRUST_ALL_CERTS, "true");
         overrides.setProperty(PROPERTY_RELAX_HOSTNAME, "true");
         identity = setIfTestSystemPropertyPresent(overrides,  provider + ".identity", getDefaultIdentity());
-        credential = setIfTestSystemPropertyPresent(overrides,  provider + ".credential", getDefaultCredentials());
+        password = setIfTestSystemPropertyPresent(overrides,  provider + ".password", getDefaultPassword());
         endpoint = setIfTestSystemPropertyPresent(overrides,  provider + ".endpoint", getDefaultEndpoint());
         apiVersion = setIfTestSystemPropertyPresent(overrides,  provider + ".api-version", deDefaultAPIVersion());
         return overrides;
@@ -119,16 +119,16 @@ public class AbstractOpenStackTest {
         return "http://localhost:5000/v2.0/";
     }
 
-    protected String getDefaultCredentials() {
-        return "sirocco:sirocco";
+    protected String getDefaultIdentity() {
+        return tenantName + ":sirocco";
     }
 
-    protected String getDefaultIdentity() {
+    public String getDefaultPassword() {
         return "sirocco";
     }
 
     protected String getZone() {
-        return "sirocco-zone-test";
+        return "France";
     }
 
     /**

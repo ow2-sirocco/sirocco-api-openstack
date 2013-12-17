@@ -188,6 +188,15 @@ public class Archives {
     public static WebArchive openstackAPIWithKeystoneMock(String name) {
         WebArchive base = baseOpenStack(name);
 
+        File[] libs = Maven.resolver()
+                //.offline()
+                .loadPomFromFile("pom.xml")
+                .resolve("ch.qos.logback:logback-classic").withTransitivity()
+                .as(File.class);
+        base.addAsLibraries(libs);
+
+        base.addAsResource("logback.xml");
+
         base.addPackages(true, "org.ow2.sirocco.cloudmanager.api.openstack.keystone.server");
         base.addClass(KeystoneApplication.class);
 

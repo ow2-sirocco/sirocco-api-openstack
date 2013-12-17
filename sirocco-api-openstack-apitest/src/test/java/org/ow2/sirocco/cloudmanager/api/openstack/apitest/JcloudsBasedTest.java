@@ -67,7 +67,7 @@ public abstract class JcloudsBasedTest extends AbstractOpenStackTest {
         LOG.info("Create Compute context");
         ComputeServiceContext context = ContextBuilder.newBuilder(provider)
                 .endpoint(BASE_URL)
-                .credentials(identity, credential)
+                .credentials(identity, password)
                 .modules(modules)
                 .buildView(ComputeServiceContext.class);
 

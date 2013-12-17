@@ -70,7 +70,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
         return getServers(false);
     }
 
-    protected Response getServers(boolean details) {
+    protected Response getServers(final boolean details) {
         try {
             org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers();
             QueryParams query = new ServerListQuery().apply(getJaxRsRequestInfo());
@@ -91,6 +91,10 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
                 servers = Lists.transform(servers, new Function<Server, Server>() {
                     @Override
                     public Server apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server input) {
+                        // Add details if requested
+                        if (details) {
+                            input.tenantId = getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER);
+                        }
                         input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
                         input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.id));
                         return input;
@@ -154,6 +158,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
                 return resourceNotFoundException("server", id, new ResourceNotFoundException("Server not found"));
             } else {
                 Server s = new MachineToServer(true).apply(machine);
+                s.tenantId = getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER);
                 s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
                 s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, null));
                 return ok(s);

@@ -86,7 +86,9 @@ public class Tokens implements org.ow2.sirocco.cloudmanager.api.openstack.keysto
 
         String tenant = usernamePassword.getTenantName();
         if (tenant != null) {
-            token.setTenant(new Tenant(tenant));
+            Tenant t = new Tenant(tenant, "Sirocco test tenant", Boolean.TRUE);
+            t.setId("00998873");
+            token.setTenant(t);
         } else {
 
         }
@@ -105,10 +107,14 @@ public class Tokens implements org.ow2.sirocco.cloudmanager.api.openstack.keysto
         s.setType("compute");
         List<Access.Service.Endpoint> endpoints = new ArrayList<>();
         Access.Service.Endpoint e = new Access.Service.Endpoint();
-        e.setAdminURL("http://admin");
+        e.setAdminURL("http://localhost:8181/sirocco/openstack/v2/");
         e.setInternalURL("http://internal");
-        e.setPublicURL("http://public");
+        // FIXME : It is not clear if we have to send back the public URL with the tenant or not
+        // FIXME : Jclouds seems to require it...
+        e.setPublicURL("http://localhost:8181/sirocco/openstack/v2/" + tenant);
         e.setRegion("France");
+        e.setTenantName(tenant);
+
         endpoints.add(e);
         s.setEndpoints(endpoints);
         services.add(s);
