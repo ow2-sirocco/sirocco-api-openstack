@@ -43,7 +43,7 @@ public class Flavor extends Identifiable {
 
     public List<Link> links = new ArrayList<Link>();
 
-    public String vcpus;
+    public Integer vcpus;
 
     public Integer ram;
 
