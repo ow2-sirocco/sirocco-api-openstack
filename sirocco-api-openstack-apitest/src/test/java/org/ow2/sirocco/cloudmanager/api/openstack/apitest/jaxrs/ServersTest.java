@@ -21,6 +21,8 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jaxrs;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -60,12 +62,12 @@ public class ServersTest extends JAXRSBasedTest {
 
     static String CREATE_SERVER_PATTERN = "{\n" +
             "    \"server\": {\n" +
-            "        \"flavorRef\": \"$FLAVOR$\",\n" +
-            "        \"imageRef\": \"$IMAGE$\",\n" +
+            "        \"flavorRef\": \"FLAVOR\",\n" +
+            "        \"imageRef\": \"IMAGE\",\n" +
             "        \"metadata\": {\n" +
             "            \"foo\": \"bar\"\n" +
             "        },\n" +
-            "        \"name\": \"$NAME$\",\n" +
+            "        \"name\": \"NAME\",\n" +
             "        \"personality\": [\n" +
             "            {\n" +
             "                \"contents\": \"Sirocco!\",\n" +
@@ -175,7 +177,7 @@ public class ServersTest extends JAXRSBasedTest {
 
         List<Machine> before = this.machineManager.getMachines().getItems();
 
-        Response response = target(BASE_URL + tenantName + "/servers").request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(CREATE_SERVER_PATTERN.replaceAll("$FLAVOR$", config.getUuid()).replaceAll("$IMAGE$", img.getUuid()).replaceAll("$NAME$", name)));
+        Response response = target(BASE_URL + tenantName + "/servers").request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(CREATE_SERVER_PATTERN.replaceAll("FLAVOR", config.getUuid()).replaceAll("IMAGE", img.getUuid()).replaceAll("NAME", name)));
         assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
         System.out.println(response.readEntity(String.class));
 
@@ -200,17 +202,13 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testDeleteServer() throws CloudProviderException {
-        LOG.info("---");
         Machine machine = createMachine("foobar", "baz", 1, 512, null);
         LOG.info("Machine ID " + machine.getUuid());
 
         Response response = target(BASE_URL + tenantName + "/servers/" + machine.getUuid()).request().delete();
         assertEquals("Bad unknown delete return code", Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 
-        // wait for the delete job to complete...
-        // TODO
-
-        assertEquals(0, machineManager.getMachines().getItems().size());
+        // machine should be in DELETING state
+        assertTrue(machineManager.getMachineByUuid(machine.getUuid()) == null || machineManager.getMachineByUuid(machine.getUuid()).getState().equals(Machine.State.DELETING));
     }
-
 }
