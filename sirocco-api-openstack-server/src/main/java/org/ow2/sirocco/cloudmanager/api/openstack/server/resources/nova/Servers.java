@@ -92,6 +92,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
                     @Override
                     public Server apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server input) {
                         input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
+                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.id));
                         return input;
                     }
                 });
@@ -116,14 +117,19 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
         // Get the server parameters from the input request
 
         try {
-            Job job = machineManager.createMachine(new ServerCreateToMachineCreate().apply(server));
-
-            Machine machine = new Machine();
-            machine.setId(job.getId());
-            machine.setName(job.getName());
-
+            Job job = machineManager.createMachine(new ServerCreateToMachineCreate(machineManager).apply(server));
+            Machine machine = (Machine) job.getTargetResource();
             Server result = new MachineToServer(false).apply(machine);
-            return Response.accepted(result).header("Location", result.links.get(0).href).build();
+
+            Server out = new Function<Server, Server>() {
+                @Override
+                public Server apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server input) {
+                    input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
+                    input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.id));
+                    return input;
+                }
+            }.apply(result);
+            return Response.accepted(out).header("Location", out.links.get(0).href).build();
         } catch (CloudProviderException e) {
             final String error = "Error while getting servers";
             if (LOGGER.isDebugEnabled()) {
@@ -149,6 +155,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             } else {
                 Server s = new MachineToServer(true).apply(machine);
                 s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+                s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, null));
                 return ok(s);
             }
         } catch (ResourceNotFoundException rnf) {

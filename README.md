@@ -24,4 +24,9 @@ The module is Java and Maven based, you can compile it with the default Apache M
 
 Tests are based on Arquillian and are not enabled by default. To run the tests:
 
-    mvn -Parquillian
+    mvn
+
+### TODOs
+
+- ServerCreate works only with flavor and image UUID. Need to handle URIs.
+- ServerCreate : Add adminPass on response
