@@ -22,6 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds;
 
 import com.google.common.base.Predicate;
+import com.google.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,15 +30,25 @@ import org.jclouds.collect.PagedIterable;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
 import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
 import org.jclouds.openstack.v2_0.domain.Resource;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JcloudsBasedTest;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.UUID;
 
 import static junit.framework.Assert.assertFalse;
@@ -53,14 +64,37 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Arquillian.class)
 public class ServersTest extends JcloudsBasedTest {
 
+    private static Logger LOG = LoggerFactory.getLogger(ServersTest.class);
+
+    @Inject
+    protected Access access;
+
     @Deployment
     public static WebArchive deploy() {
-        return Archives.openstackAPIAndMockProvider("sirocco");
+        return Archives.openstackAPIWithKeystoneMock("sirocco");
+    }
+
+    @Before
+    public void setupKeystone() {
+        LOG.info("SETTING UP KEYSTONE ON ServersTest");
     }
 
     @Test
-    public void testCreateSingleServer() throws CloudProviderException {
-        // create the server using the Openstack API
+    public void testCreateSingleServer() throws CloudProviderException, IOException {
+        System.out.println("AZERFD");
+
+        endpoint = BASE_URL;
+
+        Client client = javax.ws.rs.client.ClientBuilder.newClient();
+        WebTarget target =  client.target(BASE_URL);
+        Response response = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json("{}"));
+        System.out.println(response.getStatus());
+        target =  client.target(BASE_URL + "/tokens");
+        response = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json("{}"));
+        System.out.println(response.getStatus());
+
+
+        System.out.println("GOOOOO");
 
         String name = UUID.randomUUID().toString();
         MachineImage image = createImage("image-" + name);
@@ -87,6 +121,7 @@ public class ServersTest extends JcloudsBasedTest {
     }
 
     @Test
+    @Ignore
     public void testSingleElement() throws CloudProviderException {
         Machine machine = createMachine("single", "imagesingle", 1, 512, null);
         assertNotNull(machine);
@@ -98,6 +133,7 @@ public class ServersTest extends JcloudsBasedTest {
     }
 
     @Test
+    @Ignore
     public void testList() throws CloudProviderException {
         int size = 1;
         // TODO : Create N servers
@@ -114,6 +150,7 @@ public class ServersTest extends JcloudsBasedTest {
     }
 
     @Test
+    @Ignore
     public void testListDetails() throws CloudProviderException {
         int size = 1;
         // TODO : Create N servers

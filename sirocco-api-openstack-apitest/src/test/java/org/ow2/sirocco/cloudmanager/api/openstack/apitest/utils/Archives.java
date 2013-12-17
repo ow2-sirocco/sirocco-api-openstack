@@ -27,6 +27,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.DbManagerBean;
+import org.ow2.sirocco.cloudmanager.api.openstack.apitest.apps.KeystoneApplication;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.interceptors.TestInterceptor;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.OpenStackApplication;
@@ -99,6 +100,14 @@ public class Archives {
 
     public static WebArchive baseOpenStack(String name) {
         WebArchive base = getSiroccoBaseWAR(name);
+
+        File[] libs = Maven.resolver()
+                //.offline()
+                .loadPomFromFile("pom.xml")
+                .resolve("org.codehaus.jackson:jackson-jaxrs").withTransitivity()
+                .as(File.class);
+        System.out.println("LIBS " + libs);
+        base.addAsLibraries(libs);
 
         /*
         base.addAsLibraries(Maven.resolver()
@@ -176,10 +185,14 @@ public class Archives {
      * @param name
      * @return
      */
-    public static WebArchive fullOpenstack(String name) {
+    public static WebArchive openstackAPIWithKeystoneMock(String name) {
         WebArchive base = baseOpenStack(name);
-        base.setWebXML("rest-web.xml");
-        base.addAsWebInfResource("fullopenstack-beans.xml");
+
+        base.addPackages(true, "org.ow2.sirocco.cloudmanager.api.openstack.keystone.server");
+        base.addClass(KeystoneApplication.class);
+
+        base.setWebXML("keystone-web.xml");
+        base.addAsWebInfResource("beans.xml");
 
         LOG.info(base.toString(true));
         return base;

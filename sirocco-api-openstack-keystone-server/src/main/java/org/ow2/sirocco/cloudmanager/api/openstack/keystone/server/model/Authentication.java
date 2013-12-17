@@ -56,5 +56,12 @@ public abstract class Authentication implements Serializable {
 	public void setTenantName(String tenantName) {
 		this.tenantName = tenantName;
 	}
-	
+
+    @Override
+    public String toString() {
+        return "Authentication{" +
+                "tenantId='" + tenantId + '\'' +
+                ", tenantName='" + tenantName + '\'' +
+                '}';
+    }
 }

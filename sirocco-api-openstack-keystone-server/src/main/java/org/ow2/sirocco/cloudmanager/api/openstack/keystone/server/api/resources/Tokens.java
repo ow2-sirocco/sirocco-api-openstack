@@ -19,33 +19,26 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.api.resources;
 
-import com.google.common.collect.Sets;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.resources.Tokens;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.authentication.UsernamePassword;
 
-import java.util.Set;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class Application extends javax.ws.rs.core.Application {
+@Path("/keystone/tokens")
+public interface Tokens {
 
-    private final Access access;
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response auth(UsernamePassword usernamePassword);
 
-    public Application(Access access) {
-        super();
-        this.access = access;
-    }
-
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> set = Sets.newHashSet();
-        set.add(JacksonConfigurator.class);
-        set.add(JacksonJsonProvider.class);
-        set.add(Tokens.class);
-        return set;
-    }
 }

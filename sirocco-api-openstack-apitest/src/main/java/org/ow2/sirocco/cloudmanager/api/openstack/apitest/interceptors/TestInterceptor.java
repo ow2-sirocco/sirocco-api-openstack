@@ -46,7 +46,7 @@ public class TestInterceptor implements Serializable {
 
     @AroundInvoke
     public Object log(final InvocationContext ctx) throws Exception {
-        LOG.debug(">>> Calling : " + ctx.getMethod());
+        LOG.info(">>> Calling : " + ctx.getMethod());
 
         if (context != null) {
             context.setTenantName("trial");

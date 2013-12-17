@@ -23,63 +23,96 @@ package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.resources;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Tenant;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Token;
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.authentication.UsernamePassword;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * A fake token resource which is used by tests.
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/tokens")
-@Produces(MediaType.APPLICATION_JSON)
-public class Tokens {
+public class Tokens implements org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.api.resources.Tokens {
 
     private static Logger LOG = LoggerFactory.getLogger(Tokens.class);
 
-    private Access access;
+    @Inject
+    protected Access access;
 
-    public Tokens(Access access) {
-        this.access = access;
-    }
-
-    public void setAccess(Access access) {
-        this.access = access;
-    }
-
-    /**
-     * Authenticate user. Returns the user and endpoints informations.
-     *
-     * @return
-     */
-    @POST
     public Response auth(UsernamePassword usernamePassword) {
-        LOG.debug("USER " + usernamePassword.getPasswordCredentials().getUsername());
-        LOG.debug("PASS " + usernamePassword.getPasswordCredentials().getPassword());
-        LOG.debug("TENANT " + usernamePassword.getTenantName());
-        LOG.debug("TENANT ID " + usernamePassword.getTenantId());
+
+        System.out.println("<<<<<< ACCESS " + access);
+
+        LOG.info("Keystone token resource : Getting auth request from openstack client");
+
+        System.out.println(usernamePassword);
+        System.out.println("TenantID : " + usernamePassword.getTenantId());
+        System.out.println("TenantName : " + usernamePassword.getTenantName());
 
         if (usernamePassword.getPasswordCredentials() == null) {
             LOG.warn("Credentials are null");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        LOG.info("USER " + usernamePassword.getPasswordCredentials().getUsername());
+        LOG.info("PASS " + usernamePassword.getPasswordCredentials().getPassword());
+        LOG.info("TENANT " + usernamePassword.getTenantName());
+        LOG.info("TENANT ID " + usernamePassword.getTenantId());
+
         if (usernamePassword.getPasswordCredentials().getUsername() == null || usernamePassword.getPasswordCredentials().getPassword() == null) {
-            LOG.warn("Username or password are null");
+            LOG.warn("Null Username or Password");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
+        Token token = new Token();
+        token.setId(UUID.randomUUID().toString());
+        token.setIssued_at(Calendar.getInstance());
+        Calendar expires = Calendar.getInstance();
+        expires.add(Calendar.DAY_OF_MONTH, 1);
+        token.setExpires(expires);
+
+        if (access == null) {
+            access = new Access();
+        }
+        access.setToken(token);
+
         String tenant = usernamePassword.getTenantName();
         if (tenant != null) {
-            access.getToken().setTenant(new Tenant(tenant));
+            token.setTenant(new Tenant(tenant));
+        } else {
+
         }
+
+        // User
+        Access.User user = new Access.User();
+        user.setId("123");
+        user.setName("User name");
+        user.setUsername(usernamePassword.getPasswordCredentials().getUsername());
+        access.setUser(user);
+
+        // Roles
+        List<Access.Service> services = new ArrayList<>();
+        Access.Service s = new Access.Service();
+        s.setName("compute");
+        s.setType("compute");
+        List<Access.Service.Endpoint> endpoints = new ArrayList<>();
+        Access.Service.Endpoint e = new Access.Service.Endpoint();
+        e.setAdminURL("http://admin");
+        e.setInternalURL("http://internal");
+        e.setPublicURL("http://public");
+        e.setRegion("France");
+        endpoints.add(e);
+        s.setEndpoints(endpoints);
+        services.add(s);
+        access.setServiceCatalog(services);
 
         return Response.ok(access).build();
     }

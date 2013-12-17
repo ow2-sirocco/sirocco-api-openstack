@@ -19,38 +19,20 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.apps;
 
+import org.glassfish.jersey.server.ResourceConfig;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.*;
-
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class OpenStackApplication extends Application {
+public class OpenstackApplication extends ResourceConfig {
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        Set<Class<?>> classes = new HashSet<>();
-
-        classes.add(JacksonConfigurator.class);
-        //classes.add(JacksonJsonProvider.class);
-
-        // NOVA
-        classes.add(Extensions.class);
-        classes.add(Flavors.class);
-        classes.add(ImageMetadata.class);
-        classes.add(Images.class);
-        classes.add(ServerActions.class);
-        classes.add(ServerAddresses.class);
-        classes.add(ServerMetadata.class);
-        classes.add(Servers.class);
-        classes.add(Versions.class);
-
-        return classes;
+    public OpenstackApplication() {
+        // dirty hack to retrieve resources from standard app...
+        super();
+        this.registerClasses(new org.ow2.sirocco.cloudmanager.api.openstack.server.OpenStackApplication().getClasses());
+        this.register(JacksonConfigurator.class);
     }
 }

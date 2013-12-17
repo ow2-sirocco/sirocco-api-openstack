@@ -28,6 +28,6 @@
     <decorators />
     <interceptors>
         <class>org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LogInterceptor</class>
-        <class>org.ow2.sirocco.cloudmanager.api.openstack.apitest.interceptors.IdentityHeadersInterceptor</class>
+        <class>org.ow2.sirocco.cloudmanager.api.openstack.apitest.rest.IdentityInterceptor</class>
     </interceptors>
 </beans>

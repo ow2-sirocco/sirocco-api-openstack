@@ -48,12 +48,15 @@ public abstract class JcloudsBasedTest extends AbstractOpenStackTest {
 
     private static Logger LOG = LoggerFactory.getLogger(JcloudsBasedTest.class);
 
+    public static String BASE_URL = "http://localhost:8181/sirocco/openstack/keystone/";
+
     protected ComputeService compute;
     protected RestContext<NovaApi, NovaAsyncApi> nova;
     //protected Set<String> zones;
 
     @Before
     public void init() throws Exception {
+        endpoint = BASE_URL;
         LOG.info(">>> Init test environment");
         setupProperties();
         createEnv();
@@ -63,7 +66,7 @@ public abstract class JcloudsBasedTest extends AbstractOpenStackTest {
 
         LOG.info("Create Compute context");
         ComputeServiceContext context = ContextBuilder.newBuilder(provider)
-                .endpoint(endpoint)
+                .endpoint(BASE_URL)
                 .credentials(identity, credential)
                 .modules(modules)
                 .buildView(ComputeServiceContext.class);
@@ -71,6 +74,14 @@ public abstract class JcloudsBasedTest extends AbstractOpenStackTest {
         compute = context.getComputeService();
         nova = context.unwrap();
         //zones = jclouds.getApi().getConfiguredZones();
+    }
+
+    /**
+     * Get the keystone port
+     * @return
+     */
+    protected int getPort() {
+        return 5000;
     }
 
     /**

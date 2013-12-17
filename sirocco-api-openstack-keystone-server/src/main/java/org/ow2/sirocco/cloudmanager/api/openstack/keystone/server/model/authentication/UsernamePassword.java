@@ -21,13 +21,19 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.authentication;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Authentication;
 
+import java.io.Serializable;
+
 @JsonRootName("auth")
 public class UsernamePassword extends Authentication {
-	
-	public static final class PasswordCredentials {
+
+    @JsonProperty("passwordCredentials")
+    private PasswordCredentials passwordCredentials;
+
+    public static final class PasswordCredentials implements Serializable {
 		
 		private String username;
 		
@@ -60,20 +66,16 @@ public class UsernamePassword extends Authentication {
 		public void setPassword(String password) {
 			this.password = password;
 		}
-		
-	}
-	
-	private PasswordCredentials passwordCredentials = new PasswordCredentials();
-	
-	public UsernamePassword() {
-		
-	}
-	
-	public UsernamePassword(String username, String password) {
-		passwordCredentials.setUsername(username);
-		passwordCredentials.setPassword(password);
-	}
 
+        @Override
+        public String toString() {
+            return "PasswordCredentials{" +
+                    "username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
+        }
+    }
+	
 	/**
 	 * @return the passwordCredentials
 	 */
@@ -87,5 +89,11 @@ public class UsernamePassword extends Authentication {
 	public void setPasswordCredentials(PasswordCredentials passwordCredentials) {
 		this.passwordCredentials = passwordCredentials;
 	}
-	
+
+    @Override
+    public String toString() {
+        return "UsernamePassword{" +
+                "passwordCredentials=" + passwordCredentials +
+                '}';
+    }
 }
