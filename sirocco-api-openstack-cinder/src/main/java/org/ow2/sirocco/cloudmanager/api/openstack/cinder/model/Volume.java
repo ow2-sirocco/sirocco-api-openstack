@@ -25,6 +25,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class Volume {
 
     private String id;
 
-    private List<Link> links;
+    private List<Link> links = new ArrayList<>();
 
     private String status;
 
