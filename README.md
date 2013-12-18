@@ -2,7 +2,11 @@
 
 ## Goals
 
-Sirocco API OpenStack is a collection of modules which provides a OpenStack compliant API for Sirocco :
+Sirocco API OpenStack is a collection of modules which provides a OpenStack compliant API for Sirocco:
+
+- Nova (Compute)
+- Neutron (Network)
+- Cinder (Block Storage)
 
 You can use any standard OpenStack client as Sirocco Client using the Sirocco OpenStack API endpoint.
 
@@ -22,11 +26,10 @@ The module is Java and Maven based, you can compile it with the default Apache M
 
 #### Integration tests
 
-Tests are based on Arquillian and are not enabled by default. To run the tests:
+Tests are based on Arquillian and are enabled by default. Check the apitest module at https://github.com/ow2-sirocco/sirocco-api-openstack/tree/master/sirocco-api-openstack-apitest.
 
     mvn
 
 ### TODOs
 
-- ServerCreate works only with flavor and image UUID. Need to handle URIs.
-- ServerCreate : Add adminPass on response
+Check the issue tracker at https://github.com/ow2-sirocco/sirocco-api-openstack/issues?state=open
