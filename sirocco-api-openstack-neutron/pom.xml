@@ -32,6 +32,8 @@
 
     <artifactId>sirocco-api-openstack-neutron</artifactId>
 
+    <description>Openstack Networking API V2.0 :: Neutron</description>
+
     <dependencies>
         <dependency>
             <groupId>org.ow2.sirocco.cloudmanager</groupId>
