@@ -31,7 +31,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notFound;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -47,11 +47,15 @@ public class Types extends AbstractResource implements org.ow2.sirocco.cloudmana
 
     @Override
     public Response list() {
-        return notImplemented(Types.class.getName(), "list");
+        LOG.debug("Get types list");
+        // TODO
+        return ok(new Types());
     }
 
     @Override
     public Response get(String id) {
-        return notImplemented(Types.class.getName(), "get");
+        LOG.debug("Get volume type information");
+        // TODO
+        return notFound();
     }
 }
