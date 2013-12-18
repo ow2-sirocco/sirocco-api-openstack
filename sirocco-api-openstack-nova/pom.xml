@@ -41,6 +41,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-api-openstack-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
             <version>1.9.13</version>
