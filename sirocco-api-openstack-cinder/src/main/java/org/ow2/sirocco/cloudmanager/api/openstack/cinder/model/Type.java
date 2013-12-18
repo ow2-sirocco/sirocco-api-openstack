@@ -21,7 +21,11 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 
+import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -34,7 +38,16 @@ public class Type {
     private String name;
 
     // TODO : Check the extra_specs type
+    private ExtraSpecs extraSpecs;
 
+
+    public ExtraSpecs getExtraSpecs() {
+        return extraSpecs;
+    }
+
+    public void setExtraSpecs(ExtraSpecs extraSpecs) {
+        this.extraSpecs = extraSpecs;
+    }
 
     public String getId() {
         return id;
@@ -58,5 +71,25 @@ public class Type {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @JsonRootName("extra_specs")
+    public static class ExtraSpecs {
+
+        private Map<String, String> specs;
+
+        public ExtraSpecs() {
+            this.specs = new HashMap<String, String>();
+        }
+
+        public ExtraSpecs(Map<String, String> specs) {
+            this.specs = specs;
+        }
+
+        @JsonValue
+        public Map<String, String> getSpecs() {
+            return specs;
+        }
+
     }
 }
