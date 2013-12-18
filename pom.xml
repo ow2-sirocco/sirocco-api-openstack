@@ -55,6 +55,7 @@
         <module>sirocco-api-openstack-keystone-server</module>
         <module>sirocco-api-openstack-apitest</module>
         <module>sirocco-api-openstack-neutron</module>
+        <module>sirocco-api-openstack-cinder</module>
     </modules>
 
     <scm>
