@@ -19,23 +19,28 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
-
-import java.util.Map;
+import com.google.common.collect.Lists;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
+import org.ow2.sirocco.cloudmanager.model.cimi.DiskTemplate;
+import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
 
 /**
- * Transform Sirocco map to Openstack metadata
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class MapToMetadata implements Function<Map<String, String>, Metadata> {
+public class FlavorToMachineConfiguration implements Function<Flavor, MachineConfiguration> {
+
 
     @Override
-    public Metadata apply(Map<String, String> input) {
-        return new Metadata(input);
+    public MachineConfiguration apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor flavor) {
+        MachineConfiguration result = new MachineConfiguration();
+        result.setUuid(flavor.id);
+        result.setCpu(flavor.vcpus);
+        result.setMemory(flavor.ram);
+        result.setName(flavor.name);
+        result.setDisks(Lists.<DiskTemplate>newArrayList());
+        return result;
     }
-
 }

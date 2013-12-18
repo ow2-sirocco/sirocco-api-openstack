@@ -30,9 +30,9 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInter
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineToServer;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.ServerCreateToMachineCreate;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.ServerListQuery;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.MachineToServer;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.ServerCreateToMachineCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;

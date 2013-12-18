@@ -19,39 +19,38 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
-import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
+import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Transforms a sirocco machine configuration to an openstack flavor
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class MachineConfigurationToFlavor implements Function<MachineConfiguration, Flavor> {
+public class ServerForUpdateToMachineUpdate implements Function<ServerForUpdate, Machine> {
 
-    private final boolean details;
-
-    public MachineConfigurationToFlavor(boolean details) {
-        this.details = details;
-    }
+    private static Logger LOG = LoggerFactory.getLogger(ServerForUpdateToMachineUpdate.class);
 
     @Override
-    public Flavor apply(MachineConfiguration input) {
-        Flavor result = new Flavor();
-        result.id = "" + input.getId();
-        result.name = input.getName();
-
-        result.links.add(new Link("http://TODO/self/" + input.getId(), "self"));
-        result.links.add(new Link("http://TODO/bookmark/" + input.getId(), "bookmark"));
-
-        if (details) {
-            // TODO
+    public Machine apply(ServerForUpdate input) {
+        Machine m = new Machine();
+        // TODO : Check if we need more to update the machine
+        if (input.getName() != null) {
+            m.setName(input.getName());
         }
 
-        return result;
+        if (input.getAccessIPv4() != null) {
+            // TODO
+            LOG.warn("TODO : getAccessIPv4");
+        }
+
+        if (input.getAccessIPv6() != null) {
+            // TODO
+            LOG.warn("TODO : getAccessIPv6");
+        }
+        return m;
     }
 }

@@ -19,38 +19,25 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
+ * Transform an OpenStack server to a Sirocco Machine
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class ServerForUpdateToMachineUpdate implements Function<ServerForUpdate, Machine> {
-
-    private static Logger LOG = LoggerFactory.getLogger(ServerForUpdateToMachineUpdate.class);
+public class ServerToMachine implements Function<Server, Machine> {
 
     @Override
-    public Machine apply(ServerForUpdate input) {
-        Machine m = new Machine();
-        // TODO : Check if we need more to update the machine
-        if (input.getName() != null) {
-            m.setName(input.getName());
-        }
-
-        if (input.getAccessIPv4() != null) {
-            // TODO
-            LOG.warn("TODO : getAccessIPv4");
-        }
-
-        if (input.getAccessIPv6() != null) {
-            // TODO
-            LOG.warn("TODO : getAccessIPv6");
-        }
-        return m;
+    public Machine apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server server) {
+        Machine machine = new Machine();
+        machine.setUuid(server.id);
+        machine.setName(server.name);
+        // TODO
+        return machine;
     }
 }

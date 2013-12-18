@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;

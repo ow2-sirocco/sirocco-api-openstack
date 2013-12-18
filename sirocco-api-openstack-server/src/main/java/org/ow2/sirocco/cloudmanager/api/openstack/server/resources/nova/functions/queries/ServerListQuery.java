@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries;
 
 import com.google.common.collect.Maps;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;

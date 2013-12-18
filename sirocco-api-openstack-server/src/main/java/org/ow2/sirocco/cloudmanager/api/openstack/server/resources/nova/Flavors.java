@@ -27,8 +27,8 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResou
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LinkHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MachineConfigurationToFlavor;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.queries.FlavorListQuery;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.MachineConfigurationToFlavor;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.FlavorListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;

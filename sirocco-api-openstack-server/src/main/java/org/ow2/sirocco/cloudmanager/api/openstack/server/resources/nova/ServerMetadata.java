@@ -25,7 +25,7 @@ import com.google.common.collect.ImmutableMap;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.MapToMetadata;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.MapToMetadata;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.utils.MapHelper;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;

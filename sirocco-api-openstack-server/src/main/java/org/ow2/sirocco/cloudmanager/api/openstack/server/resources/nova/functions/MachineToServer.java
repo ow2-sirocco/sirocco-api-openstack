@@ -19,25 +19,52 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 
 /**
- * Transform an OpenStack server to a Sirocco Machine
- *
+ * Transform a Sirocco Machine to an Openstack Server
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class ServerToMachine implements Function<Server, Machine> {
+public class MachineToServer implements Function<Machine, Server> {
+
+    boolean details;
+
+    /**
+     *
+     */
+    public MachineToServer() {
+        this(false);
+    }
+
+    /**
+     *
+     * @param details
+     */
+    public MachineToServer(boolean details) {
+        this.details = details;
+    }
 
     @Override
-    public Machine apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server server) {
-        Machine machine = new Machine();
-        machine.setUuid(server.id);
-        machine.setName(server.name);
-        // TODO
-        return machine;
+    public Server apply(org.ow2.sirocco.cloudmanager.model.cimi.Machine machine) {
+        Server server = new Server();
+        server.id = machine.getUuid();
+        server.name = machine.getName();
+
+        if (details) {
+            // TODO
+            if (machine.getProperties() != null) {
+                server.metadata = new MapToMetadata().apply(machine.getProperties());
+            }
+
+            if (machine.getNetworkInterfaces() != null) {
+                server.addresses = new NetworkInterfacesToAddresses().apply(machine.getNetworkInterfaces());
+            }
+
+        }
+        return server;
     }
 }

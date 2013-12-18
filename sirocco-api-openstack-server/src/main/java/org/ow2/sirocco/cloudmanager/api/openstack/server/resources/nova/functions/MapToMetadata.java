@@ -19,24 +19,23 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
+
+import java.util.Map;
 
 /**
+ * Transform Sirocco map to Openstack metadata
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class CimiAddressToAddress implements Function<org.ow2.sirocco.cloudmanager.model.cimi.Address, Address> {
-
-    public CimiAddressToAddress() {
-    }
+public class MapToMetadata implements Function<Map<String, String>, Metadata> {
 
     @Override
-    public Address apply(org.ow2.sirocco.cloudmanager.model.cimi.Address address) {
-        Address result = new Address();
-        result.setAddr(address.getIp());
-        result.setVersion(address.getProtocol());
-        return result;
+    public Metadata apply(Map<String, String> input) {
+        return new Metadata(input);
     }
+
 }

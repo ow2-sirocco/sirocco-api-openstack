@@ -27,7 +27,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInter
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Addresses;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.NetworkAddresses;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.functions.NetworkInterfacesToAddresses;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.NetworkInterfacesToAddresses;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;

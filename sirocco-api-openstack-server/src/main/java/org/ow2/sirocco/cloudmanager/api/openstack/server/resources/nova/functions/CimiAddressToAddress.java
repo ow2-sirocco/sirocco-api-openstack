@@ -19,28 +19,24 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.functions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
-import org.ow2.sirocco.cloudmanager.model.cimi.DiskTemplate;
-import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class FlavorToMachineConfiguration implements Function<Flavor, MachineConfiguration> {
+public class CimiAddressToAddress implements Function<org.ow2.sirocco.cloudmanager.model.cimi.Address, Address> {
 
+    public CimiAddressToAddress() {
+    }
 
     @Override
-    public MachineConfiguration apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor flavor) {
-        MachineConfiguration result = new MachineConfiguration();
-        result.setUuid(flavor.id);
-        result.setCpu(flavor.vcpus);
-        result.setMemory(flavor.ram);
-        result.setName(flavor.name);
-        result.setDisks(Lists.<DiskTemplate>newArrayList());
+    public Address apply(org.ow2.sirocco.cloudmanager.model.cimi.Address address) {
+        Address result = new Address();
+        result.setAddr(address.getIp());
+        result.setVersion(address.getProtocol());
         return result;
     }
 }

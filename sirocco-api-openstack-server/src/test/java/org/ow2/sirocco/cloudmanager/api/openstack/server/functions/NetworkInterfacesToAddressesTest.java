@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Addresses;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.NetworkInterfacesToAddresses;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineNetworkInterface;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineNetworkInterfaceAddress;
 import org.ow2.sirocco.cloudmanager.model.cimi.Network;
