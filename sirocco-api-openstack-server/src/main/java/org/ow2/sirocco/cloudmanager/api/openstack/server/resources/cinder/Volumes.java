@@ -84,7 +84,7 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
             } else {
                 LOG.error(error);
             }
-            return computeFault("Server Error", 500, e.getMessage());
+            return computeFault("Volume Error", 500, e.getMessage());
         }
     }
 

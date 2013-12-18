@@ -21,11 +21,21 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron;
 
+import com.google.common.collect.Lists;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.NetworkForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.NetworkForUpdate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions.NetworkForCreateToNetworkCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions.NetworkToNetwork;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
+import org.ow2.sirocco.cloudmanager.core.api.ITenantManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.ow2.sirocco.cloudmanager.model.cimi.Job;
+import org.ow2.sirocco.cloudmanager.model.cimi.Network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +43,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -47,14 +57,47 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
     @Inject
     private INetworkManager networkManager;
 
+    @Inject
+    private ITenantManager tenantManager;
+
     @Override
     public Response list() {
-        return notImplemented(Networks.class.getName(), "list");
+        org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Networks networks = new org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Networks();
+        try {
+            networks.setList(Lists.transform(networkManager.getNetworks().getItems(), new NetworkToNetwork(true)));
+            return ok(networks);
+        } catch (InvalidRequestException ire) {
+            return badRequest("network", "get");
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting networks details";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Network Error", 500, e.getMessage());
+        }
     }
 
     @Override
     public Response create(NetworkForCreate network) {
-        return notImplemented(Networks.class.getName(), "create");
+        String provider = "TODO";
+
+        try {
+            Job job = networkManager.createNetwork(new NetworkForCreateToNetworkCreate(provider).apply(network));
+            Network n = (Network) job.getTargetResource();
+            return ok(new NetworkToNetwork(true).apply(n));
+        } catch (InvalidRequestException ire) {
+            return badRequest("network", "create");
+        } catch (CloudProviderException e) {
+            final String error = "Error while creating network";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Network Error", 500, e.getMessage());
+        }
     }
 
     @Override
@@ -64,16 +107,63 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response get(String id) {
-        return notImplemented(Networks.class.getName(), "get");
+        try {
+            return ok(new NetworkToNetwork(true).apply(networkManager.getNetworkByUuid(id)));
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("volume", id, rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting network details";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Network Error", 500, e.getMessage());
+        }
     }
 
     @Override
     public Response update(String id, NetworkForUpdate networkForUpdate) {
-        return notImplemented(Networks.class.getName(), "update");
+        // NOTE : Not supported on the backend
+        try {
+            Network network = networkManager.getNetworkByUuid(id);
+
+            network.setName(networkForUpdate.getName());
+            network.setTenant(tenantManager.getTenantByName(getPathParamValue(Constants.Nova.TENANT_PATH_TEMPLATE)));
+
+            LOG.warn("TODO : shared network mapping");
+            LOG.warn("TODO : adminStateUp network mapping");
+
+            networkManager.updateNetwork(network);
+            return ok(new NetworkToNetwork(true).apply(networkManager.getNetworkByUuid(id)));
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("network", id, rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while updating network details";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Network Error", 500, e.getMessage());
+        }
     }
 
     @Override
     public Response delete(String id) {
-        return notImplemented(Networks.class.getName(), "delete");
+        try {
+            networkManager.deleteNetwork(id);
+            return deleted();
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("network", id, rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while deleting network";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Network Error", 500, e.getMessage());
+        }
     }
 }
