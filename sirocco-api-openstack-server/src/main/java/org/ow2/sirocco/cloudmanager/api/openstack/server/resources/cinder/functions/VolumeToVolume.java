@@ -23,11 +23,15 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.funct
 
 import com.google.common.base.Function;
 import org.ow2.sirocco.cloudmanager.model.cimi.Volume;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.Volume> {
+
+    private static Logger LOG = LoggerFactory.getLogger(VolumeToVolume.class);
 
     private final boolean details;
 
@@ -44,6 +48,7 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
 
         if (details) {
             // TODO
+            LOG.warn("Details are not implemented!!!");
         }
         return result;
     }
