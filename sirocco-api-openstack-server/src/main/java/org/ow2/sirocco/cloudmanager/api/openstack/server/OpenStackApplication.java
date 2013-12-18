@@ -22,6 +22,12 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.Snapshots;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.Types;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.Volumes;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Networks;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Ports;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Subnets;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.*;
 
 import javax.ws.rs.core.Application;
@@ -50,6 +56,16 @@ public class OpenStackApplication extends Application {
         classes.add(ServerMetadata.class);
         classes.add(Servers.class);
         classes.add(Versions.class);
+
+        // CINDER
+        classes.add(Snapshots.class);
+        classes.add(Types.class);
+        classes.add(Volumes.class);
+
+        // NEUTRON
+        classes.add(Networks.class);
+        classes.add(Ports.class);
+        classes.add(Subnets.class);
 
         return classes;
     }

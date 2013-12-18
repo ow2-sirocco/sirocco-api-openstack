@@ -32,7 +32,8 @@ public class JerseyApplication extends ResourceConfig {
 
     public JerseyApplication() {
         // exposes packages. Will introspect to instanciate resources
-        this.packages("org.ow2.sirocco.cloudmanager.api.openstack.server.resources.jclouds;org.ow2.sirocco.cloudmanager.api.openstack.commons.provider");
+        this.packages(
+                "org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron;org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder;org.ow2.sirocco.cloudmanager.api.openstack.commons.provider");
         this.property(MessageProperties.XML_FORMAT_OUTPUT, true);
     }
 
