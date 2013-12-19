@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments.model.VolumeAttachmentForCreate;
 
 import javax.ws.rs.*;
@@ -28,9 +29,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
+ * Volume attachments; Doc at http://api.openstack.org/api-ref-compute.html#os-volume_attachments
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/v2/​{tenant_id}​/servers/​{server_id}/os-volume_attachments")
+@Path(Constants.Nova.SERVER_PATH + "/os-volume_attachments")
 public interface VolumeAttachments {
 
     /**
