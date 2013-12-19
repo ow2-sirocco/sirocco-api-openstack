@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments.model.VolumeAttachmentForCreate;
@@ -39,6 +40,7 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Respon
  */
 @ResourceInterceptorBinding
 @RequestScoped
+@Extension(of = "compute", name = "os-volume_attachments", documentation = "http://api.openstack.org/api-ref-compute.html#os-volume_attachments")
 public class VolumeAttachments extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments.VolumeAttachments {
 
     private static Logger LOG = LoggerFactory.getLogger(VolumeAttachments.class);
