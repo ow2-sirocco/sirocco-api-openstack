@@ -21,19 +21,27 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions;
 
+import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.KeypairForCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.CredentialsToKeyPair;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.KeypairForCreateToCredentialsCreate;
 import org.ow2.sirocco.cloudmanager.core.api.ICredentialsManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -50,21 +58,93 @@ public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response list() {
-        return notImplemented(Keypairs.class.getName(), "list");
+        LOG.debug("Getting keypairs list");
+
+        try {
+            org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.Keypairs result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.Keypairs();
+            result.setKeypairs(Lists.transform(credentialsManager.getCredentials(), new CredentialsToKeyPair()));
+            return ok(result);
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting credentials";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }
     }
 
     @Override
     public Response create(KeypairForCreate keypair) {
-        return notImplemented(Keypairs.class.getName(), "create");
+        KeyPairGenerator generator = null;
+
+        // generate public key only if the input does not have one
+        if (keypair.getPublicKey() == null) {
+            try {
+                generator = KeyPairGenerator.getInstance("RSA");
+            } catch (NoSuchAlgorithmException e) {
+                final String error = "Can not generate keypair";
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(error, e);
+                } else {
+                    LOG.error(error);
+                }
+                return computeFault(error, 500, e.getMessage());
+            }
+        }
+
+        try {
+            return ok(new CredentialsToKeyPair().apply(credentialsManager.createCredentials(new KeypairForCreateToCredentialsCreate(generator).apply(keypair))));
+        } catch (CloudProviderException e) {
+            final String error = "Can not register keypair";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault(error, 500, e.getMessage());
+        }
     }
 
     @Override
     public Response delete(String name) {
-        return notImplemented(Keypairs.class.getName(), "delete");
+        // As defined in https://github.com/ow2-sirocco/sirocco-api-openstack/issues/17, we use the UUID as name
+        try {
+            credentialsManager.deleteCredentials(name);
+            return deleted();
+        } catch (InvalidRequestException ire) {
+            return badRequest("keypair", "delete");
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("keypair", name, rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while deleting keypair";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }
     }
 
     @Override
     public Response get(String name) {
-        return notImplemented(Keypairs.class.getName(), "get");
+        // As defined in https://github.com/ow2-sirocco/sirocco-api-openstack/issues/17, we use the UUID as name
+        try {
+            return ok(new CredentialsToKeyPair().apply(credentialsManager.getCredentialsByUuid(name)));
+        } catch (InvalidRequestException ire) {
+            return badRequest("keypair", "get");
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("keypair", name, rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while retrieving keypair";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Server Error", 500, e.getMessage());
+        }
     }
 }

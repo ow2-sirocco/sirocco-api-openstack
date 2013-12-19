@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.KeypairForCreate;
 
 import javax.ws.rs.*;
@@ -28,9 +29,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
+ * Keypair extension. Doc at http://api.openstack.org/api-ref-compute.html#os-keypairs
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/os_keypairs")
+@Path(Constants.Nova.TENANT_PATH_TEMPLATE + "/os_keypairs")
 public interface Keypairs {
 
     /**
@@ -43,7 +46,7 @@ public interface Keypairs {
     Response list();
 
     /**
-     * Generates or import a keypair
+     * Generates or import a keypair. If the public key is not set, sirocco will generate one.
      *
      * @param keypair
      * @return
