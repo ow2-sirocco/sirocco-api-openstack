@@ -76,7 +76,7 @@ public class ServerActionsTest { //extends JerseyTest {
     @Test
     public void testInvokeNullPayload() {
         Response response = actions.action(null);
-        assertEquals(500, response.getStatus());
+        assertEquals(400, response.getStatus());
     }
 
     @Test

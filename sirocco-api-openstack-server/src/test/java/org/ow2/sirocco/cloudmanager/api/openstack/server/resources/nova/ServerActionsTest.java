@@ -44,7 +44,7 @@ public class ServerActionsTest {
     public void testInvokeNull() {
         ServerActions actions = new org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.ServerActions();
         Response response = actions.action(null);
-        assertEquals(500, response.getStatus());
+        assertEquals(400, response.getStatus());
     }
 
     @Test

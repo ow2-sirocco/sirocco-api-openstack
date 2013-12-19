@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,6 +111,17 @@ public class AbstractResource {
     }
 
     /**
+     * Openstack create operation returns HTTP Accepted 202
+     *
+     * @param entity
+     * @return
+     */
+    public Response created(Object entity) {
+        return Response.accepted(entity).build();
+    }
+
+
+    /**
      * Get the path param value
      *
      * @param paramName
@@ -135,4 +147,24 @@ public class AbstractResource {
 
         return RequestHelper.getQueryParamater(getJaxRsRequestInfo(), paramName);
     }
+
+    /**
+     * Get tenant ID from the URI if available
+     *
+     * @return
+     */
+    public String getTenantId() {
+        return getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER);
+    }
+
+    /**
+     * Get server ID from the URI if available
+     *
+     * @return
+     */
+    public String getServerId() {
+        return getPathParamValue(Constants.Nova.SERVER_ID_PATH_PARAMETER);
+    }
+
+
 }

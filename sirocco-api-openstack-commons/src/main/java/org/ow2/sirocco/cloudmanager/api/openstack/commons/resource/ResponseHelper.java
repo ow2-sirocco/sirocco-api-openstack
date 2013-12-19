@@ -109,7 +109,7 @@ public class ResponseHelper {
      * @return
      */
     public static final Response badRequest(String resource, String operation) {
-        return fault("Bad Request", FaultBuilder.fault("Bad Request", 500, "Bad request for " + operation + " on " + resource));
+        return fault("Bad Request", FaultBuilder.fault("Bad Request", 400, "Bad request for " + operation + " on " + resource));
     }
 
 }

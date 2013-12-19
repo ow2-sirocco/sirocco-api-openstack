@@ -210,13 +210,4 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
             return computeFault("Server Error", 500, e.getMessage());
         }
     }
-
-    /**
-     * Get the current server ID
-     *
-     * @return
-     */
-    protected String getServerId() {
-       return getPathParamValue(org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.SERVER_ID_PATH_PARAMETER);
-    }
 }
