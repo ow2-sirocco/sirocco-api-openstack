@@ -44,7 +44,7 @@ public class VolumeAttachments {
         return attachments;
     }
 
-    public void setServers(List<VolumeAttachment> attachments) {
+    public void setAttachments(List<VolumeAttachment> attachments) {
         this.attachments = attachments;
     }
 }
