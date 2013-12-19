@@ -29,6 +29,8 @@ import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Netwo
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Ports;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Subnets;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.*;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.Keypairs;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.VolumeAttachments;
 
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -66,6 +68,10 @@ public class OpenStackApplication extends Application {
         classes.add(Networks.class);
         classes.add(Ports.class);
         classes.add(Subnets.class);
+
+        // NOVA EXTENSIONS
+        classes.add(Keypairs.class);
+        classes.add(VolumeAttachments.class);
 
         return classes;
     }

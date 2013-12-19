@@ -24,4 +24,6 @@ package org.ow2.sirocco.cloudmanager.api.openstack.neutron;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public interface Constants {
+
+    public static String BASE_PATH = "/v2.0";
 }

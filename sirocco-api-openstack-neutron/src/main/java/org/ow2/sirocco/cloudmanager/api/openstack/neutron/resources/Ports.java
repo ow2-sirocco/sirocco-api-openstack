@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.neutron.resources;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.neutron.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.PortForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.PortForUpdate;
 
@@ -33,7 +34,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/v2.0/ports")
+@Path(Constants.BASE_PATH + "/ports")
 public interface Ports {
 
     /**

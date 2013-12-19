@@ -23,6 +23,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.cinder.resources;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.VolumeForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.VolumeForUpdate;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -33,7 +34,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/v2/​{tenant_id}​/volumes")
+@Path(Constants.Nova.TENANT_PATH_TEMPLATE + "​/volumes")
 public interface Volumes {
 
     /**

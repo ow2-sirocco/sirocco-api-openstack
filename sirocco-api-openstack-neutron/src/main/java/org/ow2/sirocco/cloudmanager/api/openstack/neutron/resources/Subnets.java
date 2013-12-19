@@ -20,6 +20,7 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.neutron.resources;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.neutron.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.SubnetForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.SubnetForUpdate;
 
@@ -32,7 +33,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/v2.0/subnets")
+@Path(Constants.BASE_PATH + "/subnets")
 public interface Subnets {
 
     /**

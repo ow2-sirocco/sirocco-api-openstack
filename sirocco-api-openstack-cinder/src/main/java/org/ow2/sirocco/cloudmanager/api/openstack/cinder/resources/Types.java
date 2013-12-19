@@ -20,6 +20,8 @@
  */
 package org.ow2.sirocco.cloudmanager.api.openstack.cinder.resources;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -32,7 +34,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path("/v2/​{tenant_id}​/types")
+@Path(Constants.Nova.TENANT_PATH_TEMPLATE + "​/types")
 public interface Types {
 
     /**
