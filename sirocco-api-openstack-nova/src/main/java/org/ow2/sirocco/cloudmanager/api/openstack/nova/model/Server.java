@@ -75,4 +75,26 @@ public class Server extends Identifiable {
     public String userId;
 
     public String adminPass;
+
+    @Override
+    public String toString() {
+        return "Server{" +
+                "name='" + name + '\'' +
+                ", links=" + links +
+                ", accessIPv4='" + accessIPv4 + '\'' +
+                ", accessIPv6='" + accessIPv6 + '\'' +
+                ", addresses=" + addresses +
+                ", created='" + created + '\'' +
+                ", flavor=" + flavor +
+                ", hostId='" + hostId + '\'' +
+                ", image=" + image +
+                ", metadata=" + metadata +
+                ", progress=" + progress +
+                ", status='" + status + '\'' +
+                ", tenantId='" + tenantId + '\'' +
+                ", updated='" + updated + '\'' +
+                ", userId='" + userId + '\'' +
+                ", adminPass='" + adminPass + '\'' +
+                '}';
+    }
 }

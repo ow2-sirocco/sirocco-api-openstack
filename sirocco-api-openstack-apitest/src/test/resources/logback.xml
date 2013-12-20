@@ -25,7 +25,7 @@
         <target>System.out</target>
 
         <encoder>
-            <Pattern>%d %-5p [%c] [%thread] %m%n</Pattern>
+            <Pattern>%d %-5p [%c#%method] [%thread] %m%n</Pattern>
         </encoder>
     </appender>
 
@@ -56,8 +56,13 @@
     -->
 
     <root>
-        <level value="warn" />
+        <level value="info" />
     </root>
+
+    <logger name="org.ow2.sirocco.cloudmanager.api.openstack.apitest">
+        <level value="DEBUG"/>
+        <appender-ref ref="FILE"/>
+    </logger>
 
     <logger name="org.jclouds">
         <level value="DEBUG" />

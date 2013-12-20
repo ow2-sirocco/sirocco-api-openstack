@@ -51,4 +51,11 @@ public class Servers {
     public void setServers(List<Server> servers) {
         this.servers = servers;
     }
+
+    @Override
+    public String toString() {
+        return "Servers{" +
+                "servers=" + servers +
+                '}';
+    }
 }

@@ -21,8 +21,6 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jaxrs;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -30,11 +28,13 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JAXRSBasedTest;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Servers;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
@@ -49,8 +49,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.TestCase.assertEquals;
+import static junit.framework.Assert.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertNotEquals;
 
@@ -100,7 +99,9 @@ public class ServersTest extends JAXRSBasedTest {
         // OpenStack API call
 
         Response response = target(BASE_URL + tenantName + "/servers").request(MediaType.APPLICATION_JSON_TYPE).get();
-        System.out.println(response.readEntity(String.class));
+        Servers servers = readResponse(response, Servers.class);
+        assertEquals(1, servers.getServers().size());
+        Assert.assertEquals(machine.getName(), servers.getServers().get(0).name);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
@@ -118,8 +119,12 @@ public class ServersTest extends JAXRSBasedTest {
         // OpenStack API call
 
         Response response = target(BASE_URL + tenantName + "/servers/detail").request(MediaType.APPLICATION_JSON_TYPE).get();
-        System.out.println(response.readEntity(String.class));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertEquals(1, servers.getServers().size());
+        Assert.assertEquals(machine.getName(), servers.getServers().get(0).name);
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        // TODO : details
     }
 
     @Test
@@ -137,7 +142,9 @@ public class ServersTest extends JAXRSBasedTest {
         }
 
         Response response = target(BASE_URL + tenantName + "/servers").request(MediaType.APPLICATION_JSON_TYPE).get();
-        System.out.println(response.readEntity(String.class));
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertEquals(machines.size(), servers.getServers().size());
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
@@ -146,8 +153,155 @@ public class ServersTest extends JAXRSBasedTest {
         Machine machine = createMachine("mymachine", "myimage", 1, 512, null);
         Response response = target(BASE_URL + tenantName + "/servers/" + machine.getUuid()).request(MediaType.APPLICATION_JSON_TYPE).get();
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        String out = response.readEntity(String.class);
-        LOG.info(out);
+
+        // FIXME : Does not work for single server but works for list...
+        //Server server = readResponse(response, Server.class);
+        String server = readResponse(response, String.class);
+
+        assertNotNull(server);
+        LOG.info("" + server);
+    }
+
+    @Test
+      public void testGetWithNameFilterOne() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("name", machine1.getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertEquals(1, servers.getServers().size());
+        assertEquals(machine1.getName(), servers.getServers().get(0).name);
+    }
+
+    @Test
+    public void testGetWithNameFilterNone() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("name", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertEquals(3, servers.getServers().size());
+    }
+
+    @Test
+    public void testGetWithImageFilterOne() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("image", machine1.getImage().getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+
+        assertEquals(1, servers.getServers().size());
+        assertEquals(machine1.getName(), servers.getServers().get(0).name);
+    }
+
+    @Test
+    public void testGetWithImageFilterNone() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("image", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertNotNull(servers);
+        assertNotNull(servers.getServers());
+        assertEquals(0, servers.getServers().size());
+    }
+
+    @Test
+    public void testGetWithFlavorFilterOne() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("flavor", machine1.getConfig().getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertEquals(1, servers.getServers().size());
+        assertEquals(machine1.getName(), servers.getServers().get(0).name);
+    }
+
+    @Test
+    public void testGetWithFlavorFilterNone() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("flavor", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertNotNull(servers);
+        assertNotNull(servers.getServers());
+        assertEquals(0, servers.getServers().size());
+    }
+
+    @Test
+    public void testGetWithStatusFilterOne() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", machine1.getState().toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertTrue(servers.getServers().size() >= 1);
+    }
+
+
+    @Test
+    public void testGetWithStatusFilterNone() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", Machine.State.ERROR.toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertNotNull(servers);
+        assertNotNull(servers.getServers());
+        assertEquals(0, servers.getServers().size());
+    }
+
+    @Test
+    public void testGetWithHostFilterOne() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        String hostname = "TODO";
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("host", hostname).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        fail("Need to define host mapping");
+    }
+
+    @Test
+    public void testGetWithStatusHostFilterNone() throws CloudProviderException {
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("host", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertNotNull(servers);
+        assertNotNull(servers.getServers());
+        assertEquals(0, servers.getServers().size());
     }
 
     @Ignore
@@ -158,7 +312,7 @@ public class ServersTest extends JAXRSBasedTest {
 
         // the server will extracct the tenant from the incoming request using an interceptor. This will create an identitycontext
         Response response = target(path(url, "/openstack/v2/" + tenantName + "/servers")).request(MediaType.APPLICATION_JSON_TYPE).get();
-        System.out.println(response.readEntity(String.class));
+        LOG.info(response.readEntity(String.class));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
     }
 
@@ -179,7 +333,7 @@ public class ServersTest extends JAXRSBasedTest {
 
         Response response = target(BASE_URL + tenantName + "/servers").request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(CREATE_SERVER_PATTERN.replaceAll("FLAVOR", config.getUuid()).replaceAll("IMAGE", img.getUuid()).replaceAll("NAME", name)));
         assertEquals(Response.Status.ACCEPTED.getStatusCode(), response.getStatus());
-        System.out.println(response.readEntity(String.class));
+        LOG.info(response.readEntity(String.class));
 
         List<Machine> after = this.machineManager.getMachines().getItems();
 

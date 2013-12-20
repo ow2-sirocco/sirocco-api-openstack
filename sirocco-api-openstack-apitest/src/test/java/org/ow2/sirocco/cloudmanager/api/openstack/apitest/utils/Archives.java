@@ -174,6 +174,7 @@ public class Archives {
         WebArchive base = baseOpenStack(name);
         base.setWebXML("rest-web.xml");
         base.addAsWebInfResource("beans.xml");
+        base.addAsResource("logback.xml");
 
         LOG.info(base.toString(true));
         return base;

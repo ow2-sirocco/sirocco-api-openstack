@@ -21,13 +21,17 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.apitest;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -40,11 +44,29 @@ public abstract class JAXRSBasedTest extends AbstractOpenStackTest {
 
     private static Logger LOG = LoggerFactory.getLogger(JAXRSBasedTest.class);
 
+    private Client client;
+
+    private ObjectMapper mapper;
+
     @Before
     public void init() throws Exception {
-        LOG.info("Init test environment");
+        LOG.debug("Init test environment");
         setupProperties();
         createEnv();
+    }
+
+    protected Client getClient() {
+        LOG.debug("Get client");
+        if (client == null) {
+            client = javax.ws.rs.client.ClientBuilder.newClient();
+            client.register(JacksonJsonProvider.class).register(JacksonConfigurator.class);
+        }
+        return client;
+    }
+
+    protected <T> T readResponse(Response response, Class<T> resultType) {
+        LOG.debug("Read response");
+        return response.readEntity(resultType);
     }
 
     /**
@@ -53,8 +75,7 @@ public abstract class JAXRSBasedTest extends AbstractOpenStackTest {
      */
     @Ignore
     protected WebTarget target(String path) {
-        Client client = javax.ws.rs.client.ClientBuilder.newClient();
-        return client.target(path);
+        return getClient().target(path);
     }
 
     /**

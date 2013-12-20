@@ -29,6 +29,8 @@ import com.google.common.collect.Maps;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestInfo;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.RequestHelper;
 import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,8 @@ import java.util.Map;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryParams> {
+
+    private static Logger LOG = LoggerFactory.getLogger(AbstractQuery.class);
 
     @Override
     public QueryParams apply(org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestInfo input) {
@@ -72,6 +76,8 @@ public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryP
                 return input.toString();
             }
         });
+
+        LOG.info("Query list : " + f);
 
         return new QueryParams.Builder().filters(f).build();
     }
