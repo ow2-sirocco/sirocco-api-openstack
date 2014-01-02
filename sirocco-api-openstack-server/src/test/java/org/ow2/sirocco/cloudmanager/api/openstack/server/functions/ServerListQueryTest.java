@@ -139,6 +139,92 @@ public class ServerListQueryTest {
 
     }
 
+    /**
+     * Test a parameter which is not mapped to any value
+     */
+    @Test
+    public void testFilterStatusUnknown() {
+        ServerListQuery query = new ServerListQuery();
+
+        MultivaluedMap<String,String> map = new MultivaluedHashMap<String, String>();
+        map.add(Constants.REQUEST_STATUS, "foobar");
+        AbstractResource resource = EasyMock.createMock(AbstractResource.class);
+
+        UriInfo info = EasyMock.createMock(UriInfo.class);
+        EasyMock.expect(info.getQueryParameters()).andReturn(map).anyTimes();
+
+        JaxRsRequestInfo input = new JaxRsRequestInfo(resource);
+
+        EasyMock.expect(resource.getJaxRsRequestInfo()).andReturn(input).anyTimes();
+        EasyMock.expect(input.getUriInfo()).andReturn(info).anyTimes();
+
+        EasyMock.replay(resource);
+        EasyMock.replay(info);
+
+        QueryParams params = query.apply(input);
+        assertNotNull(params);
+        assertEquals(1, params.getFilters().size());
+        assertTrue(params.getFilters().contains("state='foobar'"));
+    }
+
+    /**
+     * Test a parameter which is mapped to the same value
+     *
+     */
+    @Test
+    public void testFilterMappedErrorStatus() {
+        ServerListQuery query = new ServerListQuery();
+
+        MultivaluedMap<String,String> map = new MultivaluedHashMap<String, String>();
+        map.add(Constants.REQUEST_STATUS, "error");
+        AbstractResource resource = EasyMock.createMock(AbstractResource.class);
+
+        UriInfo info = EasyMock.createMock(UriInfo.class);
+        EasyMock.expect(info.getQueryParameters()).andReturn(map).anyTimes();
+
+        JaxRsRequestInfo input = new JaxRsRequestInfo(resource);
+
+        EasyMock.expect(resource.getJaxRsRequestInfo()).andReturn(input).anyTimes();
+        EasyMock.expect(input.getUriInfo()).andReturn(info).anyTimes();
+
+        EasyMock.replay(resource);
+        EasyMock.replay(info);
+
+        QueryParams params = query.apply(input);
+        assertNotNull(params);
+        assertEquals(1, params.getFilters().size());
+        assertTrue(params.getFilters().contains("state='ERROR'"));
+    }
+
+
+    /**
+     * Test a parameter which is mapped to another value
+     */
+    @Test
+    public void testFilterMappedActiveStatus() {
+        ServerListQuery query = new ServerListQuery();
+
+        MultivaluedMap<String,String> map = new MultivaluedHashMap<String, String>();
+        map.add(Constants.REQUEST_STATUS, "active");
+        AbstractResource resource = EasyMock.createMock(AbstractResource.class);
+
+        UriInfo info = EasyMock.createMock(UriInfo.class);
+        EasyMock.expect(info.getQueryParameters()).andReturn(map).anyTimes();
+
+        JaxRsRequestInfo input = new JaxRsRequestInfo(resource);
+
+        EasyMock.expect(resource.getJaxRsRequestInfo()).andReturn(input).anyTimes();
+        EasyMock.expect(input.getUriInfo()).andReturn(info).anyTimes();
+
+        EasyMock.replay(resource);
+        EasyMock.replay(info);
+
+        QueryParams params = query.apply(input);
+        assertNotNull(params);
+        assertEquals(1, params.getFilters().size());
+        assertTrue(params.getFilters().contains("state='STARTED'"));
+    }
+
 
 
 }

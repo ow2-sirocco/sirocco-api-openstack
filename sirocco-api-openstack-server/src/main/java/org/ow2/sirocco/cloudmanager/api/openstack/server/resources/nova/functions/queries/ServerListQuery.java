@@ -75,9 +75,16 @@ public class ServerListQuery extends AbstractQuery {
     @Override
     protected String getSiroccoParamValue(String openstackParamName, String openstackParamValue) {
         if (openstackParamName != null && openstackParamName.equalsIgnoreCase("status")) {
-            return STATUS.get(openstackParamValue).toString();
-        }
 
+            try {
+                org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status input = org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status.valueOf(openstackParamValue.toUpperCase());
+                return STATUS.get(input) != null ? STATUS.get(input).toString() : openstackParamValue;
+            } catch (IllegalArgumentException e) {
+                return openstackParamValue;
+            }
+
+            // return the mapped value if found, else the input one...
+        }
         return openstackParamValue;
     }
 }
