@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -78,6 +78,9 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             if (query == null) {
                 machines = machineManager.getMachines().getItems();
             } else {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Query server with filters : " + query.getFilters());
+                }
                 machines = machineManager.getMachines(query).getItems();
             }
 
