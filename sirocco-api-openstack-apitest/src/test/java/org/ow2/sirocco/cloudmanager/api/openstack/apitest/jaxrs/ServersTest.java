@@ -168,12 +168,22 @@ public class ServersTest extends JAXRSBasedTest {
         Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null);
         Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null);
 
+        LOG.info("Query list with server name = " + machine1.getName());
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("name", machine1.getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Servers servers = readResponse(response, Servers.class);
-        assertEquals(1, servers.getServers().size());
-        assertEquals(machine1.getName(), servers.getServers().get(0).name);
+        String servers = readResponse(response, String.class);
+
+        LOG.info(servers);
+
+        assertTrue(servers.contains(machine1.getName()));
+        assertTrue(servers.contains(machine1.getUuid()));
+
+        assertTrue(!servers.contains(machine2.getName()));
+        assertTrue(!servers.contains(machine2.getUuid()));
+
+        assertTrue(!servers.contains(machine3.getName()));
+        assertTrue(!servers.contains(machine3.getUuid()));
     }
 
     @Test
@@ -186,7 +196,7 @@ public class ServersTest extends JAXRSBasedTest {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Servers servers = readResponse(response, Servers.class);
-        assertEquals(3, servers.getServers().size());
+        assertEquals(0, servers.getServers().size());
     }
 
     @Test
@@ -195,13 +205,14 @@ public class ServersTest extends JAXRSBasedTest {
         Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
         Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
 
-        Response response = target(BASE_URL + tenantName + "/servers").queryParam("image", machine1.getImage().getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("image", machine1.getImage().getUuid()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Servers servers = readResponse(response, Servers.class);
 
         assertEquals(1, servers.getServers().size());
         assertEquals(machine1.getName(), servers.getServers().get(0).name);
+        assertEquals(machine1.getUuid(), servers.getServers().get(0).id);
     }
 
     @Test
@@ -225,11 +236,11 @@ public class ServersTest extends JAXRSBasedTest {
         Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
         Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
 
-        Response response = target(BASE_URL + tenantName + "/servers").queryParam("flavor", machine1.getConfig().getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("flavor", machine1.getConfig().getUuid()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Servers servers = readResponse(response, Servers.class);
-        assertEquals(1, servers.getServers().size());
+        assertEquals("Check that the flavor mapping is well defined in org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.ServerListQuery", 1, servers.getServers().size());
         assertEquals(machine1.getName(), servers.getServers().get(0).name);
     }
 
@@ -245,7 +256,7 @@ public class ServersTest extends JAXRSBasedTest {
         Servers servers = readResponse(response, Servers.class);
         assertNotNull(servers);
         assertNotNull(servers.getServers());
-        assertEquals(0, servers.getServers().size());
+        assertEquals("Check that the flavor mapping is well defined in org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.ServerListQuery", 0, servers.getServers().size());
     }
 
     @Test
@@ -261,14 +272,17 @@ public class ServersTest extends JAXRSBasedTest {
         assertTrue(servers.getServers().size() >= 1);
     }
 
-
     @Test
     public void testGetWithStatusFilterNone() throws CloudProviderException {
         Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
         Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
         Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
 
-        Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", Machine.State.ERROR.toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status.ERROR.toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
+
+        // looks that there is a problem on the Sirocco machine query params stuff where String can not be cast to enum
+        // ie state is not handled the same way as other parameters
+        // cf org.ow2.sirocco.cloudmanager.core.impl.MachineManager#getMachines(QueryParams...)
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Servers servers = readResponse(response, Servers.class);
@@ -285,12 +299,15 @@ public class ServersTest extends JAXRSBasedTest {
         String hostname = "TODO";
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("host", hostname).request(MediaType.APPLICATION_JSON_TYPE).get();
-
-        fail("Need to define host mapping");
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Servers servers = readResponse(response, Servers.class);
+        assertNotNull(servers);
+        assertNotNull(servers.getServers());
+        assertEquals("Issue #22 to be implemented", 1, servers.getServers().size());
     }
 
     @Test
-    public void testGetWithStatusHostFilterNone() throws CloudProviderException {
+    public void testGetWithHostFilterNone() throws CloudProviderException {
         Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
         Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
         Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
@@ -301,7 +318,7 @@ public class ServersTest extends JAXRSBasedTest {
         Servers servers = readResponse(response, Servers.class);
         assertNotNull(servers);
         assertNotNull(servers.getServers());
-        assertEquals(0, servers.getServers().size());
+        assertEquals("Issue #22 to be implemented", 0, servers.getServers().size());
     }
 
     @Ignore
