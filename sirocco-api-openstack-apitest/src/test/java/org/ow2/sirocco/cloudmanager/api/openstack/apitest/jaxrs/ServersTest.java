@@ -52,6 +52,7 @@ import java.util.UUID;
 import static junit.framework.Assert.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -172,18 +173,13 @@ public class ServersTest extends JAXRSBasedTest {
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("name", machine1.getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        String servers = readResponse(response, String.class);
+        Servers servers = readResponse(response, Servers.class);
 
-        LOG.info(servers);
+        LOG.info("" + servers);
 
-        assertTrue(servers.contains(machine1.getName()));
-        assertTrue(servers.contains(machine1.getUuid()));
-
-        assertTrue(!servers.contains(machine2.getName()));
-        assertTrue(!servers.contains(machine2.getUuid()));
-
-        assertTrue(!servers.contains(machine3.getName()));
-        assertTrue(!servers.contains(machine3.getUuid()));
+        assertNotNull(servers.getServers());
+        assertEquals(1, servers.getServers().size());
+        assertEquals(machine1.getUuid(), servers.getServers().get(0).id);
     }
 
     @Test
