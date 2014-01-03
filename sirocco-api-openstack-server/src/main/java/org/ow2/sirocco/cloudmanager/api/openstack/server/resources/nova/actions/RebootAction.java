@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com

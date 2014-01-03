@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("serviceUnavailable")
-public class ServiceUnavailableFault extends Fault {
+public class ServiceUnavailableFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ServiceUnavailableFault(String message, String details) {
         super(503, message, details);

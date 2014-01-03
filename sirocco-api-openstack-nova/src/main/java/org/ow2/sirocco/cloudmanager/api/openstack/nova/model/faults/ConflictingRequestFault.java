@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("conflictingRequest")
-public class ConflictingRequestFault extends Fault {
+public class ConflictingRequestFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ConflictingRequestFault(String message, String details) {
         super(409, message, details);

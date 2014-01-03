@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -43,7 +43,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -75,7 +78,7 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
             } else {
                 LOG.error(error);
             }
-            return computeFault("Network Error", 500, e.getMessage());
+            return computeFault("Network Error", e.getMessage());
         }
     }
 
@@ -96,7 +99,7 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
             } else {
                 LOG.error(error);
             }
-            return computeFault("Network Error", 500, e.getMessage());
+            return computeFault("Network Error", e.getMessage());
         }
     }
 
@@ -118,7 +121,7 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
             } else {
                 LOG.error(error);
             }
-            return computeFault("Network Error", 500, e.getMessage());
+            return computeFault("Network Error", e.getMessage());
         }
     }
 
@@ -145,7 +148,7 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
             } else {
                 LOG.error(error);
             }
-            return computeFault("Network Error", 500, e.getMessage());
+            return computeFault("Network Error", e.getMessage());
         }
     }
 
@@ -163,7 +166,7 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
             } else {
                 LOG.error(error);
             }
-            return computeFault("Network Error", 500, e.getMessage());
+            return computeFault("Network Error", e.getMessage());
         }
     }
 }

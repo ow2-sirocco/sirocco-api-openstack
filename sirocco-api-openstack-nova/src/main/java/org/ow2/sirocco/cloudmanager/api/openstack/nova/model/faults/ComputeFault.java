@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("computeFault")
-public class ComputeFault extends Fault {
+public class ComputeFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ComputeFault(int code, String message, String details) {
         super(code, message, details);

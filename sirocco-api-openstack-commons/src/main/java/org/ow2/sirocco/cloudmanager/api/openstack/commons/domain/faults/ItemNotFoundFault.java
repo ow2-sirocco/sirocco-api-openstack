@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.nova.model.faults;
+package org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.faults;
 
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("itemNotFound")
-public class ItemNotFoundFault extends Fault {
+public class ItemNotFoundFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ItemNotFoundFault(String message, String details) {
         super(404, message, details);

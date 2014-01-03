@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("notImplemented")
-public class NotImplementedFault extends Fault {
+public class NotImplementedFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public NotImplementedFault(String message, String details) {
         super(501, message, details);

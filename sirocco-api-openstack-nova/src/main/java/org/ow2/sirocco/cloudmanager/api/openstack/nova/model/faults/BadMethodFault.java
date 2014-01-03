@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("badMethod")
-public class BadMethodFault extends Fault {
+public class BadMethodFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public BadMethodFault(String message, String details) {
         super(405, message, details);

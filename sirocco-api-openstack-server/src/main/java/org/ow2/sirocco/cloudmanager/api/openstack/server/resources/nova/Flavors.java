@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -86,7 +86,7 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
             } else {
                 LOGGER.error(error);
             }
-            return computeFault("Server Error", 500, e.getMessage());
+            return computeFault(500, "Server Error", e.getMessage());
         }
     }
 
@@ -117,7 +117,7 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
             } else {
                 LOGGER.error(error);
             }
-            return computeFault("Server Error", 500, e.getMessage());
+            return computeFault(500, "Server Error", e.getMessage());
         }
 
     }

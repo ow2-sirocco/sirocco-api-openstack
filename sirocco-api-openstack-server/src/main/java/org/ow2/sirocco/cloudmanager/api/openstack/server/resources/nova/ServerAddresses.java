@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -40,8 +40,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder.itemNotFound;
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -67,7 +66,7 @@ public class ServerAddresses extends AbstractResource implements org.ow2.sirocco
             }
             return badRequest("server addresses", "list");
         } catch (CloudProviderException e) {
-            return computeFault("Server Error", 500, e.getMessage());
+            return computeFault(500, "Server Error", e.getMessage());
         }
     }
 
@@ -85,7 +84,7 @@ public class ServerAddresses extends AbstractResource implements org.ow2.sirocco
                 result.getIp().addAll(networkAddresses);
                 return ok(result);
             } else {
-                return fault(itemNotFound("Not found", 404, "No address for network " + network));
+                return itemNotFound("Not found", "No address for network " + network);
             }
 
         } catch (InvalidRequestException ire) {
@@ -94,7 +93,7 @@ public class ServerAddresses extends AbstractResource implements org.ow2.sirocco
             }
             return badRequest("server addresses", "list");
         } catch (CloudProviderException e) {
-            return computeFault("Server Error", 500, e.getMessage());
+            return computeFault(500, "Server Error", e.getMessage());
         }
     }
 }

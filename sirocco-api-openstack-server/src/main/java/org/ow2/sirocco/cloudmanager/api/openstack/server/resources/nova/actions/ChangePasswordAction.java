@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 
 import javax.ws.rs.core.Response;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -42,6 +42,6 @@ public class ChangePasswordAction extends AbstractAction implements Action {
 
     @Override
     public Response invoke(String serverId, JsonNode payload) {
-        return computeFault("Not supported", 500, ACTION + " is not supported by the Sirocco implementation");
+        return computeFault(500, "Not supported", ACTION + " is not supported by the Sirocco implementation");
     }
 }

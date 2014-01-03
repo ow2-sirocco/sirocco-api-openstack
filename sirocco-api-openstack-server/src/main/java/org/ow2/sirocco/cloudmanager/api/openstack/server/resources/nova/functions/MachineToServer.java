@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -56,14 +56,44 @@ public class MachineToServer implements Function<Machine, Server> {
 
         if (details) {
             // TODO
-            if (machine.getProperties() != null) {
-                server.metadata = new MapToMetadata().apply(machine.getProperties());
+
+            server.userId = "TODO";
+
+            if (machine.getTenant() != null) {
+                server.tenantId = machine.getTenant().getUuid();
+            }
+
+            if (machine.getUpdated() != null) {
+                server.updated = machine.getUpdated().toString();
+            }
+
+            if (machine.getCreated() != null) {
+                server.created = machine.getCreated().toString();
+            }
+
+            //server.hostId = Strings.emptyToNull("TODO");
+            server.accessIPv4 = "";
+            server.accessIPv6 = "";
+
+            // TODO : Mapping
+            if (machine.getState() != null) {
+                server.status = machine.getState().toString();
+            }
+
+            // TODO
+            server.image = null;
+
+            if (machine.getConfig() != null) {
+                server.flavor = new MachineConfigurationToFlavor(true).apply(machine.getConfig());
             }
 
             if (machine.getNetworkInterfaces() != null) {
                 server.addresses = new NetworkInterfacesToAddresses().apply(machine.getNetworkInterfaces());
             }
 
+            if (machine.getProperties() != null) {
+                server.metadata = new MapToMetadata().apply(machine.getProperties());
+            }
         }
         return server;
     }

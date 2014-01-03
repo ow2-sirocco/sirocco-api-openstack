@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("serverCapacityUnavailable")
-public class ServerCapacityUnavailableFault extends Fault {
+public class ServerCapacityUnavailableFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ServerCapacityUnavailableFault(String message, String details) {
         super(503, message, details);

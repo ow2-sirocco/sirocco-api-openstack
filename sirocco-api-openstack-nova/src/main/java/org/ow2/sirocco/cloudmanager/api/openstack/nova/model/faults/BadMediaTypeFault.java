@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("badMediaType")
-public class BadMediaTypeFault extends Fault {
+public class BadMediaTypeFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public BadMediaTypeFault(String message, String details) {
         super(415, message, details);

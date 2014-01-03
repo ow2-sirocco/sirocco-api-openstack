@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("resizeNotAllowed")
-public class ResizeNotAllowedFault extends Fault {
+public class ResizeNotAllowedFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ResizeNotAllowedFault(String message, String details) {
         super(403, message, details);

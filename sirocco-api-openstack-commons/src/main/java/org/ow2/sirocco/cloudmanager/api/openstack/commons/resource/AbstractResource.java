@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,7 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.faults.ItemNotFoundFault;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +98,7 @@ public class AbstractResource {
         if (e != null) {
             message = e.getLocalizedMessage();
         }
-        return ResponseHelper.fault(FaultBuilder.itemNotFound(type + " " + id + " not found", 0, message));
+        return ResponseHelper.fault(new ItemNotFoundFault(type + " " + id + " not found", message));
     }
 
     /**

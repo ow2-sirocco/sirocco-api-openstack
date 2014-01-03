@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,9 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions;
 
 import org.codehaus.jackson.JsonNode;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.slf4j.Logger;
@@ -34,7 +32,8 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.itemNotFound;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -49,16 +48,16 @@ public abstract class AbstractAction implements Action {
         if (e != null) {
             message = e.getLocalizedMessage();
         }
-        return ResponseHelper.fault(FaultBuilder.itemNotFound(type + " " + id + " not found", 0, message));
+        return itemNotFound(type + " " + id + " not found", message);
     }
 
     public Response serverFault(CloudProviderException e) {
         LOG.debug("Server side error", e);
-        return computeFault("Server Error", 500, e.getMessage());
+        return computeFault(500, "Server Error", e.getMessage());
     }
 
     public Response notImplemented() {
-        return computeFault("Action not available", 500, getName() + " is not implemented");
+        return computeFault(500, "Action not available", getName() + " is not implemented");
     }
 
     /**

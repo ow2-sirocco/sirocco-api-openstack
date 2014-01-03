@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("overLimit")
-public class OverLimitFault extends Fault {
+public class OverLimitFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public OverLimitFault(String message, String details) {
         super(413, message, details);

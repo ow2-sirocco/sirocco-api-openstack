@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -37,8 +37,8 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.badRequest;
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -61,13 +61,13 @@ public class ServerActions extends AbstractResource implements org.ow2.sirocco.c
         try {
             rootNode = mapper.readValue(stream, JsonNode.class);
         } catch (IOException e) {
-            return computeFault("Error while reading JSON", 500, e.getMessage());
+            return computeFault(500, "Error while reading JSON", e.getMessage());
         }
 
         String actionName = Iterators.get(rootNode.getFieldNames(), 0);
         Action action = getAction(actionName);
         if (action == null) {
-            return computeFault("Can not retrieve action", 500, "Action not found for " + actionName);
+            return computeFault(500, "Can not retrieve action", "Action not found for " + actionName);
         } else {
             return action.invoke(getServerId(), rootNode);
         }

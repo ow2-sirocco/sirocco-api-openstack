@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,8 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.FaultWrapper;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.builders.FaultBuilder;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.faults.NotImplementedFault;
 
 import javax.ws.rs.core.Response;
 
@@ -59,36 +58,11 @@ public class ResponseHelper {
 
     /**
      *
-     * @param name
      * @param fault
      * @return
      */
-    public static Response fault(String name, Fault fault) {
-        // TODO : Set fault name as JSON Root element
-        FaultWrapper wrapper = new FaultWrapper();
-        wrapper.setFault(fault);
-        wrapper.setName(name);
-        return Response.status(fault.code).entity(wrapper).build();
-    }
-
-    /**
-     *
-     * @param fault
-     * @return
-     */
-    public static Response fault(FaultWrapper fault) {
-        return Response.status(fault.getFault().code).entity(fault).build();
-    }
-
-    /**
-     *
-     * @param message
-     * @param code
-     * @param details
-     * @return
-     */
-    public static Response computeFault(String message, int code, String details) {
-        return fault(FaultBuilder.computeFault(message, code, details));
+    public static Response fault(Fault fault) {
+        return Response.status(fault.code).entity(fault).build();
     }
 
     /**
@@ -98,18 +72,7 @@ public class ResponseHelper {
      * @return
      */
     public static final Response notImplemented(String resource, String operation) {
-        return fault("Not implemented", FaultBuilder.fault("Not implemented", 500, operation + " is not implemented for " + resource));
-    }
-
-    /**
-     * Bad request, HTTP 400
-     *
-     * @param resource
-     * @param operation
-     * @return
-     */
-    public static final Response badRequest(String resource, String operation) {
-        return fault("Bad Request", FaultBuilder.fault("Bad Request", 400, "Bad request for " + operation + " on " + resource));
+        return fault(new NotImplementedFault("Not implemented", operation + " is not implemented for " + resource));
     }
 
 }

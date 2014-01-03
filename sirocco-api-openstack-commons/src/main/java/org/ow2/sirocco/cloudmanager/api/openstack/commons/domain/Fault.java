@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,7 +24,14 @@ package org.ow2.sirocco.cloudmanager.api.openstack.commons.domain;
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class Fault {
+public abstract class Fault {
+
+    protected Fault(Integer code, String message, String details) {
+        this.code = code;
+        this.message = message;
+        this.details = details;
+    }
+
     public Integer code;
     public String message;
     public String details;

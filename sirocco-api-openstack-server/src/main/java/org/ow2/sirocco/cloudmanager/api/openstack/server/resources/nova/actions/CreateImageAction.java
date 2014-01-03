@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.computeFault;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -78,10 +78,10 @@ public class CreateImageAction extends AbstractAction implements Action {
 
         } catch (CloudProviderException e) {
             LOG.warn("Sirocco error", e);
-            return computeFault("Error", 500, e.getMessage());
+            return computeFault(500, "Error", e.getMessage());
         } catch (IOException e) {
             LOG.warn("Parsing error", e);
-            return computeFault("Error", 500, e.getMessage());
+            return computeFault(500, "Error", e.getMessage());
         }
     }
 }

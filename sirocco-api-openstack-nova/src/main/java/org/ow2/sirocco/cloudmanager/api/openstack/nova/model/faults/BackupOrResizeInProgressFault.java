@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("backupOrResizeInProgress")
-public class BackupOrResizeInProgressFault extends Fault {
+public class BackupOrResizeInProgressFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public BackupOrResizeInProgressFault(String message, String details) {
         super(409, message, details);

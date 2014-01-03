@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,33 +19,18 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.commons.domain;
+package org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.faults;
+
+import org.codehaus.jackson.map.annotate.JsonRootName;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class FaultWrapper {
+@JsonRootName("computeFault")
+public class NotImplementedFault extends Fault {
 
-    private String name;
-
-    private Fault fault;
-
-    public FaultWrapper() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Fault getFault() {
-        return fault;
-    }
-
-    public void setFault(Fault fault) {
-        this.fault = fault;
+    public NotImplementedFault(String message, String details) {
+        super(500, message, details);
     }
 }

@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("unauthorized")
-public class UnauthorizedFault extends Fault {
+public class UnauthorizedFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public UnauthorizedFault(String message, String details) {
         super(401, message, details);

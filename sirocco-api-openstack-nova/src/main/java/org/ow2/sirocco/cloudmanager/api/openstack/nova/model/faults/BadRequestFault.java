@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("badRequest")
-public class BadRequestFault extends Fault {
+public class BadRequestFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public BadRequestFault(String message, String details) {
         super(400, message, details);

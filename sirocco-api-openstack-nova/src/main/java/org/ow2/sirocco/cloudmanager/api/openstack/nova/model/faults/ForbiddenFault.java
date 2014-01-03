@@ -27,7 +27,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("forbidden")
-public class ForbiddenFault extends Fault {
+public class ForbiddenFault extends org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Fault {
 
     public ForbiddenFault(String message, String details) {
         super(403, message, details);
