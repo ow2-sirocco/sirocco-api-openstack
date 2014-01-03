@@ -16,19 +16,16 @@ You can use any standard OpenStack client as Sirocco Client using the Sirocco Op
 
 The module is Java and Maven based, you can compile it with the default Apache Maven install command:
 
-    mvn install
-
-### Use
-
-- TODO : How to integrate with Sirocco.
+    mvn
 
 ### Tests
 
 #### Integration tests
 
 Tests are based on Arquillian and are enabled by default. Check the apitest module at https://github.com/ow2-sirocco/sirocco-api-openstack/tree/master/sirocco-api-openstack-apitest.
+You can run the API tests by activating the apitest profile like:
 
-    mvn
+    mvn -Papitest
 
 ### TODOs
 
