@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.AsynchronousFault;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -75,6 +76,9 @@ public class Server extends Identifiable {
     public String userId;
 
     public String adminPass;
+
+    @JsonProperty("fault")
+    public AsynchronousFault fault;
 
     @Override
     public String toString() {
