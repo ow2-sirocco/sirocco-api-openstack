@@ -19,11 +19,11 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions;
+package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.extensions.serveradmin;
 
 import org.codehaus.jackson.JsonNode;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerAction;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.AbstractAction;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
@@ -32,21 +32,18 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.io.IOException;
-
-import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class RebootAction extends AbstractAction implements Action {
+public class StopServerAction extends AbstractAction implements Action {
 
-    private static Logger LOG = LoggerFactory.getLogger(RebootAction.class);
+    private static Logger LOG = LoggerFactory.getLogger(StopServerAction.class);
 
     @Inject
     private IMachineManager machineManager;
 
-    public static final String ACTION = "reboot";
+    public static final String ACTION = "os-stop";
 
     @Override
     public String getName() {
@@ -55,18 +52,14 @@ public class RebootAction extends AbstractAction implements Action {
 
     @Override
     public Response invoke(String serverId, JsonNode payload) {
-        LOG.debug("Rebooting server " + serverId);
+        LOG.info("Stopping server " + serverId);
         try {
-            ServerAction.Reboot reboot = getBean(payload, ServerAction.Reboot.class);
-            machineManager.restartMachine(serverId, reboot.getType() != null && reboot.getType().equalsIgnoreCase("hard") ? true : false);
-            return accepted(null);
+            machineManager.stopMachine(serverId);
+            return accepted();
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("server", serverId, rnfe);
         } catch (CloudProviderException e) {
             return serverFault(e);
-        } catch (IOException e) {
-            LOG.warn("Parse error", e);
-            return badRequest("Server : Can not read input payload", ACTION);
         }
     }
 }

@@ -70,6 +70,14 @@ public abstract class AbstractAction implements Action {
         return Response.accepted().location(uri).build();
     }
 
+    /**
+     *
+     * @return
+     */
+    public Response accepted() {
+        return Response.accepted().build();
+    }
+
     public <T> T getBean(JsonNode node, Class<T> clazz) throws IOException {
         JacksonConfigurator configurator = new JacksonConfigurator();
         return configurator.getContext(clazz).readValue(node, clazz);

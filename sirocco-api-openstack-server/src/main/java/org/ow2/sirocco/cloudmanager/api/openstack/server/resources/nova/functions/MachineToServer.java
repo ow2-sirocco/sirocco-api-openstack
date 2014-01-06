@@ -83,6 +83,10 @@ public class MachineToServer implements Function<Machine, Server> {
             // TODO
             server.image = null;
 
+            if (machine.getImage() != null) {
+                server.image = new MachineImageToImage(true).apply(machine.getImage());
+            }
+
             if (machine.getConfig() != null) {
                 server.flavor = new MachineConfigurationToFlavor(true).apply(machine.getConfig());
             }
