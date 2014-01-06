@@ -64,11 +64,11 @@ public class MachineToServer implements Function<Machine, Server> {
             }
 
             if (machine.getUpdated() != null) {
-                server.updated = machine.getUpdated().toString();
+                server.updated = machine.getUpdated();
             }
 
             if (machine.getCreated() != null) {
-                server.created = machine.getCreated().toString();
+                server.created = machine.getCreated();
             }
 
             //server.hostId = Strings.emptyToNull("TODO");

@@ -21,10 +21,25 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.commons;
 
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
+
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public final class Constants {
+
+    public static final class Date {
+
+        public static final String FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
+        public static final String TIMEZONE_NAME = "UTC";
+
+        public static final TimeZone TIMEZONE = TimeZone.getTimeZone(TIMEZONE_NAME);
+
+        public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(FORMAT);
+
+    }
 
     public static final class Link {
         public static final String BOOKMARK = "bookmark";

@@ -30,6 +30,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -54,9 +55,9 @@ public class Image extends Identifiable {
 
     private Integer minDisk;
 
-    private Calendar created;
+    private Date created;
 
-    private Calendar updated;
+    private Date updated;
 
     @JsonProperty("OS-EXT-IMG-SIZE:size")
     private Long size;
@@ -116,19 +117,19 @@ public class Image extends Identifiable {
         this.minDisk = minDisk;
     }
 
-    public Calendar getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(Calendar created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public Calendar getUpdated() {
+    public Date getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Calendar updated) {
+    public void setUpdated(Date updated) {
         this.updated = updated;
     }
 

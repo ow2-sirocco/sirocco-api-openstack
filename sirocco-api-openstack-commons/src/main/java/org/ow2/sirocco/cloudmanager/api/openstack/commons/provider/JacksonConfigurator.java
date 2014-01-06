@@ -25,6 +25,7 @@ import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
@@ -51,8 +52,8 @@ public class JacksonConfigurator implements ContextResolver<ObjectMapper> {
         this.mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
         this.mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Zulu"));
+        DateFormat dateFormat = new SimpleDateFormat(Constants.Date.FORMAT);
+        dateFormat.setTimeZone(Constants.Date.TIMEZONE);
         this.mapper.setDateFormat(dateFormat);
 
         this.mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);

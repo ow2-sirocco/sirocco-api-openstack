@@ -30,6 +30,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class Server extends Identifiable {
 
     public Addresses addresses;
 
-    public String created;
+    public Date created;
 
     public Flavor flavor;
 
@@ -68,8 +69,7 @@ public class Server extends Identifiable {
     @XmlElement(name = "tenant_id")
     public String tenantId;
 
-    // TODO : Date with format
-    public String updated;
+    public Date updated;
 
     @JsonProperty("user_id")
     @XmlElement(name = "user_id")
