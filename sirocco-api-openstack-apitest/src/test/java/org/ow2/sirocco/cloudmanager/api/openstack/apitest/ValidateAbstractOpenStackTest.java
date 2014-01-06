@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -96,7 +96,7 @@ public class ValidateAbstractOpenStackTest extends AbstractOpenStackTest {
     @Test
     public void testCreateMachine() throws CloudProviderException {
         getOrCreateTenant(tenantName);
-        Machine machine = createMachine("machineB", "imageA", 2, 1024, null);
+        Machine machine = createMachine("machineB", "imageA", 2, 1024, null, false);
         assertNotNull(machine);
     }
 }

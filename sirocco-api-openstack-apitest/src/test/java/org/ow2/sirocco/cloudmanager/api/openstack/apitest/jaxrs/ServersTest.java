@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -49,7 +49,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.UUID;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -90,7 +91,7 @@ public class ServersTest extends JAXRSBasedTest {
     public void testOneMachineList() {
         Machine machine = null;
         try {
-            machine = createMachine("mytestmachine", "image", 1, 1024, null);
+            machine = createMachine("mytestmachine", "image", 1, 1024, null, false);
         } catch (CloudProviderException e) {
             e.printStackTrace();
             // this should abort this test class...
@@ -110,7 +111,7 @@ public class ServersTest extends JAXRSBasedTest {
     public void testDetailsOneMachineList() {
         Machine machine = null;
         try {
-            machine = createMachine("mytestmachinedetails", "image", 1, 1024, null);
+            machine = createMachine("mytestmachinedetails", "image", 1, 1024, null, false);
         } catch (CloudProviderException e) {
             e.printStackTrace();
             // this should abort this test class...
@@ -134,7 +135,7 @@ public class ServersTest extends JAXRSBasedTest {
         List<Machine> machines = Lists.newArrayList();
         for(int i = 0; i < size; i++) {
             try {
-                machines.add(createMachine("mytestmachine-" + i, "image", 1, 1024, null));
+                machines.add(createMachine("mytestmachine-" + i, "image", 1, 1024, null, false));
             } catch (CloudProviderException e) {
                 e.printStackTrace();
                 // this should abort this test class...
@@ -151,7 +152,7 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testSingleMachineDetails() throws CloudProviderException {
-        Machine machine = createMachine("mymachine", "myimage", 1, 512, null);
+        Machine machine = createMachine("mymachine", "myimage", 1, 512, null, false);
         Response response = target(BASE_URL + tenantName + "/servers/" + machine.getUuid()).request(MediaType.APPLICATION_JSON_TYPE).get();
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
@@ -165,9 +166,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
       public void testGetWithNameFilterOne() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null, false);
 
         LOG.info("Query list with server name = " + machine1.getName());
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("name", machine1.getName()).request(MediaType.APPLICATION_JSON_TYPE).get();
@@ -184,9 +185,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithNameFilterNone() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("name", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -197,9 +198,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithImageFilterOne() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("image", machine1.getImage().getUuid()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -213,9 +214,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithImageFilterNone() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("image", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -228,9 +229,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithFlavorFilterOne() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("flavor", machine1.getConfig().getUuid()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -242,9 +243,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithFlavorFilterNone() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("flavor", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -257,9 +258,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithStatusFilterOne() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", machine1.getState().toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -270,9 +271,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithStatusFilterNone() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status.ERROR.toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -289,9 +290,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithHostFilterOne() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
         String hostname = "TODO";
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("host", hostname).request(MediaType.APPLICATION_JSON_TYPE).get();
@@ -304,9 +305,9 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithHostFilterNone() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null);
+        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
+        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
+        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
 
         Response response = target(BASE_URL + tenantName + "/servers").queryParam("host", "foo").request(MediaType.APPLICATION_JSON_TYPE).get();
 
@@ -369,7 +370,7 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testDeleteServer() throws CloudProviderException {
-        Machine machine = createMachine("foobar", "baz", 1, 512, null);
+        Machine machine = createMachine("foobar", "baz", 1, 512, null, false);
         LOG.info("Machine ID " + machine.getUuid());
 
         Response response = target(BASE_URL + tenantName + "/servers/" + machine.getUuid()).request().delete();

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -308,14 +308,16 @@ public class AbstractOpenStackTest {
     /**
      * Create a machine.
      *
+     *
      * @param name
      * @param image
      * @param cpu
      * @param memory
+     * @param waitStart
      * @return
      * @throws CloudProviderException
      */
-    protected Machine createMachine(String name, String image, int cpu, int memory, Map<String, String> props) throws CloudProviderException {
+    protected Machine createMachine(String name, String image, int cpu, int memory, Map<String, String> props, boolean waitStart) throws CloudProviderException {
         LOG.info("Create machine " + name + " - image : " + image + " - cpu : " + cpu + " - memory : " + memory);
         MachineTemplate template = new MachineTemplate();
         template.setName("template1");
@@ -333,8 +335,33 @@ public class AbstractOpenStackTest {
         machine.setLocation("France");
         machine.setMachineTemplate(template);
         Job job = machineManager.createMachine(machine);
+
+        // wait for job to complete if requested
+        if (waitStart) {
+            try {
+                waitForJobCompletion(job);
+            } catch (Exception e) {
+                throw new CloudProviderException(e);
+            }
+        } else {
+            LOG.warn("Do not wait the machine to be started, can cause some tests to fail if not well handled...");
+        }
+
         LOG.info("Machine created " + job.getTargetResource().getUuid());
         return machineManager.getMachineByUuid(job.getTargetResource().getUuid());
+    }
+
+    protected void stopMachine(String uuid, boolean waitStop) throws CloudProviderException {
+        Job job = machineManager.stopMachine(uuid);
+        if (waitStop) {
+            try {
+                waitForJobCompletion(job);
+            } catch (Exception e) {
+                throw new CloudProviderException(e);
+            }
+        } else {
+            LOG.warn("Do not wait the machine to be stopped, can cause some tests to fail if not well handled...");
+        }
     }
 
     /**
@@ -347,6 +374,7 @@ public class AbstractOpenStackTest {
         int counter = 60;
         String jobUuid = job.getUuid();
         while (true) {
+            LOG.info("Waiting for the job to complete...");
             job = this.jobManager.getJobByUuid(jobUuid);
             if (job.getState() != Job.Status.RUNNING) {
                 break;
@@ -359,4 +387,26 @@ public class AbstractOpenStackTest {
         return job.getState();
     }
 
+    /**
+     * Wait for machine state, or raise exception after timeout...
+     *
+     * @param machine
+     * @param state
+     * @param timeout in seconds
+     */
+    protected void waitMachineState(Machine machine, Machine.State state, int timeout) throws Exception {
+        int counter = timeout > 0 ? timeout : 20;
+        while (true) {
+            LOG.info("Waiting for machine state to be " + state);
+            machine = this.machineManager.getMachineByUuid(machine.getUuid());
+            if (machine.getState() == state) {
+                LOG.info("Valid machine state");
+                break;
+            }
+            Thread.sleep(1000);
+            if (counter-- == 0) {
+                throw new Exception("Machine state time out");
+            }
+        }
+    }
 }

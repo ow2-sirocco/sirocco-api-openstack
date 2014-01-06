@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -45,7 +45,7 @@ public abstract class AbstractServersTest extends AbstractOpenStackTest {
     public void testOneMachineList() {
         Machine machine = null;
         try {
-            machine = createMachine("mytestmachine", "image", 1, 1024, null);
+            machine = createMachine("mytestmachine", "image", 1, 1024, null, false);
         } catch (CloudProviderException e) {
             e.printStackTrace();
             // this should abort this test class...
