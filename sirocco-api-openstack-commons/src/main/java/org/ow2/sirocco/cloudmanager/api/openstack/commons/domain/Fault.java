@@ -26,13 +26,17 @@ package org.ow2.sirocco.cloudmanager.api.openstack.commons.domain;
  */
 public abstract class Fault {
 
+    public Integer code;
+    public String message;
+    public String details;
+
+    public Fault() {
+    }
+
     protected Fault(Integer code, String message, String details) {
         this.code = code;
         this.message = message;
         this.details = details;
     }
 
-    public Integer code;
-    public String message;
-    public String details;
 }

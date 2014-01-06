@@ -36,6 +36,10 @@ public class AsynchronousFault extends Fault {
      */
     public Date created;
 
+    public AsynchronousFault() {
+        super();
+    }
+
     public AsynchronousFault(Integer code, String message, String details) {
         super(code, message, details);
     }
