@@ -371,7 +371,7 @@ public class AbstractOpenStackTest {
      * @throws Exception
      */
     protected Job.Status waitForJobCompletion(Job job) throws Exception {
-        int counter = 60;
+        int counter = timeout(60);
         String jobUuid = job.getUuid();
         while (true) {
             LOG.info("Waiting for the job to complete...");
@@ -395,7 +395,7 @@ public class AbstractOpenStackTest {
      * @param timeout in seconds
      */
     protected void waitMachineState(Machine machine, Machine.State state, int timeout) throws Exception {
-        int counter = timeout > 0 ? timeout : 20;
+        int counter = timeout(timeout > 0 ? timeout : 30);
         while (true) {
             LOG.info("Waiting for machine state to be " + state);
             machine = this.machineManager.getMachineByUuid(machine.getUuid());
@@ -408,5 +408,27 @@ public class AbstractOpenStackTest {
                 throw new Exception("Machine state time out");
             }
         }
+    }
+
+    /**
+     * Get the timeout from the environment or return default if not found
+     *
+     * @param d default value
+     * @return
+     */
+    protected int timeout(int d) {
+        String val = System.getProperty("test.timeout");
+        if (val != null) {
+            try {
+                return Integer.parseInt(val);
+            } catch (NumberFormatException e) {
+                return d > 0 ? d : 60;
+            }
+        }
+        return d > 0 ? d : 60;
+    }
+
+    protected Machine getUpdatedMachine(Machine machine) throws CloudProviderException {
+        return machineManager.getMachineByUuid(machine.getUuid());
     }
 }

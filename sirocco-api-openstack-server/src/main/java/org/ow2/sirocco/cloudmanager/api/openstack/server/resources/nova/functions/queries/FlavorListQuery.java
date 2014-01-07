@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -60,6 +60,6 @@ public class FlavorListQuery extends AbstractQuery {
 
     @Override
     protected String getSiroccoParamName(String openstackParamName) {
-        return QUERYMAPPING.get(openstackParamName);
+        return QUERYMAPPING.get(openstackParamName) != null ? QUERYMAPPING.get(openstackParamName) : openstackParamName;
     }
 }
