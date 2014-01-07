@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -76,16 +76,34 @@ public class ServerListQuery extends AbstractQuery {
     @Override
     protected String getSiroccoParamValue(String openstackParamName, String openstackParamValue) {
         if (openstackParamName != null && openstackParamName.equalsIgnoreCase("status")) {
-
             try {
                 org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status input = org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status.valueOf(openstackParamValue.toUpperCase());
-                return STATUS.get(input) != null ? STATUS.get(input).toString() : openstackParamValue;
+                return STATUS.get(input) != null ? STATUS.get(input).getClass().getName() + "." + STATUS.get(input) : openstackParamValue;
             } catch (IllegalArgumentException e) {
+                LOG.warn("Invalid input status, not found in the NOVA API : " + openstackParamValue);
                 return openstackParamValue;
             }
-
             // return the mapped value if found, else the input one...
         }
         return openstackParamValue;
+    }
+
+    protected Query getQuery(String paramName) {
+        if (paramName != null && (paramName.equalsIgnoreCase("state") || paramName.equalsIgnoreCase("status"))) {
+            return new StateQuery();
+        }
+        return super.getQuery(paramName);
+    }
+
+    public class StateQuery extends Query {
+
+        public StateQuery() {
+            super();
+        }
+
+        @Override
+        public String toString() {
+            return name + operator + value;
+        }
     }
 }

@@ -271,15 +271,11 @@ public class ServersTest extends JAXRSBasedTest {
 
     @Test
     public void testGetWithStatusFilterNone() throws CloudProviderException {
-        Machine machine1 = createMachine("mymachine1", "myimage1", 1, 512, null, false);
-        Machine machine2 = createMachine("mymachine2", "myimage2", 1, 512, null, false);
-        Machine machine3 = createMachine("mymachine3", "myimage3", 1, 512, null, false);
+        LOG.info("testGetWithStatusFilterNone");
+        Machine machine1 = createMachine("testGetWithStatusFilterNone1", "myimage1", 1, 512, null, true);
+        Machine machine2 = createMachine("testGetWithStatusFilterNone2", "myimage2", 1, 512, null, true);
 
-        Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants.Nova.Status.ERROR.toString()).request(MediaType.APPLICATION_JSON_TYPE).get();
-
-        // looks that there is a problem on the Sirocco machine query params stuff where String can not be cast to enum
-        // ie state is not handled the same way as other parameters
-        // cf org.ow2.sirocco.cloudmanager.core.impl.MachineManager#getMachines(QueryParams...)
+        Response response = target(BASE_URL + tenantName + "/servers").queryParam("status", "error").request(MediaType.APPLICATION_JSON_TYPE).get();
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Servers servers = readResponse(response, Servers.class);

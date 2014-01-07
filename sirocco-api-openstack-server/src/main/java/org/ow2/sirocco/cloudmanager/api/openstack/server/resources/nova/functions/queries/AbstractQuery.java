@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -40,7 +40,7 @@ import java.util.Map;
  */
 public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryParams> {
 
-    private static Logger LOG = LoggerFactory.getLogger(AbstractQuery.class);
+    protected static Logger LOG = LoggerFactory.getLogger(AbstractQuery.class);
 
     @Override
     public QueryParams apply(org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestInfo input) {
@@ -60,7 +60,11 @@ public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryP
         List<Query> filter = Lists.newArrayList(Iterators.filter(Iterators.transform(p.keySet().iterator(), new Function<String, Query>() {
             @Override
             public Query apply(String key) {
-                return new Query(getSiroccoParamName(key.toLowerCase()), "=", getSiroccoParamValue(key, p.get(key)));
+                Query q = getQuery(key.toLowerCase());
+                q.name = getSiroccoParamName(key.toLowerCase());
+                q.operator = "=";
+                q.value = getSiroccoParamValue(key, p.get(key));
+                return q;
             }
         }), new Predicate<Query>() {
             // do not keep query with null names. It means that there is no mapping between openstack and sirocco...
@@ -76,7 +80,6 @@ public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryP
                 return input.toString();
             }
         });
-
         LOG.info("Query list : " + f);
 
         return new QueryParams.Builder().filters(f).build();
@@ -100,6 +103,10 @@ public abstract class AbstractQuery implements Function<JaxRsRequestInfo, QueryP
      */
     protected String getSiroccoParamValue(String openstackParamName, String openstackParamValue) {
         return openstackParamValue;
+    }
+
+    protected Query getQuery(String paramName) {
+        return new Query();
     }
 
     public class Query {

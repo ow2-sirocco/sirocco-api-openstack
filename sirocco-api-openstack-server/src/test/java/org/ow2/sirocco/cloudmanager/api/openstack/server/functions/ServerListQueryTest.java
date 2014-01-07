@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,6 +28,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.JaxRsRequestI
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.ServerListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
+import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 
 import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
@@ -136,7 +137,6 @@ public class ServerListQueryTest {
 
         assertTrue(params.getFilters().contains("name='azerty'"));
         assertTrue(params.getFilters().contains("image.uuid='123456789'"));
-
     }
 
     /**
@@ -164,7 +164,7 @@ public class ServerListQueryTest {
         QueryParams params = query.apply(input);
         assertNotNull(params);
         assertEquals(1, params.getFilters().size());
-        assertTrue(params.getFilters().contains("state='foobar'"));
+        assertTrue(params.getFilters().contains("state=foobar"));
     }
 
     /**
@@ -193,7 +193,7 @@ public class ServerListQueryTest {
         QueryParams params = query.apply(input);
         assertNotNull(params);
         assertEquals(1, params.getFilters().size());
-        assertTrue(params.getFilters().contains("state='ERROR'"));
+        assertEquals("state=" + Machine.State.class.getName() + "." + Machine.State.ERROR, params.getFilters().get(0));
     }
 
 
@@ -222,9 +222,6 @@ public class ServerListQueryTest {
         QueryParams params = query.apply(input);
         assertNotNull(params);
         assertEquals(1, params.getFilters().size());
-        assertTrue(params.getFilters().contains("state='STARTED'"));
+        assertEquals("state=" + Machine.State.class.getName() + "." + Machine.State.STARTED, params.getFilters().get(0));
     }
-
-
-
 }
