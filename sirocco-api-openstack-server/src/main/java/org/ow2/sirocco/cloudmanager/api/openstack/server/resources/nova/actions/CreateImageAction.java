@@ -27,6 +27,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerAction;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.model.cimi.CloudResource;
 import org.ow2.sirocco.cloudmanager.model.cimi.Job;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
 import org.slf4j.Logger;
@@ -71,10 +72,12 @@ public class CreateImageAction extends AbstractAction implements Action {
                 }
             }.apply(create));
 
+            CloudResource target = job.getTargetResource();
+
             // TODO : Create the HTTP header location which has to be returned
             // http://docs.openstack.org/api/openstack-compute/2/content/Create_Image-d1e4655.html
             
-            return accepted(URI.create("http://TODO"));
+            return accepted(URI.create("http://TODO/tenantID/images/" + target.getUuid()));
 
         } catch (CloudProviderException e) {
             LOG.warn("Sirocco error", e);
