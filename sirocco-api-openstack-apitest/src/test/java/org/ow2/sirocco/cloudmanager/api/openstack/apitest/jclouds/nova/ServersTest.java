@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds.nova;
 
 import com.google.common.base.Predicate;
 import com.google.inject.Inject;

@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds.nova;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -31,15 +31,14 @@ import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static junit.framework.TestCase.fail;
+import static org.junit.Assert.fail;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @RunWith(Arquillian.class)
-public class ImageMetadataTest extends JcloudsBasedTest {
-
-    private static Logger LOG = LoggerFactory.getLogger(ImageMetadataTest.class);
+public class ServerAddressesTest extends JcloudsBasedTest {
+    private static Logger LOG = LoggerFactory.getLogger(ServerAddressesTest.class);
 
     @Deployment
     public static WebArchive deploy() {
@@ -48,6 +47,6 @@ public class ImageMetadataTest extends JcloudsBasedTest {
 
     @Test
     public void test() {
-        fail("Not implemented");
+        fail("Not tested");
     }
 }

@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds.nova;
 
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;

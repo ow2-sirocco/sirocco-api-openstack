@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds;
+package org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds.nova;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -37,8 +37,8 @@ import static org.junit.Assert.fail;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @RunWith(Arquillian.class)
-public class ServerAddressesTest extends JcloudsBasedTest {
-    private static Logger LOG = LoggerFactory.getLogger(ServerAddressesTest.class);
+public class ServerMetadataTest extends JcloudsBasedTest {
+    private static Logger LOG = LoggerFactory.getLogger(ServerMetadataTest.class);
 
     @Deployment
     public static WebArchive deploy() {
