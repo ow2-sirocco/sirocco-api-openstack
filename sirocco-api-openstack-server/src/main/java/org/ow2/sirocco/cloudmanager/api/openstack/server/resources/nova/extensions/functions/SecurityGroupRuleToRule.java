@@ -38,7 +38,7 @@ public class SecurityGroupRuleToRule implements Function<SecurityGroupRule, Rule
             range.setCidr(input.getSourceIpRange());
             rule.setIpRange(range);
         }
-        rule.setId(input.getId());
+        rule.setId(input.getUuid());
         rule.setToPort(input.getToPort());
         rule.setName(input.getUuid());
         rule.setIpProtocol(input.getIpProtocol());

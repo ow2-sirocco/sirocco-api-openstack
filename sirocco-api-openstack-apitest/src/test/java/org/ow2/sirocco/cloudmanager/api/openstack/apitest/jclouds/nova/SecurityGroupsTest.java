@@ -78,7 +78,7 @@ public class SecurityGroupsTest extends JcloudsBasedTest {
         waitForJobCompletion(job);
         org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup sg = networkManager.getSecurityGroupByUuid(job.getTargetResource().getUuid());
 
-        SecurityGroup group = api().get("" + sg.getId());
+        SecurityGroup group = api().get("" + sg.getUuid());
         assertNotNull(group);
         assertEquals(name, group.getName());
         assertEquals(desc, group.getDescription());
@@ -118,7 +118,7 @@ public class SecurityGroupsTest extends JcloudsBasedTest {
         org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup sg = networkManager.getSecurityGroupByUuid(job.getTargetResource().getUuid());
 
         assertEquals("Can not create the security group to delete", 1, networkManager.getSecurityGroups().getItems().size());
-        api().delete("" + sg.getId());
+        api().delete("" + sg.getUuid());
         assertEquals("Security group has not been deleted", 0, networkManager.getSecurityGroups().getItems().size());
     }
 }

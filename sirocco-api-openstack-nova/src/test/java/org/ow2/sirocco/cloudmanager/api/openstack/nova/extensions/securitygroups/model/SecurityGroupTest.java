@@ -44,12 +44,12 @@ public class SecurityGroupTest {
         SecurityGroup securityGroup = new SecurityGroup();
         securityGroup.setName("group1");
         securityGroup.setDescription("My security group");
-        securityGroup.setId(12345);
+        securityGroup.setId("12345");
         securityGroup.setTenantId("admin");
 
         Rule rule = new Rule();
         rule.setFromPort(22);
-        rule.setId(1);
+        rule.setId("1");
         rule.setIpProtocol("TCP");
         rule.setName("SSH");
         Rule.IpRange range = new Rule.IpRange();
@@ -70,12 +70,12 @@ public class SecurityGroupTest {
         SecurityGroup securityGroup = new SecurityGroup();
         securityGroup.setName("group1");
         securityGroup.setDescription("My security group");
-        securityGroup.setId(12345);
+        securityGroup.setId("12345");
         securityGroup.setTenantId("admin");
 
         Rule rule = new Rule();
         rule.setFromPort(22);
-        rule.setId(1);
+        rule.setId("1");
         rule.setIpProtocol("TCP");
         rule.setName("SSH");
         Rule.IpRange range = new Rule.IpRange();

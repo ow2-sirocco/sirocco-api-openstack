@@ -35,7 +35,7 @@ import java.util.List;
 @JsonRootName("security_group")
 public class SecurityGroup {
 
-    private Integer id;
+    private String id;
 
     private String description;
 
@@ -46,11 +46,11 @@ public class SecurityGroup {
 
     private List<Rule> rules = new ArrayList<>();
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

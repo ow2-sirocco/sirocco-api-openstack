@@ -32,7 +32,7 @@ import java.io.Serializable;
  */
 public class Rule {
 
-    private Integer id;
+    private String id;
 
     private String name;
 
@@ -51,11 +51,11 @@ public class Rule {
     @JsonProperty("ip_range")
     private IpRange ipRange = new IpRange();
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

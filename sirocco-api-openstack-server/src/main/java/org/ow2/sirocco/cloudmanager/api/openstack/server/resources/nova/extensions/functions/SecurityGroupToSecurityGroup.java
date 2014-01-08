@@ -38,7 +38,7 @@ public class SecurityGroupToSecurityGroup implements Function<SecurityGroup, org
             result.setTenantId(input.getTenant().getUuid());
         }
         result.setDescription(input.getDescription());
-        result.setId(input.getId());
+        result.setId(input.getUuid());
         if (input.getRules() != null) {
             result.setRules(Lists.transform(input.getRules(), new SecurityGroupRuleToRule()));
         }
