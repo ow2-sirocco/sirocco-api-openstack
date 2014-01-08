@@ -19,15 +19,18 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups;
+package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupDefaultRule;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
+ * Security group default rules. cf http://api.openstack.org/api-ref-compute.html#os-security-group-default-rules
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @Path(Constants.Nova.TENANT_PATH_TEMPLATE + "/os-security-group-rules")
@@ -50,7 +53,7 @@ public interface SecurityGroupRules {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response create();
+    Response create(SecurityGroupDefaultRule rule);
 
     /**
      * Shows information for a specified security group rule.
