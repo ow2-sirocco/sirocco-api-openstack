@@ -72,6 +72,9 @@ public class AbstractOpenStackTest {
     @Inject
     protected IMachineImageManager machineImageManager;
 
+    @Inject
+    protected INetworkManager networkManager;
+
     protected String identity;
     protected String password;
     protected String endpoint;
