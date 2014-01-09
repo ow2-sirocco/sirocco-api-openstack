@@ -334,8 +334,7 @@ public class AbstractOpenStackTest {
         MachineCreate machine = new MachineCreate();
         machine.setDescription("Machine description " + name);
         machine.setName(name);
-        // country name
-        machine.setLocation("France");
+        machine.setLocation("FR");
         machine.setMachineTemplate(template);
         Job job = machineManager.createMachine(machine);
 
