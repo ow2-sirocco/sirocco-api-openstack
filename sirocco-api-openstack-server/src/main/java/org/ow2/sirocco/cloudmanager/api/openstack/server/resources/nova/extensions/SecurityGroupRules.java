@@ -24,12 +24,9 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensi
 import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupDefaultRule;
-import org.ow2.sirocco.cloudmanager.core.api.IJobManager;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupRuleForCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.SecurityGroupRuleToSecurityGroupRule;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
-import org.ow2.sirocco.cloudmanager.model.cimi.Job;
-import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup;
-import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroupCreate;
 import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroupRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +52,6 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
     @Inject
     private INetworkManager networkManager;
 
-    @Inject
-    private IJobManager jobManager;
-
     @Override
     public Response list() {
         LOG.warn("SecurityGroupRules.list() is not implemented");
@@ -65,38 +59,30 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
     }
 
     @Override
-    public Response create(SecurityGroupDefaultRule rule) {
+    public Response create(SecurityGroupRuleForCreate rule) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Create security group default rule");
+            LOG.debug("Add a rule to security group : " + rule);
         }
-        if (rule == null || rule.getRule() == null) {
-            return badRequest("null input", "Can not create a security group default rule from empty request");
+        if (rule == null || rule.getGroupId() == null) {
+            return badRequest("null input", "Can not add a rule from empty request");
         }
-        
-        // FIXME: is it just a about creating a security group and adding the rule?
-        // FIXME : Do it in another thread!
+
         try {
-            SecurityGroupCreate create = new SecurityGroupCreate();
-            create.setName("default");
-            create.setDescription("Default security group for tenant " + getTenantId());
-            Job job = this.networkManager.createSecurityGroup(create);
-            SecurityGroup group = (SecurityGroup) job.getTargetResource();
-            // wait for the job to complete to add the rule
-            String jobUuid = job.getUuid();
-            int counter = 20;
-            while (true) {
-                job = this.jobManager.getJobByUuid(jobUuid);
-                if (job.getState() != Job.Status.RUNNING) {
-                    break;
+            SecurityGroupRule securityGroupRule = null;
+            if (rule.getParentGroupId() != null && rule.getGroupId() == null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Adding rule to security group using IP range");
                 }
-                Thread.sleep(1000);
-                if (counter-- == 0) {
-                    return computeFault("create security group error", "timeout");
+                securityGroupRule = this.networkManager.addRuleToSecurityGroupUsingIpRange(rule.getParentGroupId(), rule.getCidr(), rule.getIpProtocol(), rule.getFromPort(), rule.getToPort());
+            } else if (rule.getParentGroupId() != null && rule.getParentGroupId() != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Adding rule to security group using source group");
                 }
+                securityGroupRule = this.networkManager.addRuleToSecurityGroupUsingSourceGroup(rule.getParentGroupId(), rule.getGroupId(), rule.getIpProtocol(), rule.getFromPort(), rule.getToPort());
+            } else {
+                return badRequest("Bad request", "Can not add rule from CIDR nor source group, check parameters");
             }
-            SecurityGroupRule securityGroupRule = this.networkManager.addRuleToSecurityGroupUsingIpRange(group.getUuid(), rule.getRule().getIpRange().getCidr(), rule.getRule().getIpProtocol(), rule.getRule().getFromPort(), rule.getRule().getToPort());
-            rule.getRule().setId(securityGroupRule.getUuid());
-            return ok(rule);
+            return ok(new SecurityGroupRuleToSecurityGroupRule().apply(securityGroupRule));
         } catch (Exception e) {
             return computeFault("create security group error", e.getMessage());
         }
@@ -106,5 +92,11 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
     public Response get(String id) {
         LOG.warn("SecurityGroupRules.get(id) is not implemented");
         return notImplemented("SecurityGroupRules", "list");
+    }
+
+    @Override
+    public Response delete(String id) {
+        LOG.warn("SecurityGroupRules.delete(id) is not implemented");
+        return notImplemented("SecurityGroupRules", "delete");
     }
 }

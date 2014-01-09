@@ -22,7 +22,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupDefaultRule;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupRuleForCreate;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -37,7 +37,7 @@ import javax.ws.rs.core.Response;
 public interface SecurityGroupRules {
 
     /**
-     * Lists default security group rules.
+     * Lists security group rules.
      *
      * @return
      */
@@ -46,14 +46,14 @@ public interface SecurityGroupRules {
     Response list();
 
     /**
-     * Creates a default security group rule.
+     * Add a rule to a security group
      *
-     * @return
+     * @return the created SecurityGroupRule
      */
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response create(SecurityGroupDefaultRule rule);
+    Response create(SecurityGroupRuleForCreate rule);
 
     /**
      * Shows information for a specified security group rule.
@@ -65,4 +65,14 @@ public interface SecurityGroupRules {
     @Path("/{security_group_rule_id}​")
     @Produces(MediaType.APPLICATION_JSON)
     Response get(@PathParam("security_group_rule_id") String id);
+
+    /**
+     * Delete a rule
+     *
+     * @param id
+     * @return
+     */
+    @DELETE
+    @Path("/{security_group_rule_id}​")
+    Response delete(@PathParam("security_group_rule_id") String id);
 }
