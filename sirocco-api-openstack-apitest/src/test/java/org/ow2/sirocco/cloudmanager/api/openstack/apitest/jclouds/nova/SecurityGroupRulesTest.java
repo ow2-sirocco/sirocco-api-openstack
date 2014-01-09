@@ -28,7 +28,6 @@ import org.jclouds.openstack.nova.v2_0.domain.Ingress;
 import org.jclouds.openstack.nova.v2_0.domain.IpProtocol;
 import org.jclouds.openstack.nova.v2_0.domain.SecurityGroupRule;
 import org.jclouds.openstack.nova.v2_0.extensions.SecurityGroupApi;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JcloudsBasedTest;
@@ -45,7 +44,6 @@ import static org.junit.Assert.*;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @RunWith(Arquillian.class)
-@Ignore
 public class SecurityGroupRulesTest extends JcloudsBasedTest {
 
     private static Logger LOG = LoggerFactory.getLogger(SecurityGroupsTest.class);
