@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -358,6 +358,54 @@ public abstract class ServerAction {
 
     @JsonRootName("restore")
     public static final class Restore extends ServerAction {
+
+    }
+
+    @JsonRootName("addFloatingIp")
+    public static final class AssociateFloatingIp extends ServerAction {
+
+        private String address;
+
+        public AssociateFloatingIp() {
+            super();
+        }
+
+        public AssociateFloatingIp(String address) {
+            super();
+            this.address = address;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+    }
+
+    @JsonRootName("removeFloatingIp")
+    public static final class DisassociateFloatingIp extends ServerAction {
+
+        private String address;
+
+        public DisassociateFloatingIp() {
+            super();
+        }
+
+        public DisassociateFloatingIp(String address) {
+            super();
+            this.address = address;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
 
     }
 

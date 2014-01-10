@@ -27,15 +27,17 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jclouds.openstack.nova.v2_0.domain.FloatingIP;
 import org.jclouds.openstack.nova.v2_0.extensions.FloatingIPApi;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JcloudsBasedTest;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.model.cimi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -55,37 +57,85 @@ public class FloatingIPsTest extends JcloudsBasedTest {
     }
 
     @Test
-    public void testList() {
-        fail();
+    public void testList() throws CloudProviderException {
+        LOG.info("List floating IP");
+        Job job = createAddress("testList0");
+        Assert.assertNotNull(job.getId());
+        Assert.assertNotNull(job.getUuid());
+        CloudResource resource = job.getTargetResource();
+        Address address = networkManager.getAddressByUuid(resource.getUuid());
+
+        assertEquals(Job.Status.SUCCESS, job.getState());
         FluentIterable<? extends FloatingIP> list = api().list();
+        assertEquals("Bad list size", 1, list.size());
+        assertEquals(address.getUuid(), list.get(0).getId());
+        assertEquals(address.getIp(), list.get(0).getIp());
+
+        LOG.info(list.get(0).toString());
     }
 
     @Test
-    public void testGetOne() {
-        fail();
-        String id = "";
-        FloatingIP floatingIP = api().get(id);
-        assertNotNull(floatingIP);
+    public void testGetOne() throws CloudProviderException {
+        LOG.info("Get floating IP");
+
+        Job job = createAddress("testGetOne");
+        Address address = networkManager.getAddressByUuid(job.getTargetResource().getUuid());
+
+        FloatingIP floatingIP = api().get(address.getUuid());
+        assertNotNull("Can not get floating IP", floatingIP);
+        assertEquals(address.getIp(), floatingIP.getIp());
+        assertEquals(address.getUuid(), floatingIP.getId());
+
+        LOG.info(floatingIP.toString());
     }
 
     @Test
-    public void testDelete() {
-        fail();
-        String id = "";
-        api().delete(id);
+    public void testDelete() throws CloudProviderException {
+        Job job = createAddress("testDelete");
+        CloudResource resource = job.getTargetResource();
+
+        api().delete(resource.getUuid());
+
+        Address a = networkManager.getAddressByUuid(resource.getUuid());
+        assertTrue("Address has not be deleted", (a == null || (a != null && (a.getState() == Address.State.DELETED))));
+        assertEquals("Address is still in the address list", 0, networkManager.getAddresses().getItems().size());
     }
 
     @Test
-    public void testAssociate() {
-        fail("Not implemented");
+    public void testAddToServer() throws CloudProviderException {
+        Machine machine = createMachine("testAddToServer", "imagetestAddToServer", 1, 512, null, true);
+        Job job = createAddress("testAddToServerAddress");
+        Address address = networkManager.getAddressByUuid(job.getTargetResource().getUuid());
+
+        api().addToServer(address.getIp(), machine.getUuid());
+
+        // TODO : Check that the address is available in the machine...
+
+        machine = machineManager.getMachineByUuid(machine.getUuid());
+
+        // check that the address is linked to the machine
+        address = this.networkManager.getAddressByUuid(address.getUuid());
+        assertNotNull("Address is not linked to resource", address.getResource());
+        Machine attachedMachine = (Machine) address.getResource();
+        assertEquals(machine.getUuid(), attachedMachine.getUuid());
     }
 
     @Test
-    public void testAddToServer() {
-        fail();
-        String server = "";
-        String address = "";
-        api().addToServer(address, server);
+    public void testDeleteFromServer() throws CloudProviderException {
+        Machine machine = createMachine("testDeleteFromServer", "imagetestDeleteFromServer", 1, 512, null, true);
+        Job job = createAddress("testDeleteFromServerAddress");
+        Address address = networkManager.getAddressByUuid(job.getTargetResource().getUuid());
+        networkManager.addAddressToMachine(machine.getUuid(), address.getIp());
+        api().removeFromServer(address.getIp(), machine.getUuid());
+
+        address = this.networkManager.getAddressByUuid(address.getUuid());
+        assertNull("Address is not unlinked from server", address.getResource());
+    }
+
+    private Job createAddress(String name) throws CloudProviderException {
+        AddressCreate create = new AddressCreate();
+        create.setName(name);
+        return this.networkManager.createAddress(create);
     }
 
 }

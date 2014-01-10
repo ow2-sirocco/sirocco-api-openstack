@@ -22,12 +22,21 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.extensions.serveradmin;
 
 import org.codehaus.jackson.JsonNode;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerAction;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.AbstractAction;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * Add a floating IP to a server.
@@ -44,6 +53,8 @@ import javax.ws.rs.core.Response;
  */
 public class AddFloatingIPAddressAction extends AbstractAction implements Action {
 
+    private static Logger LOG = LoggerFactory.getLogger(AddFloatingIPAddressAction.class);
+
     public static final String ACTION = "addFloatingIp";
 
     @Inject
@@ -56,7 +67,30 @@ public class AddFloatingIPAddressAction extends AbstractAction implements Action
 
     @Override
     public Response invoke(String serverId, JsonNode payload) {
-        // INetworkManager.addAddressToMachine(machineUuid, ip)
-        return notImplemented();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Add floating IP to server ", serverId);
+        }
+
+        ServerAction.AssociateFloatingIp associateFloatingIp = null;
+        try {
+            associateFloatingIp = getBean(payload, ServerAction.AssociateFloatingIp.class);
+            if (associateFloatingIp.getAddress() == null) {
+                return badRequest("Bad request", "Address is required");
+            }
+            networkManager.addAddressToMachine(serverId, associateFloatingIp.getAddress());
+        } catch (IOException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.error("Parse payload error", e);
+            }
+            return badRequest("Server : Can not read input payload", ACTION);
+        } catch (ResourceNotFoundException e) {
+            return resourceNotFoundException(ACTION, associateFloatingIp.getAddress(), e);
+        } catch (CloudProviderException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.error("Core exception", e);
+            }
+            return computeFault(ACTION, e.getMessage());
+        }
+        return accepted();
     }
 }

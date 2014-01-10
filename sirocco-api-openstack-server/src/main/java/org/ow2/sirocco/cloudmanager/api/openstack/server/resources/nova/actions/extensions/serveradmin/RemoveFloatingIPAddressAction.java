@@ -22,12 +22,21 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.extensions.serveradmin;
 
 import org.codehaus.jackson.JsonNode;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerAction;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.resources.Action;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.actions.AbstractAction;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * Remove floating IP from server with payload :
@@ -45,6 +54,8 @@ public class RemoveFloatingIPAddressAction extends AbstractAction implements Act
 
     public static final String ACTION = "removeFloatingIp";
 
+    private static Logger LOG = LoggerFactory.getLogger(RemoveFloatingIPAddressAction.class);
+
     @Inject
     private INetworkManager networkManager;
 
@@ -55,6 +66,31 @@ public class RemoveFloatingIPAddressAction extends AbstractAction implements Act
 
     @Override
     public Response invoke(String serverId, JsonNode payload) {
-        return notImplemented();
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Remove floating IP from server ", serverId);
+        }
+
+        ServerAction.DisassociateFloatingIp dissoDisassociateFloatingIp = null;
+        try {
+            dissoDisassociateFloatingIp = getBean(payload, ServerAction.DisassociateFloatingIp.class);
+            if (dissoDisassociateFloatingIp.getAddress() == null) {
+                return badRequest("Bad request", "Address is required");
+            }
+            networkManager.removeAddressFromMachine(serverId, dissoDisassociateFloatingIp.getAddress());
+        } catch (IOException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.error("Parse payload error", e);
+            }
+            return badRequest("Server : Can not read input payload", ACTION);
+        } catch (ResourceNotFoundException e) {
+            return resourceNotFoundException(ACTION, dissoDisassociateFloatingIp.getAddress(), e);
+        } catch (CloudProviderException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.error("Core exception", e);
+            }
+            return computeFault(ACTION, e.getMessage());
+        }
+        return accepted();
     }
 }
