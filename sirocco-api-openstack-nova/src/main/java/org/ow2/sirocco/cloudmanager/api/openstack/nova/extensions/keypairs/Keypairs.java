@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ import javax.ws.rs.core.Response;
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@Path(Constants.Nova.TENANT_PATH_TEMPLATE + "/os_keypairs")
+@Path(Constants.Nova.TENANT_PATH_TEMPLATE + "/os-keypairs")
 public interface Keypairs {
 
     /**

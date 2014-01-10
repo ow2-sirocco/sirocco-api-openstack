@@ -26,7 +26,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@JsonRootName("addSecurityGroup")
+@JsonRootName("security_group")
 public class SecurityGroupForCreate {
 
     private String name;

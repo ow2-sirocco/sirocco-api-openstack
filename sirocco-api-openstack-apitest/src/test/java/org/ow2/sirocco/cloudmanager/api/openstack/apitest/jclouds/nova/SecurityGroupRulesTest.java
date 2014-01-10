@@ -86,8 +86,6 @@ public class SecurityGroupRulesTest extends JcloudsBasedTest {
         assertTrue("to port differs", ingress.getToPort() == securityGroupRule.getToPort());
         assertTrue("IP protocol differs", ingress.getIpProtocol().value().equalsIgnoreCase(securityGroupRule.getIpProtocol()));
         assertEquals("CIDR differs", cidr, securityGroupRule.getSourceIpRange());
-
-        assertEquals(create.getName(), securityGroupRule.getParentGroup());
     }
 
     @Test
@@ -127,5 +125,22 @@ public class SecurityGroupRulesTest extends JcloudsBasedTest {
         assertTrue("IP protocol differs", ingress.getIpProtocol().value().equalsIgnoreCase(securityGroupRule.getIpProtocol()));
         assertNotNull(securityGroupRule.getSourceGroup());
         assertEquals(sourceId, securityGroupRule.getSourceGroup().getUuid());
+    }
+
+    @Test
+    public void testDeleteRule() throws Exception {
+        SecurityGroupCreate create = new SecurityGroupCreate();
+        create.setName("testDeleteRule");
+        Job job = networkManager.createSecurityGroup(create);
+        waitForJobCompletion(job);
+        String targetId = job.getTargetResource().getUuid();
+        org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroupRule rule = networkManager.addRuleToSecurityGroupUsingIpRange(targetId, "0.0.0.0/0", "TCP", 8080, 8080);
+
+        SecurityGroup group = networkManager.getSecurityGroupByUuid(targetId);
+        assertTrue(group.getRules() != null && group.getRules().size() == 1);
+        api().deleteRule(group.getRules().get(0).getUuid());
+
+        LOG.info("POST DELETE :  " + networkManager.getSecurityGroupByUuid(targetId));
+        assertEquals("Rule has not be deleted (still in the security group)", 0, group.getRules().size());
     }
 }

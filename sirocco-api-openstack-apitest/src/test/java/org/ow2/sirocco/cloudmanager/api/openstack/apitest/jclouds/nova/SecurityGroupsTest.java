@@ -36,8 +36,7 @@ import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroupCreate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -63,7 +62,7 @@ public class SecurityGroupsTest extends JcloudsBasedTest {
         SecurityGroup group = api().createWithDescription(name, description);
         assertNotNull(group);
         assertEquals(name, group.getName());
-        assertEquals(description, group.getName());
+        assertEquals(description, group.getDescription());
     }
 
     @Test
@@ -119,6 +118,11 @@ public class SecurityGroupsTest extends JcloudsBasedTest {
 
         assertEquals("Can not create the security group to delete", 1, networkManager.getSecurityGroups().getItems().size());
         api().delete("" + sg.getUuid());
-        assertEquals("Security group has not been deleted", 0, networkManager.getSecurityGroups().getItems().size());
+
+        // wait for the security group to be in delete state...
+        waitSecurityGroupState(sg, org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup.State.DELETED, 20);
+
+        sg = networkManager.getSecurityGroupByUuid(sg.getUuid());
+        assertTrue("Security group has not been deleted", sg == null || sg.getState() == org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup.State.DELETED);
     }
 }

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -30,6 +30,8 @@ import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Ports
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Subnets;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.*;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.Keypairs;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.SecurityGroupRules;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.SecurityGroups;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.VolumeAttachments;
 
 import javax.ws.rs.core.Application;
@@ -72,6 +74,8 @@ public class OpenStackApplication extends Application {
         // NOVA EXTENSIONS
         classes.add(Keypairs.class);
         classes.add(VolumeAttachments.class);
+        classes.add(SecurityGroups.class);
+        classes.add(SecurityGroupRules.class);
 
         return classes;
     }

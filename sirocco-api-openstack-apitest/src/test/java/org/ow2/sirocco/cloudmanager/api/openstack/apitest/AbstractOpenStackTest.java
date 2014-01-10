@@ -412,6 +412,22 @@ public class AbstractOpenStackTest {
         }
     }
 
+    protected void waitSecurityGroupState(SecurityGroup group, SecurityGroup.State state, int timeout) throws Exception {
+        int counter = timeout(timeout > 0 ? timeout : 30);
+        while (true) {
+            LOG.info("Waiting for machine state to be " + state);
+            group = this.networkManager.getSecurityGroupByUuid(group.getUuid());
+            if (group.getState() == state) {
+                LOG.info("Valid group state");
+                break;
+            }
+            Thread.sleep(1000);
+            if (counter-- == 0) {
+                throw new Exception("Group state time out");
+            }
+        }
+    }
+
     /**
      * Get the timeout from the environment or return default if not found
      *

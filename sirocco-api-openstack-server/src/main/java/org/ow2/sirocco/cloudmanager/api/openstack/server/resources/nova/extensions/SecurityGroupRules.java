@@ -67,7 +67,7 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
         if (LOG.isDebugEnabled()) {
             LOG.debug("Add a rule to security group : " + rule);
         }
-        if (rule == null || rule.getGroupId() == null) {
+        if (rule == null) {
             return badRequest("null input", "Can not add a rule from empty request");
         }
 
@@ -78,7 +78,7 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
                     LOG.debug("Adding rule to security group using IP range");
                 }
                 securityGroupRule = this.networkManager.addRuleToSecurityGroupUsingIpRange(rule.getParentGroupId(), rule.getCidr(), rule.getIpProtocol(), rule.getFromPort(), rule.getToPort());
-            } else if (rule.getParentGroupId() != null && rule.getParentGroupId() != null) {
+            } else if (rule.getParentGroupId() != null && rule.getGroupId() != null) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Adding rule to security group using source group");
                 }
