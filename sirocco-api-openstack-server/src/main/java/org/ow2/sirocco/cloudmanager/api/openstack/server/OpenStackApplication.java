@@ -29,10 +29,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Netwo
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Ports;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.Subnets;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.*;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.Keypairs;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.SecurityGroupRules;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.SecurityGroups;
-import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.VolumeAttachments;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.*;
 
 import javax.ws.rs.core.Application;
 import java.util.HashSet;
@@ -76,6 +73,7 @@ public class OpenStackApplication extends Application {
         classes.add(VolumeAttachments.class);
         classes.add(SecurityGroups.class);
         classes.add(SecurityGroupRules.class);
+        classes.add(FloatingIPs.class);
 
         return classes;
     }

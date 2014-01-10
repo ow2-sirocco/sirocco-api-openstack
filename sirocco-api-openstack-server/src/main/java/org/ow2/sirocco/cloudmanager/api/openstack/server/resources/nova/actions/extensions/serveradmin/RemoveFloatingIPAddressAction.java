@@ -30,21 +30,20 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 /**
- * Add a floating IP to a server.
- *
- * <pre>
- *     {
- *          "addFloatingIp": {
- *              "address": "10.10.10.1"
- *          }
+ * Remove floating IP from server with payload :
+ *  <pre>
+ *      {
+ *          "removeFloatingIp":
+ *               {
+ *                  "address": "10.10.10.1"
+ *               }
  *      }
- * </pre>
- *
+ *  </pre>
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class AddFloatingIPAddressAction extends AbstractAction implements Action {
+public class RemoveFloatingIPAddressAction extends AbstractAction implements Action {
 
-    public static final String ACTION = "addFloatingIp";
+    public static final String ACTION = "removeFloatingIp";
 
     @Inject
     private INetworkManager networkManager;
@@ -56,7 +55,6 @@ public class AddFloatingIPAddressAction extends AbstractAction implements Action
 
     @Override
     public Response invoke(String serverId, JsonNode payload) {
-        // INetworkManager.addAddressToMachine(machineUuid, ip)
         return notImplemented();
     }
 }
