@@ -22,8 +22,10 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvider;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupRuleForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.SecurityGroupRuleToSecurityGroupRule;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
@@ -34,6 +36,8 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Date;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
@@ -45,7 +49,7 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHe
 @ResourceInterceptorBinding
 @RequestScoped
 @Extension(of = "compute", name = "os-security-group-rules", documentation = "http://api.openstack.org/api-ref-compute.html#os-security-group-rules")
-public class SecurityGroupRules extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.SecurityGroupRules {
+public class SecurityGroupRules extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.SecurityGroupRules, ExtensionProvider {
 
     private static Logger LOG = LoggerFactory.getLogger(SecurityGroupRules.class);
 
@@ -98,5 +102,10 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
     public Response delete(String id) {
         LOG.warn("SecurityGroupRules.delete(id) is not implemented");
         return notImplemented("SecurityGroupRules", "delete");
+    }
+
+    @Override
+    public org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension getExtensionMetadata() {
+        return new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension("os-security-group-default-rules", "Default rules for security group support.", new ArrayList<Link>(), "SecurityGroupDefaultRules", "http://docs.openstack.org/compute/ext/securitygroupdefaultrules/api/v1.1", new Date());
     }
 }

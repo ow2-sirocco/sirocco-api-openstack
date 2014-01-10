@@ -23,8 +23,10 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensi
 
 import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvider;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.KeypairForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.CredentialsToKeyPair;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.KeypairForCreateToCredentialsCreate;
@@ -40,6 +42,8 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Date;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
@@ -51,7 +55,7 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHe
 @ResourceInterceptorBinding
 @RequestScoped
 @Extension(of = "compute", name = "os-keypairs", documentation = "http://api.openstack.org/api-ref-compute.html#os-keypairs")
-public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.Keypairs {
+public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.Keypairs, ExtensionProvider {
 
     private static Logger LOG = LoggerFactory.getLogger(org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.Keypairs.class);
 
@@ -148,5 +152,10 @@ public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudm
             }
             return computeFault(500, "Server Error", e.getMessage());
         }
+    }
+
+    @Override
+    public org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension getExtensionMetadata() {
+        return new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension("os-keypairs", "Keypair support.", new ArrayList<Link>(), "Keypairs", "http://docs.openstack.org/compute/ext/keypairs/api/v1.1", new Date());
     }
 }

@@ -19,41 +19,17 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions;
 
-import org.codehaus.jackson.annotate.JsonValue;
-import org.codehaus.jackson.map.annotate.JsonRootName;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension;
 
 /**
- * Extensions array
+ * Any nova extension must implement this interface while waiting for a better way to do it (introspect annotations)
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@JsonRootName("extensions")
-public class Extensions {
+public interface ExtensionProvider {
 
-    private List<Extension> extensions;
+    Extension getExtensionMetadata();
 
-    public Extensions() {
-        extensions = new ArrayList<Extension>();
-    }
-
-    @JsonValue
-    public List<Extension> getExtensions() {
-        return extensions;
-    }
-
-    public void setExtensions(List<Extension> extensions) {
-        this.extensions = extensions;
-    }
-
-    @Override
-    public String toString() {
-        return "Extensions{" +
-                "extensions=" + extensions +
-                '}';
-    }
 }

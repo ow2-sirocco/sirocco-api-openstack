@@ -23,8 +23,10 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensi
 
 import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvider;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroupForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.SecurityGroupToSecurityGroup;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
@@ -41,6 +43,8 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Date;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
@@ -52,7 +56,7 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHe
 @ResourceInterceptorBinding
 @RequestScoped
 @Extension(of = "compute", name = "os-security-groups", documentation = "http://api.openstack.org/api-ref-compute.html#os-security-groups")
-public class SecurityGroups extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.SecurityGroups {
+public class SecurityGroups extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.SecurityGroups, ExtensionProvider {
 
     private static Logger LOG = LoggerFactory.getLogger(SecurityGroups.class);
 
@@ -171,5 +175,10 @@ public class SecurityGroups extends AbstractResource implements org.ow2.sirocco.
             }
             return computeFault(500, "Server Error", e.getMessage());
         }
+    }
+
+    @Override
+    public org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension getExtensionMetadata() {
+        return new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension("os-security-groups", "Security group support.", new ArrayList<Link>(), "SecurityGroups", "http://docs.openstack.org/compute/ext/securitygroups/api/v1.1", new Date());
     }
 }

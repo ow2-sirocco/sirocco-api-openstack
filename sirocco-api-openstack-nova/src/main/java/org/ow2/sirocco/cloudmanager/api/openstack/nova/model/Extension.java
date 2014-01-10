@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -42,4 +42,27 @@ public class Extension {
     public String namespace;
     public Date updated;
 
+    public Extension() {
+    }
+
+    public Extension(String alias, String description, List<Link> links, String name, String namespace, Date updated) {
+        this.alias = alias;
+        this.description = description;
+        this.links = links;
+        this.name = name;
+        this.namespace = namespace;
+        this.updated = updated;
+    }
+
+    @Override
+    public String toString() {
+        return "Extension{" +
+                "alias='" + alias + '\'' +
+                ", description='" + description + '\'' +
+                ", links=" + links +
+                ", name='" + name + '\'' +
+                ", namespace='" + namespace + '\'' +
+                ", updated=" + updated +
+                '}';
+    }
 }

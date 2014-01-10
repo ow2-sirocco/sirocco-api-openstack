@@ -23,8 +23,10 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensi
 
 import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.api.annotations.Extension;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvider;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments.model.VolumeAttachmentForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.MachineVolumeToVolumeAttachment;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
@@ -42,6 +44,8 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
@@ -54,7 +58,7 @@ import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHe
 @ResourceInterceptorBinding
 @RequestScoped
 @Extension(of = "compute", name = "os-volume_attachments", documentation = "http://api.openstack.org/api-ref-compute.html#os-volume_attachments")
-public class VolumeAttachments extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments.VolumeAttachments {
+public class VolumeAttachments extends AbstractResource implements org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.volumeattachments.VolumeAttachments, ExtensionProvider {
 
     private static Logger LOG = LoggerFactory.getLogger(VolumeAttachments.class);
 
@@ -150,5 +154,11 @@ public class VolumeAttachments extends AbstractResource implements org.ow2.siroc
             }
             return computeFault(500, "Server Error", e.getMessage());
         }
+    }
+
+    @Override
+    public org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension getExtensionMetadata() {
+        // FIXME : Check documentation
+        return new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension("os-volume-attachments", "Volume Attachment Support", new ArrayList<Link>(), "VolumeAttachment", "http://docs.openstack.org/compute/ext/securitygroups/api/v1.1", new Date());
     }
 }
