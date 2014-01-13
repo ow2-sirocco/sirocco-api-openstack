@@ -29,6 +29,8 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvi
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygrouprules.model.SecurityGroupRuleForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.SecurityGroupRuleToSecurityGroupRule;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroupRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,7 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
@@ -94,14 +97,31 @@ public class SecurityGroupRules extends AbstractResource implements org.ow2.siro
 
     @Override
     public Response get(String id) {
-        LOG.warn("SecurityGroupRules.get(id) is not implemented");
-        return notImplemented("SecurityGroupRules", "list");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Get security group rule " + id);
+        }
+
+        try {
+            return ok(new SecurityGroupRuleToSecurityGroupRule().apply(networkManager.getSecurityGroupRuleByUuid(id)));
+        } catch (ResourceNotFoundException e) {
+            return resourceNotFoundException("secgrouprule", id, e);
+        }
     }
 
     @Override
     public Response delete(String id) {
-        LOG.warn("SecurityGroupRules.delete(id) is not implemented");
-        return notImplemented("SecurityGroupRules", "delete");
+        try {
+            this.networkManager.deleteRuleFromSecurityGroup(id);
+            return deleted();
+        } catch (CloudProviderException e) {
+            final String error = "Error while deleting security group rule " + id;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault(error, e.getMessage());
+        }
     }
 
     @Override
