@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -34,6 +34,8 @@ import javax.ws.rs.core.Response;
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notFound;
 
 /**
+ * Sirocco does not support volume type. cf issue #4
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @ResourceInterceptorBinding
@@ -48,14 +50,12 @@ public class Types extends AbstractResource implements org.ow2.sirocco.cloudmana
     @Override
     public Response list() {
         LOG.debug("Get types list");
-        // TODO
         return ok(new Types());
     }
 
     @Override
     public Response get(String id) {
         LOG.debug("Get volume type information");
-        // TODO
         return notFound();
     }
 }
