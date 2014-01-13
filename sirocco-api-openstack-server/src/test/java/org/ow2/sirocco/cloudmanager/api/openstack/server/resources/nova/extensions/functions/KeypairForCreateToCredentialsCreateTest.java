@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -27,12 +27,7 @@ import org.junit.runners.JUnit4;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.KeypairForCreate;
 import org.ow2.sirocco.cloudmanager.model.cimi.CredentialsCreate;
 
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-
-import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -42,7 +37,7 @@ public class KeypairForCreateToCredentialsCreateTest {
 
     @Test
     public void testWithPublicKey() {
-        KeypairForCreateToCredentialsCreate f = new KeypairForCreateToCredentialsCreate(null);
+        KeypairForCreateToCredentialsCreate f = new KeypairForCreateToCredentialsCreate();
         KeypairForCreate input = new KeypairForCreate();
         input.setPublicKey("123");
         input.setName("foo");
@@ -51,23 +46,5 @@ public class KeypairForCreateToCredentialsCreateTest {
         assertEquals(input.getPublicKey(), output.getCredentialsTemplate().getPublicKey());
         // even if not used in the backend...
         assertEquals(input.getName(), output.getName());
-    }
-
-    @Test
-    public void testWithNullGenerator() {
-        KeypairForCreateToCredentialsCreate f = new KeypairForCreateToCredentialsCreate(null);
-        KeypairForCreate input = new KeypairForCreate();
-        input.setName("foo");
-        CredentialsCreate output = f.apply(input);
-        assertNull(output.getCredentialsTemplate().getPublicKey());
-    }
-
-    @Test
-    public void testWithNullKey() throws NoSuchAlgorithmException {
-        KeypairForCreateToCredentialsCreate f = new KeypairForCreateToCredentialsCreate(KeyPairGenerator.getInstance("RSA"));
-        KeypairForCreate input = new KeypairForCreate();
-        input.setName("foo");
-        CredentialsCreate output = f.apply(input);
-        assertNotNull(output.getCredentialsTemplate().getPublicKey());
     }
 }
