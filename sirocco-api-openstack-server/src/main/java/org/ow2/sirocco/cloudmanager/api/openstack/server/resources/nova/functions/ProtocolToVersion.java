@@ -22,21 +22,44 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Address;
 
 /**
+ * Change the Sirocco protocol to openstack IP version (4, 6).
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class CimiAddressToAddress implements Function<org.ow2.sirocco.cloudmanager.model.cimi.Address, Address> {
+public class ProtocolToVersion implements Function<String, Integer> {
 
-    public CimiAddressToAddress() {
-    }
+    public static int V4 = 4;
+
+    public static int V6 = 6;
+
+    static Integer DEFAULT = V4;
 
     @Override
-    public Address apply(org.ow2.sirocco.cloudmanager.model.cimi.Address address) {
-        Address result = new Address();
-        result.setAddr(address.getIp());
-        result.setVersion(new ProtocolToVersion().apply(address.getProtocol()));
+    public Integer apply(String protocol) {
+        if (protocol == null) {
+            return DEFAULT;
+        }
+
+        Integer result;
+        try {
+            // first try to parse int from string...
+            result = Integer.parseInt(protocol);
+
+            if (result != V4 && result != V6) {
+                result = DEFAULT;
+            }
+
+        } catch (NumberFormatException e) {
+            if (protocol.contains("" + V4)) {
+                result = V4;
+            } else if (protocol.contains("" + V6)) {
+                result = V6;
+            } else {
+                result = DEFAULT;
+            }
+        }
         return result;
     }
 }

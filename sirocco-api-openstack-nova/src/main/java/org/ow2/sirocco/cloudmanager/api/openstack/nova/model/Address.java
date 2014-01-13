@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -41,7 +41,7 @@ public class Address implements Serializable {
     @JsonProperty("OS-EXT-IPS-MAC:mac_addr")
     private String macAddr;
 
-    private String version;
+    private Integer version;
 
     private String addr;
 
@@ -56,11 +56,11 @@ public class Address implements Serializable {
         this.macAddr = macAddr;
     }
 
-    public String getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 

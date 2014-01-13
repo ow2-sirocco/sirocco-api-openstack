@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@ public class NetworkInterfacesToAddresses implements Function<List<MachineNetwor
             for (MachineNetworkInterfaceAddress machineItfAddress : machineNetworkInterface.getAddresses()) {
                 Address address = new Address();
                 address.setMacAddr(machineNetworkInterface.getMacAddress());
-                address.setVersion(machineItfAddress.getAddress().getProtocol());
+                address.setVersion(new ProtocolToVersion().apply(machineItfAddress.getAddress().getProtocol()));
                 address.setAddr(machineItfAddress.getAddress().getIp());
                 list.add(address);
             }
