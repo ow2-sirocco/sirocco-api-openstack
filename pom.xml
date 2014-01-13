@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   SIROCCO
-  Copyright (C) 2013 France Telecom
+  Copyright (C) 2014 France Telecom
   Contact: sirocco@ow2.org
 
   This library is free software; you can redistribute it and/or
@@ -28,7 +28,7 @@
     <parent>
         <artifactId>sirocco-cloudmanager-project</artifactId>
         <groupId>org.ow2.sirocco.cloudmanager</groupId>
-        <version>0.6.0-SNAPSHOT</version>
+        <version>0.6.1-SNAPSHOT</version>
     </parent>
 
     <groupId>org.ow2.sirocco.cloudmanager</groupId>
