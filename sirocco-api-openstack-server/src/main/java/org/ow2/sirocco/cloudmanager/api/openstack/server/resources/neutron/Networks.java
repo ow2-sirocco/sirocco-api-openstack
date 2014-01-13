@@ -84,7 +84,10 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response create(NetworkForCreate network) {
-        String provider = "TODO";
+        // FIXME : Get the provider from the request, header or runtime.
+        // For now the provider is null so Sirocco will choose the right one.
+        LOG.info("Provider is set to null, Sirocco will choose the best one (#34)");
+        String provider = null;
 
         try {
             Job job = networkManager.createNetwork(new NetworkForCreateToNetworkCreate(provider).apply(network));
