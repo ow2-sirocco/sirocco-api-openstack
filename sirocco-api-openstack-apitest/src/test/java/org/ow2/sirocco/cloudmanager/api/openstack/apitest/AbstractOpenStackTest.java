@@ -366,6 +366,24 @@ public class AbstractOpenStackTest {
         }
     }
 
+    protected SecurityGroup createSecurityGroup(String name, boolean wait) throws CloudProviderException {
+        SecurityGroupCreate securityGroupCreate = new SecurityGroupCreate();
+        securityGroupCreate.setName(name);
+        securityGroupCreate.setDescription("Description of group " + name);
+        Job job = this.networkManager.createSecurityGroup(securityGroupCreate);
+
+        if (wait) {
+            try {
+                waitForJobCompletion(job);
+            } catch (Exception e) {
+                throw new CloudProviderException(e);
+            }
+        } else {
+            LOG.warn("Do not wait the security group to be started, can cause some tests to fail if not well handled...");
+        }
+        return networkManager.getSecurityGroupByUuid(job.getTargetResource().getUuid());
+    }
+
     /**
      *
      * @param job

@@ -29,7 +29,10 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jclouds.collect.PagedIterable;
 import org.jclouds.openstack.nova.v2_0.domain.Server;
 import org.jclouds.openstack.nova.v2_0.domain.ServerCreated;
+import org.jclouds.openstack.nova.v2_0.features.ServerApi;
+import org.jclouds.openstack.nova.v2_0.options.CreateServerOptions;
 import org.jclouds.openstack.v2_0.domain.Resource;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,11 +43,11 @@ import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
+import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.UUID;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -70,11 +73,15 @@ public class ServersTest extends JcloudsBasedTest {
         return Archives.openstackAPIWithKeystoneMock("sirocco");
     }
 
+    private ServerApi api() {
+        return nova.getApi().getServerApiForZone(getZone());
+    }
+
     @Test
     public void testCreateSingleServer() throws CloudProviderException, IOException {
         LOG.info("Creating server");
 
-        String name = UUID.randomUUID().toString();
+        String name = "CreateSingleServer";
         MachineImage image = createImage("image-testCreateSingleServer");
         MachineConfiguration machineConfiguration = createMachineConfiguration("config-testCreateSingleServer", 1, 512, null);
 
@@ -84,6 +91,46 @@ public class ServersTest extends JcloudsBasedTest {
         checkCreate(server);
         // validates that the server we have back is registered in sirocco
         assertNotNull(machineManager.getMachineByUuid(server.getId()));
+    }
+
+    @Test
+    public void testCreateWithSecurityGroup() throws Exception {
+        LOG.info("Create server with security group");
+
+        String name = "testCreateWithSecurityGroup";
+        MachineImage image = createImage("image-testCreateWithSecurityGroup");
+        MachineConfiguration machineConfiguration = createMachineConfiguration("config-testCreateWithSecurityGroup", 1, 512, null);
+        SecurityGroup group = createSecurityGroup("mygroup", true);
+        ServerCreated server = api().create(name, image.getUuid(), machineConfiguration.getUuid(), CreateServerOptions.Builder.securityGroupNames(group.getName()));
+        checkCreate(server);
+        // validates that the server we have back is registered in sirocco
+        assertNotNull(machineManager.getMachineByUuid(server.getId()));
+
+        // wait for the server to be started
+        waitMachineState(machineManager.getMachineByUuid(server.getId()), Machine.State.STARTED, 60);
+        Machine machine = machineManager.getMachineByUuid(server.getId());
+
+        assertEquals(Machine.State.STARTED, machine.getState());
+        Assert.assertNotNull(machine.getSecurityGroups());
+        assertTrue("Can not get any security group in machine", machine.getSecurityGroups().size() > 0);
+        assertEquals("Invalid number of security groups in machine", 1, machine.getSecurityGroups().size());
+        assertEquals("Invalid group name ", group.getName(), machine.getSecurityGroups().get(0).getName());
+    }
+
+    @Test
+    @Ignore
+    public void testCreateWithSecurityGroupUnknow() throws CloudProviderException {
+        LOG.info("Create server with security group");
+
+        String name = "testCreateWithSecurityGroup";
+        MachineImage image = createImage("image-testCreateWithSecurityGroup");
+        MachineConfiguration machineConfiguration = createMachineConfiguration("config-testCreateWithSecurityGroup", 1, 512, null);
+        ServerCreated server = api().create(name, image.getUuid(), machineConfiguration.getUuid(), CreateServerOptions.Builder.securityGroupNames("foobarsecgroup"));
+        checkCreate(server);
+        // validates that the server we have back is registered in sirocco
+        assertNotNull(machineManager.getMachineByUuid(server.getId()));
+
+        // How to validate
     }
 
     /**

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,18 +22,21 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Maps;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
+import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineCreate;
-import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -44,8 +47,14 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
 
     private final IMachineManager machineManager;
 
-    public ServerCreateToMachineCreate(IMachineManager machineManager) {
+    private final IMachineImageManager machineImageManager;
+
+    private final INetworkManager networkManager;
+
+    public ServerCreateToMachineCreate(IMachineManager machineManager, INetworkManager networkManager, IMachineImageManager machineImageManager) {
         this.machineManager = machineManager;
+        this.networkManager = networkManager;
+        this.machineImageManager = machineImageManager;
     }
 
     @Override
@@ -58,24 +67,48 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
         // On the translation side, we need to be able to retrieve properties
         String image = server.getImageRef();
         String flavor = server.getFlavorRef();
-
-        MachineImage machineImage = new MachineImage();
-        machineImage.setUuid(image);
-
         MachineTemplate template = new MachineTemplate();
-        template.setMachineImage(machineImage);
 
-        // TODO : handle URLs
-        MachineConfiguration machineConfig = null;
-        try {
-            machineConfig = machineManager.getMachineConfigurationByUuid(flavor);
-        } catch (CloudProviderException e) {
-            e.printStackTrace();
-            // FIXME : We assume that the backend will be able to load all that is required...
-            machineConfig = new MachineConfiguration();
-            machineConfig.setUuid(flavor);
+        if (image != null) {
+            try {
+                template.setMachineImage(machineImageManager.getMachineImageByUuid(image));
+            } catch (CloudProviderException e) {
+                LOG.error("Can not find machine image");
+            }
+        } else {
+            LOG.warn("Can not get imageRef from input create server bean");
         }
-        template.setMachineConfig(machineConfig);
+
+        // TODO : handle URLs in resources
+        if (flavor != null) {
+            MachineConfiguration machineConfig = null;
+            try {
+                template.setMachineConfig(machineManager.getMachineConfigurationByUuid(flavor));
+            } catch (CloudProviderException e) {
+                LOG.error("Can not find machine configuration");
+            }
+        } else {
+            // ?
+            LOG.warn("Can not get flavorRef from the input create server bean");
+        }
+
+        // openstack use the security group names where sirocco uses the UUIDs
+        List groups = Lists.newArrayList(Collections2.filter(Lists.transform(server.getSecurityGroups(), new Function<ServerForCreate.SecurityGroup, String>() {
+            @Override
+            public String apply(ServerForCreate.SecurityGroup input) {
+                return new SecurityGroupNameToUUID(networkManager).apply(input.getName());
+            }
+        }), new Predicate<String>() {
+            @Override
+            public boolean apply(String input) {
+                return input != null;
+            }
+        }));
+        template.setSecurityGroupUuids(groups);
+
+        // keypair
+
+        // network
 
 
 //        template.setCredential(credentials);
@@ -101,9 +134,9 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
 
         machine.setMachineTemplate(template);
 
-        Map<String,String> props = Maps.newHashMap();
-        // TODO
-        machine.setProperties(props);
+        if (server.getMetadata() != null && server.getMetadata().size() > 0) {
+            machine.setProperties(server.getMetadata());
+        }
 
         return machine;
     }

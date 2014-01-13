@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
+import com.google.common.collect.Lists;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.easymock.EasyMock;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -30,10 +31,10 @@ import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
-import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
-import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
-import org.ow2.sirocco.cloudmanager.core.api.QueryResult;
+import org.ow2.sirocco.cloudmanager.core.api.*;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
+import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.client.Entity;
@@ -58,6 +59,8 @@ public class ServersJerseyTest extends JerseyTest {
 
     // TODO : Do not use static stuff...
     static IMachineManager service = EasyMock.createMock(IMachineManager.class);
+    static INetworkManager network = EasyMock.createMock(INetworkManager.class);
+    static IMachineImageManager image = EasyMock.createMock(IMachineImageManager.class);
 
     @Override
     protected Application configure() {
@@ -83,6 +86,8 @@ public class ServersJerseyTest extends JerseyTest {
             @Override
             protected void configure() {
                 bind(service).to(IMachineManager.class);
+                bind(network).to(INetworkManager.class);
+                bind(image).to(IMachineImageManager.class);
             }
         };
         app.registerInstances(binder, filter);
@@ -94,6 +99,8 @@ public class ServersJerseyTest extends JerseyTest {
         System.out.println("Reset mocks...");
         super.tearDown();
         EasyMock.reset(this.service);
+        EasyMock.reset(this.network);
+        EasyMock.reset(this.image);
     }
 
     @Test
@@ -146,13 +153,19 @@ public class ServersJerseyTest extends JerseyTest {
     }
 
     @Test
-    public void testCreateServer() {
+    public void testCreateServer() throws CloudProviderException {
 
         ServerForCreate server = new ServerForCreate();
         server.setName("CreateMe");
         server.setAdminPass("foobar");
         server.getSecurityGroups().add(new ServerForCreate.SecurityGroup("mysecgroup"));
 
+        QueryParams params = new QueryParams.Builder().attribute("name='mysecgroup'").build();
+        SecurityGroup group = new SecurityGroup();
+        group.setUuid("123");
+        QueryResult<SecurityGroup> result = new QueryResult<>(1, Lists.newArrayList(group));
+        EasyMock.expect(this.network.getSecurityGroups(params)).andReturn(result).once();
+        EasyMock.replay(this.network);
         //Server server = new Server();
 
         //Response response = this.target().path("/v2/1234567/servers").request(MediaType.APPLICATION_JSON_TYPE).put(Entity.entity(server, MediaType.APPLICATION_JSON_TYPE));

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,7 +24,6 @@ package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,8 +113,10 @@ public class ServerForCreate implements Serializable {
 
     private String accessIPv6;
 
+    @JsonProperty("min_count")
     private Integer min;
 
+    @JsonProperty("max_count")
     private Integer max;
 
     private String diskConfig;
