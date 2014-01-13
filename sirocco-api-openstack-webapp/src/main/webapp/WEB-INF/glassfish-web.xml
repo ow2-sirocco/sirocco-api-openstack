@@ -3,7 +3,7 @@
 <!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
 <!--
   SIROCCO
-  Copyright (C) 2013 France Telecom
+  Copyright (C) 2014 France Telecom
   Contact: sirocco@ow2.org
 
   This library is free software; you can redistribute it and/or
@@ -24,13 +24,5 @@
 
 <glassfish-web-app>
     <context-root>/openstack</context-root>
-    <security-role-mapping>
-        <role-name>sirocco-user</role-name>
-        <group-name>sirocco-user</group-name>
-    </security-role-mapping>
-    <security-role-mapping>
-        <role-name>sirocco-admin</role-name>
-        <group-name>sirocco-admin</group-name>
-    </security-role-mapping>
     <class-loader delegate="true" />
 </glassfish-web-app>

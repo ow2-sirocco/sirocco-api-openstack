@@ -1,6 +1,6 @@
 <!--
   SIROCCO
-  Copyright (C) 2013 France Telecom
+  Copyright (C) 2014 France Telecom
   Contact: sirocco@ow2.org
 
   This library is free software; you can redistribute it and/or
@@ -22,11 +22,10 @@
 <beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
       http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
-http://java.sun.com/xml/ns/javaee ">
+      http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
     <alternatives/>
     <decorators/>
     <interceptors>
-        <!--<class>org.ow2.sirocco.cimi.server.resource.IdentityInterceptor</class>-->
+        <class>org.ow2.sirocco.cloudmanager.api.openstack.server.interceptors.DefaultTrialGuestIdentityContextInterceptor</class>
     </interceptors>
 </beans>
