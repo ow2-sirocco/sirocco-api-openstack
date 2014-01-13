@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -26,37 +26,21 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model
 import org.ow2.sirocco.cloudmanager.model.cimi.CredentialsCreate;
 import org.ow2.sirocco.cloudmanager.model.cimi.CredentialsTemplate;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public class KeypairForCreateToCredentialsCreate implements Function<KeypairForCreate, CredentialsCreate> {
 
-    private final KeyPairGenerator generator;
-
-    public KeypairForCreateToCredentialsCreate(KeyPairGenerator generator) {
-        this.generator = generator;
+    public KeypairForCreateToCredentialsCreate() {
     }
 
     @Override
     public CredentialsCreate apply(KeypairForCreate input) {
         CredentialsCreate result = new CredentialsCreate();
-        // TODO
-        // having just a name is enough for the openstack user. Openstack will generate the public key is no one is provided.
-        // Not for sirocco...
         result.setName(input.getName());
-
         // template is required by openstack in all the cases
         CredentialsTemplate template = new CredentialsTemplate();
-
         String publicKey = input.getPublicKey();
-        if (publicKey == null && generator != null) {
-            KeyPair pair = generator.generateKeyPair();
-            publicKey = new String(pair.getPublic().getEncoded());
-        }
-
         template.setPublicKey(publicKey);
         result.setCredentialTemplate(template);
         return result;

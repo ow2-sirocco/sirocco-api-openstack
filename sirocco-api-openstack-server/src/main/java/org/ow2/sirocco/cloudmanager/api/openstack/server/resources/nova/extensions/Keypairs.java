@@ -40,8 +40,6 @@ import org.slf4j.LoggerFactory;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -83,14 +81,15 @@ public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response create(KeypairForCreate keypair) {
-        KeyPairGenerator generator = null;
 
-        // generate public key only if the input does not have one
-        if (keypair.getPublicKey() == null) {
+        // Note : just support when public key is given
+        // return error is not available
+
+        if (keypair.getPublicKey() != null) {
             try {
-                generator = KeyPairGenerator.getInstance("RSA");
-            } catch (NoSuchAlgorithmException e) {
-                final String error = "Can not generate keypair";
+                return ok(new CredentialsToKeyPair().apply(credentialsManager.createCredentials(new KeypairForCreateToCredentialsCreate().apply(keypair))));
+            } catch (CloudProviderException e) {
+                final String error = "Can not register keypair";
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(error, e);
                 } else {
@@ -98,18 +97,8 @@ public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudm
                 }
                 return computeFault(500, error, e.getMessage());
             }
-        }
-
-        try {
-            return ok(new CredentialsToKeyPair().apply(credentialsManager.createCredentials(new KeypairForCreateToCredentialsCreate(generator).apply(keypair))));
-        } catch (CloudProviderException e) {
-            final String error = "Can not register keypair";
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(error, e);
-            } else {
-                LOG.error(error);
-            }
-            return computeFault(500, error, e.getMessage());
+        } else {
+            return badRequest("Keypair create error", "public key is mandatory");
         }
     }
 

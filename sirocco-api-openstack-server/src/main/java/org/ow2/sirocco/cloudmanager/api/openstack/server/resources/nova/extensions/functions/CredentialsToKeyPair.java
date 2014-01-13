@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -40,11 +40,10 @@ public class CredentialsToKeyPair implements Function<Credentials, Keypair> {
     @Override
     public Keypair apply(Credentials input) {
         Keypair result = new Keypair();
-        //result.setFingerprint();
-        LOG.warn("TODO : keypair fingerprint");
         // we use the UUID as keypair name
         result.setName(input.getUuid());
         result.setPublicKey(input.getPublicKey());
+        result.setFingerprint(input.getFingerprint());
         return result;
     }
 }
