@@ -51,6 +51,7 @@
             <groupId>org.ow2.sirocco.cloudmanager</groupId>
             <artifactId>sirocco-api-model</artifactId>
             <version>${sirocco.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -109,11 +110,76 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- Unpack the dependencies and pack them all in order to be able to inject interceptors -->
-    <!-- TODO -->
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-lib</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-server</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-api</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-cinder</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-neutron</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-commons</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-keystone</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.ow2.sirocco.cloudmanager</groupId>
+                                    <artifactId>sirocco-api-openstack-nova</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -124,6 +190,15 @@
                             <Implementation-Version>${project.version}</Implementation-Version>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <sourceEncoding>UTF-8</sourceEncoding>
                 </configuration>
             </plugin>
         </plugins>
