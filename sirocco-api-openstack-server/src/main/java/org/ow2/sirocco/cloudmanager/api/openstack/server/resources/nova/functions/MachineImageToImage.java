@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,9 +22,12 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import com.google.common.collect.Maps;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Image;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
+
+import java.util.Map;
 
 /**
  * Transforms a Sirocco Image to an Openstack one
@@ -34,6 +37,17 @@ import org.ow2.sirocco.cloudmanager.model.cimi.MachineImage;
 public class MachineImageToImage implements Function<MachineImage, Image> {
 
     private boolean details;
+
+    private static Map<MachineImage.State, String> mapping;
+    static {
+        mapping = Maps.newHashMap();
+        mapping.put(MachineImage.State.AVAILABLE, "ACTIVE");
+        mapping.put(MachineImage.State.CREATING, "SAVING");
+        mapping.put(MachineImage.State.DELETED, "DELETED");
+        mapping.put(MachineImage.State.DELETING, "DELETED");
+        mapping.put(MachineImage.State.ERROR, "ERROR");
+        mapping.put(MachineImage.State.UNKNOWN, "UNKNOWN");
+    }
 
     public MachineImageToImage(boolean details) {
         this.details = details;
@@ -45,22 +59,29 @@ public class MachineImageToImage implements Function<MachineImage, Image> {
         image.setId(input.getUuid());
         image.setName(input.getName());
 
-        // TODO
-        image.getLinks().add(new Link("http://TODO", "bookmark"));
-
-        // TODO
         if (details) {
-            //image.setCreated(input.getCreated());
+            image.setCreated(input.getCreated());
             if (input.getProperties() != null) {
                 image.setMetadata(new MapToMetadata().apply(input.getProperties()));
             }
-            //image.setMinDisk();
-            //image.setMinRam();
-            //image.setProgress();
-            //image.setSize();
-            // TODO : Mapping between sirocco and openstack
-            image.setStatus(input.getState().toString());
-            //image.setUpdated();
+
+            if (input.getCapacity() != null) {
+                image.setSize(Long.valueOf((input.getCapacity() * 1000)));
+            }
+
+            image.setMinDisk(0);
+            image.setMinRam(0);
+
+            image.setProgress(0);
+            if (input.getState() == MachineImage.State.AVAILABLE) {
+                image.setProgress(100);
+            }
+
+            if (input.getProperties() != null) {
+                image.setMetadata(new Metadata(input.getProperties()));
+            }
+            image.setStatus(mapping.get(input.getState()));
+            image.setUpdated(input.getUpdated());
         }
         return image;
     }
