@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,21 +24,17 @@ package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("volume")
-public class Volume {
+public class Volume extends Resource {
 
     // TODO : Attachments
-
-    private String id;
-
-    private List<Link> links = new ArrayList<>();
 
     private String status;
 
@@ -57,8 +53,6 @@ public class Volume {
     @JsonProperty("created_at")
     // FIXME : Date format
     private String createdAt;
-
-    private String name;
 
     @JsonProperty("volume_type")
     private String volumeType;

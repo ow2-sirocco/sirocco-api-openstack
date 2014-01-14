@@ -74,8 +74,8 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
             Volume out = new Function<Volume, Volume>() {
                 @Override
                 public Volume apply(Volume input) {
-                    input.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.getId()));
-                    input.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.getId()));
+                    input.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, "%s", input.getId()));
+                    input.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, "%s", input.getId()));
                     return input;
                 }
             }.apply(result);
@@ -108,8 +108,8 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
             org.ow2.sirocco.cloudmanager.model.cimi.Volume volume = volumeManager.getVolumeByUuid(id);
             Volume v = new VolumeToVolume(true).apply(volume);
             v.setTenantId(getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER));
-            v.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
-            v.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, null));
+            v.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, null));
+            v.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, null));
             return ok(v);
 
         } catch (ResourceNotFoundException rnfe) {
@@ -135,8 +135,8 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
         try {
             Job job = volumeManager.updateVolume(update);
             Volume out = new VolumeToVolume(true).apply((org.ow2.sirocco.cloudmanager.model.cimi.Volume)job.getTargetResource());
-            out.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", id));
-            out.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", id));
+            out.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, "%s", id));
+            out.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, "%s", id));
             return ok(out);
 
         } catch (CloudProviderException e) {
@@ -186,8 +186,8 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
                         input.setTenantId(getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER));
                     }
 
-                    input.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.getId()));
-                    input.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.getId()));
+                    input.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, "%s", input.getId()));
+                    input.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, "%s", input.getId()));
                     return input;
                 }
             });

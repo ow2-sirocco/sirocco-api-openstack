@@ -63,13 +63,15 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
         machine.setName(server.getName());
         machine.setDescription("Machine created with the Openstack/Sirocco API");
 
-        // TODO : API user needs to put the image and flavor IDs or URLs in the payload.
-        // On the translation side, we need to be able to retrieve properties
         String image = server.getImageRef();
         String flavor = server.getFlavorRef();
+
         MachineTemplate template = new MachineTemplate();
 
         if (image != null) {
+            if (image.startsWith("http") && image.contains("/")) {
+                image = image.substring(image.lastIndexOf('/') + 1);
+            }
             try {
                 template.setMachineImage(machineImageManager.getMachineImageByUuid(image));
             } catch (CloudProviderException e) {
@@ -81,6 +83,10 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
 
         // TODO : handle URLs in resources
         if (flavor != null) {
+            if (flavor.startsWith("http") && flavor.contains("/")) {
+                flavor = flavor.substring(flavor.lastIndexOf('/') + 1);
+            }
+
             MachineConfiguration machineConfig = null;
             try {
                 template.setMachineConfig(machineManager.getMachineConfigurationByUuid(flavor));

@@ -25,13 +25,11 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.AsynchronousFault;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Server resource
@@ -41,11 +39,10 @@ import java.util.List;
 @XmlRootElement(name = "server")
 @JsonRootName(value = "server")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class Server extends Identifiable {
+public class Server extends Resource {
 
-    public String name;
-    public List<Link> links = new ArrayList<Link>();
     public String accessIPv4;
+
     public String accessIPv6;
 
     public Addresses addresses;

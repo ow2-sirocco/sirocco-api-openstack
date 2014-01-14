@@ -26,10 +26,9 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.AsynchronousFault;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -41,13 +40,9 @@ import java.util.List;
 @XmlRootElement(name = "image")
 @JsonRootName(value = "image")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class Image extends Identifiable {
-
-    private String id;
+public class Image extends Resource {
 
     private String status;
-
-    private String name;
 
     private Integer progress;
 
@@ -63,8 +58,6 @@ public class Image extends Identifiable {
     private Long size;
 
     private Metadata metadata;
-
-    private List<Link> links = new ArrayList<Link>();
 
     @JsonProperty("fault")
     private AsynchronousFault fault;

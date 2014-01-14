@@ -95,21 +95,19 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             }
 
             if (machines == null || machines.size() == 0) {
-                // TODO : Check openstack API for empty response.
                 return ok(result);
             } else {
                 List<Server> servers = Lists.transform(machines, new MachineToServer(details));
-                // generate links
-                // TODO : Get other links from generator
                 servers = Lists.transform(servers, new Function<Server, Server>() {
                     @Override
                     public Server apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server input) {
                         // Add details if requested
                         if (details) {
+                            updateResources(input);
                             input.tenantId = getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER);
                         }
-                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
-                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.id));
+                        input.links.add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, "%s", input.id));
+                        input.links.add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, "%s", input.id));
                         return input;
                     }
                 });
@@ -173,8 +171,9 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             } else {
                 Server s = new MachineToServer(true).apply(machine);
                 s.tenantId = getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER);
-                s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
-                s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, null));
+                s.links.add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, null));
+                s.links.add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, null));
+                updateResources(s);
                 return ok(s);
             }
         } catch (ResourceNotFoundException rnf) {
@@ -198,7 +197,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
                 machineManager.updateMachineAttributes(id, ImmutableMap.<String, Object>of("name", update.getName()));
                 Server s = new MachineToServer(true).apply(machineManager.getMachineByUuid(id));
-                s.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+                s.links.add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, null));
                 return ok(s);
             } else {
                 return badRequest("server", "update");
@@ -233,5 +232,17 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
             return computeFault(500, "Server Error", e.getMessage());
         }
         return deleted();
+    }
+
+    protected void updateResources(Server s) {
+        if (s.flavor != null) {
+            s.flavor.links.add(LinkHelper.self(getUriInfo().getBaseUri().toString(), null, "flavors/%s", s.flavor.id));
+            s.flavor.links.add(LinkHelper.bookmark(getUriInfo().getBaseUri().toString(), null, "flavors/%s", s.flavor.id));
+        }
+
+        if (s.image != null) {
+            s.image.links.add(LinkHelper.self(getUriInfo().getBaseUri().toString(), null, "images/%s", s.image.id));
+            s.image.links.add(LinkHelper.bookmark(getUriInfo().getBaseUri().toString(), null, "images/%s", s.image.id));
+        }
     }
 }

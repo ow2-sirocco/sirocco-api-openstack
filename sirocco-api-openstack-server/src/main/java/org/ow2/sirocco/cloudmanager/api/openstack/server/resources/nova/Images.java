@@ -23,7 +23,6 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LinkHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
@@ -80,7 +79,8 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
                 list = Lists.transform(list, new Function<Image, Image>() {
                     @Override
                     public Image apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Image input) {
-                        input.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.getId()));
+                        input.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, "%s", input.getId()));
+                        input.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, "%s", input.getId()));
                         return input;
                     }
                 });
@@ -107,7 +107,8 @@ public class Images extends AbstractResource implements org.ow2.sirocco.cloudman
                 return resourceNotFoundException("image", imageId, new ResourceNotFoundException("Image not found"));
             } else {
                 Image result = new MachineImageToImage(true).apply(image);
-                result.getLinks().add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
+                result.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, null));
+                result.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, null));
                 return ok(result);
             }
         } catch (ResourceNotFoundException rnfe) {

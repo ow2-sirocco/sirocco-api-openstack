@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -140,5 +140,4 @@ public class MapHelperTest {
         assertEquals(replace.get("foo"), out.get("foo"));
         assertEquals(replace.get("baz"), out.get("baz"));
     }
-
 }

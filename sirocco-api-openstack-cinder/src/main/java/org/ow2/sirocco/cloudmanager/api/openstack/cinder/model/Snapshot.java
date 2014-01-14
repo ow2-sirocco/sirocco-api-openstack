@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,16 +23,15 @@ package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Identifiable;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("snapshot")
-public class Snapshot {
+public class Snapshot extends Identifiable {
 
     private String name;
-
-    private String id;
 
     private String description;
 

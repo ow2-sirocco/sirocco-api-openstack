@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.neutron.model;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Identifiable;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,7 +35,7 @@ import java.util.List;
  */
 @JsonRootName("network")
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Network implements Serializable{
+public class Network extends Identifiable implements Serializable {
 	
 	private String status;
 
@@ -56,8 +57,6 @@ public class Network implements Serializable{
 
     @JsonProperty("router:external")
     private String routerExternal;
-
-    private String id;
 
     private String shared;
 

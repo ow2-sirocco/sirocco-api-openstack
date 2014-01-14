@@ -19,20 +19,27 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
-import org.codehaus.jackson.map.annotate.JsonRootName;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
+ * The base resource
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@JsonRootName(value = "version")
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class Version extends Resource {
-    public String status;
-    public Date updated;
+public abstract class Resource extends Identifiable {
+
+    /**
+     * The resource name
+     */
+    public String name;
+
+    /**
+     * The resource links
+     */
+    public List<Link> links = new ArrayList<>();
 }

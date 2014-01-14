@@ -191,7 +191,6 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
                 manager.updateMachineImageAttributes(getImageId(), ImmutableMap.<String, Object>of("properties", meta));
                 return deleted();
             } else {
-                // FIXME : What is the return code, not defined in the openstack documentation?
                 return notFound();
             }
         } catch (ResourceNotFoundException rnfe) {

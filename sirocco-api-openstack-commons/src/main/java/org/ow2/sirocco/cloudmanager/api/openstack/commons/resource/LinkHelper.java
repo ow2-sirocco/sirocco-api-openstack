@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.commons.resource;
 
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 
 /**
@@ -46,5 +47,49 @@ public class LinkHelper {
         } else {
             return new Link(baseURI, rel, type);
         }
+    }
+
+    /**
+     *
+     * @param baseURI
+     * @param resource
+     * @param uuid
+     * @return
+     */
+    public static String href(String baseURI, String resource, String uuid) {
+        String result = baseURI;
+        if (result.endsWith("/")) {
+            result = result.substring(0, result.length() - 1);
+        }
+        result = result + "/";
+        result = result + resource;
+        result = result + "/";
+        result = result + uuid;
+
+        return result;
+    }
+
+    /**
+     *
+     * @param baseURI
+     * @param type
+     * @param uriPattern
+     * @param args
+     * @return
+     */
+    public static Link self(String baseURI, String type, String uriPattern, Object... args) {
+        return getLink(baseURI, Constants.Link.SELF, type, uriPattern, args);
+    }
+
+    /**
+     *
+     * @param baseURI
+     * @param type
+     * @param uriPattern
+     * @param args
+     * @return
+     */
+    public static Link bookmark(String baseURI, String type, String uriPattern, Object... args) {
+        return getLink(baseURI, Constants.Link.BOOKMARK, type, uriPattern, args);
     }
 }

@@ -55,7 +55,6 @@ public class MachineToServer implements Function<Machine, Server> {
         server.name = machine.getName();
 
         if (details) {
-            // TODO
 
             server.userId = "TODO";
 
@@ -71,7 +70,6 @@ public class MachineToServer implements Function<Machine, Server> {
                 server.created = machine.getCreated();
             }
 
-            //server.hostId = Strings.emptyToNull("TODO");
             server.accessIPv4 = "";
             server.accessIPv6 = "";
 
@@ -79,9 +77,6 @@ public class MachineToServer implements Function<Machine, Server> {
             if (machine.getState() != null) {
                 server.status = machine.getState().toString();
             }
-
-            // TODO
-            server.image = null;
 
             if (machine.getImage() != null) {
                 server.image = new MachineImageToImage(true).apply(machine.getImage());

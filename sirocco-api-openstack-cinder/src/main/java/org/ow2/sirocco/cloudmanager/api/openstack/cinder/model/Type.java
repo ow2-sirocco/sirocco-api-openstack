@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -23,6 +23,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Identifiable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +32,7 @@ import java.util.Map;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("volume_types")
-public class Type {
-
-    private String id;
+public class Type extends Identifiable {
 
     private String name;
 

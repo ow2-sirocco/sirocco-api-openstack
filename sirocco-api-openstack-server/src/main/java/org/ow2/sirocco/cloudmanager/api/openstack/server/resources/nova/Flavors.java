@@ -22,7 +22,6 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.LinkHelper;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
@@ -73,8 +72,8 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
                 return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
             } else {
                 Flavor result = new MachineConfigurationToFlavor(true).apply(config);
-                result.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
-                result.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, null));
+                result.links.add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, null));
+                result.links.add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, null));
                 return ok(result);
             }
         } catch (ResourceNotFoundException rnfe) {
@@ -101,8 +100,8 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
                 flavors = Lists.transform(flavors, new Function<Flavor, Flavor>() {
                     @Override
                     public Flavor apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor input) {
-                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
-                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.id));
+                        input.links.add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, "%s", input.id));
+                        input.links.add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, "%s", input.id));
                         return input;
                     }
                 });

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -24,11 +24,9 @@ package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Flavor resource
@@ -38,10 +36,7 @@ import java.util.List;
 @XmlRootElement(name = "flavor")
 @JsonRootName(value = "flavor")
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class Flavor extends Identifiable {
-    public String name;
-
-    public List<Link> links = new ArrayList<Link>();
+public class Flavor extends Resource {
 
     public Integer vcpus;
 
