@@ -70,12 +70,12 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
         try {
             MachineConfiguration config = machineManager.getMachineConfigurationByUuid(id);
             if (config == null) {
-                // TODO : Check openstack API for empty response.
                 return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
             } else {
                 Flavor result = new MachineConfigurationToFlavor(true).apply(config);
                 result.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, null));
-                return ok(new MachineConfigurationToFlavor(true).apply(config));
+                result.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, null));
+                return ok(result);
             }
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("flavor", id, new ResourceNotFoundException("Flavor not found"));
@@ -95,7 +95,6 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
         try {
             List<MachineConfiguration> configs = machineManager.getMachineConfigurations(new FlavorListQuery().apply(getJaxRsRequestInfo())).getItems();
             if (configs == null || configs.size() == 0) {
-                // TODO : Check openstack API for empty response.
                 return ok(result);
             } else {
                 List<Flavor> flavors = Lists.transform(configs, new MachineConfigurationToFlavor(details));
@@ -103,6 +102,7 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
                     @Override
                     public Flavor apply(org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor input) {
                         input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.SELF, null, "%s", input.id));
+                        input.links.add(LinkHelper.getLink(getUriInfo().getAbsolutePath().toString(), Constants.Link.BOOKMARK, null, "%s", input.id));
                         return input;
                     }
                 });

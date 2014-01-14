@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -67,9 +67,9 @@ public final class Constants {
 
         public static final String SERVER_METADATA_PATH = SERVERS_PATH + "/{" + SERVER_ID_PATH_PARAMETER + "}/metadata";
 
-        public static final String FLAVORS_PATH = BASE_PATH + "/flavors";
+        public static final String FLAVORS_PATH = TENANT_PATH_TEMPLATE + "/flavors";
 
-        public static final String IMAGES_PATH = BASE_PATH + "/images";
+        public static final String IMAGES_PATH = TENANT_PATH_TEMPLATE + "/images";
 
         public static final String IMAGE_METADATA_PATH = BASE_PATH + "/{" + TENANT_ID_PATH_PARAMETER + "}/images/{" + IMAGE_ID_PATH_PARAMETER + "}/metadata";
 

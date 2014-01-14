@@ -21,35 +21,42 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
-import com.google.common.base.Function;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.extension.Visibility;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
+
 /**
- * Transforms a sirocco machine configuration to an openstack flavor
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class MachineConfigurationToFlavor implements Function<MachineConfiguration, Flavor> {
+@RunWith(JUnit4.class)
+public class MachineConfigurationToFlavorTest {
 
-    private final boolean details;
-
-    public MachineConfigurationToFlavor(boolean details) {
-        this.details = details;
+    @Test
+    public void testVisibilityNotSet() {
+        MachineConfiguration config = new MachineConfiguration();
+        Flavor f = new MachineConfigurationToFlavor(true).apply(config);
+        assertFalse(f.isPublic);
     }
 
-    @Override
-    public Flavor apply(MachineConfiguration input) {
-        Flavor result = new Flavor();
-        result.id = input.getUuid();
-        result.name = input.getName();
+    @Test
+    public void testPublic() {
+        MachineConfiguration config = new MachineConfiguration();
+        config.setVisibility(Visibility.PUBLIC);
+        Flavor f = new MachineConfigurationToFlavor(true).apply(config);
+        assertTrue(f.isPublic);
+    }
 
-        if (details) {
-            result.vcpus = input.getCpu();
-            result.ram = input.getMemory();
-            result.isPublic = input.getVisibility() != null && input.getVisibility().equals(Visibility.PUBLIC);
-        }
-        return result;
+    @Test
+    public void testPrivate() {
+        MachineConfiguration config = new MachineConfiguration();
+        config.setVisibility(Visibility.PRIVATE);
+        Flavor f = new MachineConfigurationToFlavor(true).apply(config);
+        assertFalse(f.isPublic);
     }
 }
