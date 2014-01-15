@@ -21,6 +21,7 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.floatingips;
 
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.floatingips.model.Pool;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -68,7 +69,7 @@ public interface FloatingIPs {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response create();
+    Response create(Pool pool);
 
     /**
      * Deallocates the floating IP address associated with floating_IP_address_ID.

@@ -26,12 +26,15 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvider;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.floatingips.model.Pool;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Extension;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.AddressToFloatingIP;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.ow2.sirocco.cloudmanager.model.cimi.AddressCreate;
+import org.ow2.sirocco.cloudmanager.model.cimi.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +44,8 @@ import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.*;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notFound;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
@@ -88,11 +92,22 @@ public class FloatingIPs extends AbstractResource implements org.ow2.sirocco.clo
     }
 
     @Override
-    public Response create() {
+    public Response create(Pool pool) {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Create floating IP");
+            LOG.debug("Create floating IP with pool" + pool);
         }
-        return notImplemented("os-floating-ips", "delete");
+
+        try {
+            Job job = networkManager.createAddress(new AddressCreate());
+            return ok(new AddressToFloatingIP().apply(networkManager.getAddressByUuid(job.getTargetResource().getUuid())));
+        } catch (InvalidRequestException ire) {
+            return badRequest("Bad request while creating floating IP", ire.getMessage());
+        } catch (CloudProviderException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Create floating IP error", e);
+            }
+            return computeFault("Floating IP create error", e.getMessage());
+        }
     }
 
     @Override
