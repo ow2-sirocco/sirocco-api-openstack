@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -25,7 +25,9 @@ import com.google.common.base.Function;
 import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.VolumeForCreate;
 import org.ow2.sirocco.cloudmanager.core.api.IVolumeManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.model.cimi.VolumeConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.VolumeCreate;
+import org.ow2.sirocco.cloudmanager.model.cimi.VolumeTemplate;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -64,6 +66,14 @@ public class VolumeForCreateToVolumeCreate implements Function<VolumeForCreate, 
         if (providerAccountId != null) {
             create.setProviderAccountId(providerAccountId);
         }
+
+        // template
+        VolumeTemplate volumeTemplate = new VolumeTemplate();
+        VolumeConfiguration config = new VolumeConfiguration();
+        config.setCapacity(input.getSize() * 1000 * 1000);
+        volumeTemplate.setVolumeConfig(config);
+
+        create.setVolumeTemplate(volumeTemplate);
 
         return create;
     }
