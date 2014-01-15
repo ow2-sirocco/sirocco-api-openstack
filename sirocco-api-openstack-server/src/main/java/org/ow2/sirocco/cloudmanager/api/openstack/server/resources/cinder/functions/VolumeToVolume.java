@@ -39,16 +39,20 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
 
     private final boolean details;
 
-    private static Map<Volume.State, String> MAPPING;
+    public static Map<Volume.State, String> MAPPING;
 
     static {
         MAPPING = Maps.newHashMap();
-        MAPPING.put(Volume.State.CREATING, "SAVING");
-        MAPPING.put(Volume.State.AVAILABLE, "ACTIVE");
-        MAPPING.put(Volume.State.DELETING, "DELETED");
-        MAPPING.put(Volume.State.DELETED, "DELETED");
-        MAPPING.put(Volume.State.ERROR, "ERROR");
+        MAPPING.put(Volume.State.CREATING, "creating");
+        MAPPING.put(Volume.State.AVAILABLE, "available");
+        MAPPING.put(Volume.State.DELETING, "deleting");
+        MAPPING.put(Volume.State.DELETED, "deleted");
+        MAPPING.put(Volume.State.ERROR, "error");
     }
+
+    public static final String IN_USE = "in-use";
+
+    public static final String NONE = "None";
 
     public VolumeToVolume(boolean details) {
         this.details = details;
@@ -83,9 +87,13 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
                 result.setStatus(MAPPING.get(input.getState()));
             }
 
+            if (input.getAttachments() != null && input.getAttachments().size() > 0) {
+                result.setStatus(IN_USE);
+            }
+
             //result.setTenantId();
 
-            result.setVolumeType(input.getType());
+            result.setVolumeType(NONE);
         }
         return result;
     }
