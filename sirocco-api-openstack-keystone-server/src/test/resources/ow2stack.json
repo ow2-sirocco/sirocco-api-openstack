@@ -1,0 +1,114 @@
+{"access": {
+    "token": {
+        "issued_at": "2014-01-15T14:34:21.936628",
+        "expires": "2014-01-16T14:34:21Z",
+        "id": "123456789",
+        "tenant": {
+            "description": "",
+            "enabled": true,
+            "id": "bf6110e105824ae2b412c7db53d4d79a",
+            "name": "petals"
+        }
+    },
+    "serviceCatalog": [
+        {
+            "endpoints": [
+                {
+                    "adminURL": "http://locahost:8774/v2/bf6110e105824ae2b412c7db53d4d79a",
+                    "region": "RegionOne",
+                    "internalURL": "http://locahost:8774/v2/bf6110e105824ae2b412c7db53d4d79a",
+                    "id": "2387f28e2746495c8845e718a91a7e46",
+                    "publicURL": "http://locahost:8774/v2/bf6110e105824ae2b412c7db53d4d79a"
+                }
+            ],
+            "endpoints_links": [],
+            "type": "compute",
+            "name": "nova"
+        },
+        {
+            "endpoints": [
+                {
+                    "adminURL": "http://locahost:9696/",
+                    "region": "RegionOne",
+                    "internalURL": "http://locahost:9696/",
+                    "id": "51604e48146c452a98207b18bc119280",
+                    "publicURL": "http://locahost:9696/"
+                }
+            ],
+            "endpoints_links": [],
+            "type": "network",
+            "name": "quantum"
+        },
+        {
+            "endpoints": [
+                {
+                    "adminURL": "http://locahost:9292/v1",
+                    "region": "RegionOne",
+                    "internalURL": "http://locahost:9292/v1",
+                    "id": "07e37bb9b0194cefac4cfe183b2cc2e2",
+                    "publicURL": "http://locahost:9292/v1"
+                }
+            ],
+            "endpoints_links": [],
+            "type": "image",
+            "name": "glance"
+        },
+        {
+            "endpoints": [
+                {
+                    "adminURL": "http://locahost:8776/v1/bf6110e105824ae2b412c7db53d4d79a",
+                    "region": "RegionOne",
+                    "internalURL": "http://locahost:8776/v1/bf6110e105824ae2b412c7db53d4d79a",
+                    "id": "43f477e36f794fc88a895d3e8a99d809",
+                    "publicURL": "http://locahost:8776/v1/bf6110e105824ae2b412c7db53d4d79a"
+                }
+            ],
+            "endpoints_links": [],
+            "type": "volume",
+            "name": "nova_volume"
+        },
+        {
+            "endpoints": [
+                {
+                    "adminURL": "http://locahost:8773/services/Admin",
+                    "region": "RegionOne",
+                    "internalURL": "http://locahost:8773/services/Cloud",
+                    "id": "9d4b518d4c764088b1a235c153dde0cb",
+                    "publicURL": "http://locahost:8773/services/Cloud"
+                }
+            ],
+            "endpoints_links": [],
+            "type": "ec2",
+            "name": "nova_ec2"
+        },
+        {
+            "endpoints": [
+                {
+                    "adminURL": "http://locahost:35357/v2.0",
+                    "region": "RegionOne",
+                    "internalURL": "http://locahost:5000/v2.0",
+                    "id": "a65b3c64ff8d45468b37beaac13f1d77",
+                    "publicURL": "http://locahost:5000/v2.0"
+                }
+            ],
+            "endpoints_links": [],
+            "type": "identity",
+            "name": "keystone"
+        }
+    ],
+    "user": {
+        "username": "christophe",
+        "roles_links": [],
+        "id": "613d775694b14bfba3bef7fbddc9fcfe",
+        "roles": [
+            {
+                "name": "Member"
+            }
+        ],
+        "name": "christophe"
+    },
+    "metadata": {
+        "is_admin": 0,
+        "roles": ["c0d2951eacb34d0ca74bd8a31b644196"]
+    }
+}}

@@ -1,6 +1,6 @@
 <!--
   SIROCCO
-  Copyright (C) 2013 France Telecom
+  Copyright (C) 2014 France Telecom
   Contact: sirocco@ow2.org
 
   This library is free software; you can redistribute it and/or
@@ -182,6 +182,18 @@
         <dependency>
             <groupId>org.apache.jclouds.api</groupId>
             <artifactId>openstack-nova</artifactId>
+            <version>${jclouds.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jclouds.api</groupId>
+            <artifactId>openstack-cinder</artifactId>
             <version>${jclouds.version}</version>
             <scope>test</scope>
             <exclusions>

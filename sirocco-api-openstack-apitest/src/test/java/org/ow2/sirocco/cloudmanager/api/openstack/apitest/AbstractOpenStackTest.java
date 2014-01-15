@@ -75,6 +75,9 @@ public class AbstractOpenStackTest {
     @Inject
     protected INetworkManager networkManager;
 
+    @Inject
+    protected IVolumeManager volumeManager;
+
     protected String identity;
     protected String password;
     protected String endpoint;
@@ -442,6 +445,22 @@ public class AbstractOpenStackTest {
             Thread.sleep(1000);
             if (counter-- == 0) {
                 throw new Exception("Group state time out");
+            }
+        }
+    }
+
+    protected void waitVolumeState(Volume volume, Volume.State state, int timeout) throws Exception {
+        int counter = timeout(timeout > 0 ? timeout : 30);
+        while (true) {
+            LOG.info("Waiting for volume state to be " + state);
+            volume = this.volumeManager.getVolumeByUuid(volume.getUuid());
+            if (volume.getState() == state) {
+                LOG.info("Valid volume state");
+                break;
+            }
+            Thread.sleep(1000);
+            if (counter-- == 0) {
+                throw new Exception("Volume state time out");
             }
         }
     }

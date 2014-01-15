@@ -39,6 +39,7 @@ public class Volume extends Resource {
 
     private String status;
 
+    @JsonProperty("availability_zone")
     private String availabilityZone;
 
     private String host;

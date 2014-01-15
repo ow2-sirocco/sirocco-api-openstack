@@ -61,15 +61,12 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response create(VolumeForCreate volumeCreate) {
-
-        // FIXME : Get the provider from the request, header or runtime.
         // For now the provider is null so Sirocco will choose the right one.
         LOG.info("Provider is set to null, Sirocco will choose the best one (#34)");
         String provider = null;
         try {
             Job job = volumeManager.createVolume(new VolumeForCreateToVolumeCreate(volumeManager, provider).apply(volumeCreate));
-            org.ow2.sirocco.cloudmanager.model.cimi.Volume volume = (org.ow2.sirocco.cloudmanager.model.cimi.Volume) job.getTargetResource();
-            Volume result = new VolumeToVolume(false).apply(volume);
+            Volume result = new VolumeToVolume(true).apply(volumeManager.getVolumeByUuid(job.getTargetResource().getUuid()));
 
             Volume out = new Function<Volume, Volume>() {
                 @Override

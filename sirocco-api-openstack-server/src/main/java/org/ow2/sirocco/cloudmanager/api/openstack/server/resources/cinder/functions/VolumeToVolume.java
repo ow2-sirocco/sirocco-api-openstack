@@ -24,6 +24,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.funct
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.Metadata;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.Status;
 import org.ow2.sirocco.cloudmanager.model.cimi.Volume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,18 +40,16 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
 
     private final boolean details;
 
-    public static Map<Volume.State, String> MAPPING;
+    public static Map<Volume.State, Status> MAPPING;
 
     static {
         MAPPING = Maps.newHashMap();
-        MAPPING.put(Volume.State.CREATING, "creating");
-        MAPPING.put(Volume.State.AVAILABLE, "available");
-        MAPPING.put(Volume.State.DELETING, "deleting");
-        MAPPING.put(Volume.State.DELETED, "deleted");
-        MAPPING.put(Volume.State.ERROR, "error");
+        MAPPING.put(Volume.State.CREATING, Status.CREATING);
+        MAPPING.put(Volume.State.AVAILABLE, Status.AVAILABLE);
+        MAPPING.put(Volume.State.DELETING, Status.DELETING);
+        MAPPING.put(Volume.State.DELETED, Status.DELETING);
+        MAPPING.put(Volume.State.ERROR, Status.ERROR);
     }
-
-    public static final String IN_USE = "in-use";
 
     public static final String NONE = "None";
 
@@ -68,7 +67,6 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
         if (details) {
             result.setCreatedAt(input.getCreated());
             result.setVolumeType(input.getType());
-            //result.setAvailabilityZone();
             result.setDescription(input.getDescription());
             //result.setHost();
 
@@ -82,18 +80,22 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
 
             //result.setSnapshotId();
             //result.setSourceVolume();
-
-            if (input.getState() != null) {
-                result.setStatus(MAPPING.get(input.getState()));
+            Status status = input.getState() == null ? Status.UNRECOGNIZED : MAPPING.get(input.getState());
+            if (status == null) {
+                status = Status.UNRECOGNIZED;
             }
 
             if (input.getAttachments() != null && input.getAttachments().size() > 0) {
-                result.setStatus(IN_USE);
+                status = Status.IN_USE;
             }
 
-            //result.setTenantId();
+            System.out.println("###ZZ SET STATUS " + status.value());
+            result.setStatus(status.value());
 
+            //result.setTenantId();
             result.setVolumeType(NONE);
+            // zone is required
+            result.setAvailabilityZone("");
         }
         return result;
     }

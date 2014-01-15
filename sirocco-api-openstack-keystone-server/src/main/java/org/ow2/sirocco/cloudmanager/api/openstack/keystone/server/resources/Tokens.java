@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -96,7 +96,7 @@ public class Tokens implements org.ow2.sirocco.cloudmanager.api.openstack.keysto
         // User
         Access.User user = new Access.User();
         user.setId("123");
-        user.setName("User name");
+        user.setName("Sirocco User Test");
         user.setUsername(usernamePassword.getPasswordCredentials().getUsername());
         access.setUser(user);
 
@@ -118,6 +118,23 @@ public class Tokens implements org.ow2.sirocco.cloudmanager.api.openstack.keysto
         endpoints.add(e);
         s.setEndpoints(endpoints);
         services.add(s);
+
+        Access.Service volume = new Access.Service();
+        volume.setName("nova_volume");
+        volume.setType("volume");
+        List<Access.Service.Endpoint> vendpoints = new ArrayList<>();
+        Access.Service.Endpoint ve = new Access.Service.Endpoint();
+        ve.setAdminURL("http://localhost:8181/sirocco/openstack/v2/");
+        ve.setInternalURL("http://internal");
+        // FIXME : It is not clear if we have to send back the public URL with the tenant or not
+        // FIXME : Jclouds seems to require it...
+        e.setPublicURL("http://localhost:8181/sirocco/openstack/v2/" + tenant);
+        e.setRegion("France");
+        e.setTenantName(tenant);
+        vendpoints.add(e);
+        volume.setEndpoints(vendpoints);
+        services.add(volume);
+
         access.setServiceCatalog(services);
 
         return Response.ok(access).build();
