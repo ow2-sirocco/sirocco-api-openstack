@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -22,9 +22,13 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.functions;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Maps;
+import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.Metadata;
 import org.ow2.sirocco.cloudmanager.model.cimi.Volume;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -34,6 +38,17 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
     private static Logger LOG = LoggerFactory.getLogger(VolumeToVolume.class);
 
     private final boolean details;
+
+    private static Map<Volume.State, String> MAPPING;
+
+    static {
+        MAPPING = Maps.newHashMap();
+        MAPPING.put(Volume.State.CREATING, "SAVING");
+        MAPPING.put(Volume.State.AVAILABLE, "ACTIVE");
+        MAPPING.put(Volume.State.DELETING, "DELETED");
+        MAPPING.put(Volume.State.DELETED, "DELETED");
+        MAPPING.put(Volume.State.ERROR, "ERROR");
+    }
 
     public VolumeToVolume(boolean details) {
         this.details = details;
@@ -47,8 +62,30 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
         result.setName(input.getName());
 
         if (details) {
-            // TODO
-            LOG.warn("Details are not implemented!!!");
+            result.setCreatedAt(input.getCreated());
+            result.setVolumeType(input.getType());
+            //result.setAvailabilityZone();
+            result.setDescription(input.getDescription());
+            //result.setHost();
+
+            if (input.getProperties() != null) {
+                result.setMetadata(new Metadata(input.getProperties()));
+            }
+
+            if (input.getCapacity() != null) {
+                result.setSize(input.getCapacity() / 1000 / 1000);
+            }
+
+            //result.setSnapshotId();
+            //result.setSourceVolume();
+
+            if (input.getState() != null) {
+                result.setStatus(MAPPING.get(input.getState()));
+            }
+
+            //result.setTenantId();
+
+            result.setVolumeType(input.getType());
         }
         return result;
     }
