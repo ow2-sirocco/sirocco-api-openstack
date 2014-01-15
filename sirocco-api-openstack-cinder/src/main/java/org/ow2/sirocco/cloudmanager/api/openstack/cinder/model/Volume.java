@@ -26,6 +26,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.Link;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,8 +52,7 @@ public class Volume extends Resource {
     private String description;
 
     @JsonProperty("created_at")
-    // FIXME : Date format
-    private String createdAt;
+    private Date createdAt;
 
     @JsonProperty("volume_type")
     private String volumeType;
@@ -136,11 +136,11 @@ public class Volume extends Resource {
         this.description = description;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
