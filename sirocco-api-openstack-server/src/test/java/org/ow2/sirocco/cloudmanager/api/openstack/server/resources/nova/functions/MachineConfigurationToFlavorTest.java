@@ -21,15 +21,17 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
+import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
+import org.ow2.sirocco.cloudmanager.model.cimi.DiskTemplate;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.extension.Visibility;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -58,5 +60,54 @@ public class MachineConfigurationToFlavorTest {
         config.setVisibility(Visibility.PRIVATE);
         Flavor f = new MachineConfigurationToFlavor(true).apply(config);
         assertFalse(f.isPublic);
+    }
+
+    @Test
+    public void testMemory() {
+        MachineConfiguration config = new MachineConfiguration();
+        config.setMemory(null);
+
+        Flavor f = new MachineConfigurationToFlavor(true).apply(config);
+        assertNull(f.ram);
+
+        config.setMemory(1);
+        f = new MachineConfigurationToFlavor(true).apply(config);
+        assertNotNull(f.ram);
+        assertEquals(new Integer(1024), f.ram);
+    }
+
+    @Test
+    public void testDisk() {
+        MachineConfiguration config = new MachineConfiguration();
+        Flavor f = new MachineConfigurationToFlavor(true).apply(config);
+        assertNull(f.disk);
+
+        DiskTemplate template = new DiskTemplate();
+        template.setCapacity(1);
+        config.setDisks(Lists.newArrayList(template));
+
+        f = new MachineConfigurationToFlavor(true).apply(config);
+        assertEquals("1000", f.disk);
+    }
+
+    @Test
+    public void testEphemeral() {
+        MachineConfiguration config = new MachineConfiguration();
+        Flavor f = new MachineConfigurationToFlavor(true).apply(config);
+        assertNull(f.ephemeral);
+
+        DiskTemplate template = new DiskTemplate();
+        template.setCapacity(1);
+        config.setDisks(Lists.newArrayList(template));
+
+        f = new MachineConfigurationToFlavor(true).apply(config);
+        assertEquals(new Integer(0), f.ephemeral);
+
+        DiskTemplate template2 = new DiskTemplate();
+        template2.setCapacity(2);
+        config.setDisks(Lists.newArrayList(template, template2));
+
+        f = new MachineConfigurationToFlavor(true).apply(config);
+        assertEquals(new Integer(2000), f.ephemeral);
     }
 }
