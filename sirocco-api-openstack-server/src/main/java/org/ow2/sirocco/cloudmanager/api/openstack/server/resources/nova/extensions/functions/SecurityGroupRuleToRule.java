@@ -40,6 +40,7 @@ public class SecurityGroupRuleToRule implements Function<SecurityGroupRule, Rule
         }
         rule.setId(input.getUuid());
         rule.setToPort(input.getToPort());
+        rule.setFromPort(input.getFromPort());
         rule.setName(input.getUuid());
         rule.setIpProtocol(input.getIpProtocol());
         if (input.getParentGroup() != null) {
