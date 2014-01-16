@@ -66,6 +66,10 @@ public class ServerMetadataTest extends JcloudsBasedTest {
 
     @Test
     public void testGetMetadata() throws CloudProviderException {
+        // FIXME : Jclouds waits for a metadata element while nova returns a meta one for this operation
+        // FIXME : So the test fails but nova client should be ok
+        //
+        // jclouds : { metadata : { x : y}}, nova client : { meta : { x : y }}
         Map<String, String> props = ImmutableMap.of("foo", "bar");
         Machine machine = createMachine("testgetmeta", "testimage", 1, 512, props, true);
 
