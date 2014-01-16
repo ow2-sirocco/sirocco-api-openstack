@@ -48,17 +48,17 @@ public class MachineConfigurationToFlavor implements Function<MachineConfigurati
         if (details) {
             result.vcpus = input.getCpu();
             if (input.getMemory() != null) {
-                result.ram = input.getMemory() * 1024;
+                result.ram = input.getMemory() / 1024;
             }
 
             if (input.getDisks() != null && input.getDisks().size() > 0 && input.getDisks().get(0) != null && input.getDisks().get(0).getCapacity() != null) {
-                result.disk = "" + input.getDisks().get(0).getCapacity() * 1000;
+                result.disk = "" + input.getDisks().get(0).getCapacity() / (1000 * 1000);
             }
 
             if (input.getDisks() != null && input.getDisks().size() == 1) {
                 result.ephemeral = 0;
             } else if (input.getDisks() != null && input.getDisks().size() == 2) {
-                result.ephemeral = input.getDisks().get(1).getCapacity() * 1000;
+                result.ephemeral = input.getDisks().get(1).getCapacity() / (1000 * 1000);
             } else {
                 //
             }

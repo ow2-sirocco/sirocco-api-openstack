@@ -70,10 +70,10 @@ public class MachineConfigurationToFlavorTest {
         Flavor f = new MachineConfigurationToFlavor(true).apply(config);
         assertNull(f.ram);
 
-        config.setMemory(1);
+        config.setMemory(1024);
         f = new MachineConfigurationToFlavor(true).apply(config);
         assertNotNull(f.ram);
-        assertEquals(new Integer(1024), f.ram);
+        assertEquals(new Integer(1), f.ram);
     }
 
     @Test
@@ -83,11 +83,11 @@ public class MachineConfigurationToFlavorTest {
         assertNull(f.disk);
 
         DiskTemplate template = new DiskTemplate();
-        template.setCapacity(1);
+        template.setCapacity(1000 * 1000);
         config.setDisks(Lists.newArrayList(template));
 
         f = new MachineConfigurationToFlavor(true).apply(config);
-        assertEquals("1000", f.disk);
+        assertEquals("1", f.disk);
     }
 
     @Test
@@ -97,17 +97,17 @@ public class MachineConfigurationToFlavorTest {
         assertNull(f.ephemeral);
 
         DiskTemplate template = new DiskTemplate();
-        template.setCapacity(1);
+        template.setCapacity(1000 * 1000);
         config.setDisks(Lists.newArrayList(template));
 
         f = new MachineConfigurationToFlavor(true).apply(config);
         assertEquals(new Integer(0), f.ephemeral);
 
         DiskTemplate template2 = new DiskTemplate();
-        template2.setCapacity(2);
+        template2.setCapacity(2 * 1000 * 1000);
         config.setDisks(Lists.newArrayList(template, template2));
 
         f = new MachineConfigurationToFlavor(true).apply(config);
-        assertEquals(new Integer(2000), f.ephemeral);
+        assertEquals(new Integer(2), f.ephemeral);
     }
 }
