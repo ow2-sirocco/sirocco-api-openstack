@@ -24,13 +24,22 @@ package org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.floatingips.m
 import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
+import java.io.Serializable;
+
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("pool")
-public class Pool {
+public class Pool implements Serializable {
 
     private String name;
+
+    public Pool(String name) {
+        this.name = name;
+    }
+
+    public Pool() {
+    }
 
     @JsonValue
     public String getName() {
