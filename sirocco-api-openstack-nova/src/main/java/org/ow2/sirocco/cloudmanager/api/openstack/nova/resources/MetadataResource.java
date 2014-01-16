@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -77,16 +77,15 @@ public interface MetadataResource {
 
     /**
      * Sets a metadata item by key for the specified resource.
-     * FIXME : Error in openstack documentation. Need to check parameters.
      *
-     * @param key
-     * @param value
+     * @param metadata
      * @return HTTP 200 if OK with metdata as JSON.
      */
     @PUT
     @Path("/{key}")
     @Produces(MediaType.APPLICATION_JSON)
-    Response set(@PathParam("key") String key, String value);
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response setValue(Metadata metadata);
 
     /**
      * Deletes a metadata item by key for the specified resource.

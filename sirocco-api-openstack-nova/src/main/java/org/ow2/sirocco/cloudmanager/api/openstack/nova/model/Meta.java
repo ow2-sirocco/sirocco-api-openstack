@@ -29,30 +29,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Metadata hack. Result of the metadata get operation returns {"meta": {"foo": "bar"}}
+ *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-@JsonRootName("metadata")
-public class Metadata implements Serializable {
+@JsonRootName("meta")
+public class Meta implements Serializable {
+    private Map<String, String> data;
 
-    private Map<String, String> metadata;
-
-    public Metadata() {
-        this.metadata = new HashMap<String, String>();
+    public Meta() {
+        this.data = new HashMap<String, String>();
     }
 
-    public Metadata(Map<String, String> metadata) {
-        this.metadata = metadata;
+    public Meta(Map<String, String> data) {
+        this.data = data;
     }
 
     /**
      * @return the metadata
      */
     @JsonValue
-    public Map<String, String> getMetadata() {
-        return metadata;
+    public Map<String, String> getData() {
+        return data;
     }
 
-    public void setMetadata(Map<String, String> metadata) {
-        this.metadata = metadata;
+    public void setData(Map<String, String> data) {
+        this.data = data;
     }
 }

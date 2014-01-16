@@ -24,6 +24,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova;
 import com.google.common.collect.ImmutableMap;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Meta;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Metadata;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.MapToMetadata;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.utils.MapHelper;
@@ -35,12 +36,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.util.Map;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notFound;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
@@ -141,7 +142,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
         try {
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta != null && meta.get(key) != null) {
-                return ok(new MapToMetadata().apply(ImmutableMap.of(key, meta.get(key))));
+                return ok(new Meta(ImmutableMap.of(key, meta.get(key))));
             } else {
                 return notFound();
             }
@@ -159,20 +160,30 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     }
 
     @Override
-    public Response set(@PathParam("key") String key, String value) {
+    public Response setValue(Metadata value) {
+
+        if (value == null || value.getMetadata() == null) {
+            return badRequest("Metadata Error", "Payload is null or empty");
+        }
+
+        String key = getPathParamValue("key");
+        if (key == null || key.length() == 0) {
+            return badRequest("Null key value", "Key is null or empty");
+        }
 
         // get all the values and replace the given one with the given value
         try {
+            String v = value.getMetadata().get(key);
+            if (v == null) {
+                return badRequest("Metadata Error", "Can not retrieve metadata value from request");
+            }
+
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
-            if (meta.get(key) != null) {
-                meta.put(key, value);
+            if (meta != null && meta.get(key) != null) {
+                meta.put(key, v);
                 machineManager.updateMachineAttributes(getServerId(), ImmutableMap.<String, Object>of("properties", meta));
             }
-            // FIXME : What if the input key/value is not available? Add it or not.
-            // The openstack documentation does not specify what to do.
-            // FIXME : Need to query the backend to get new values
-            // FIXME : What is the return code in this case?
-            return ok(new MapToMetadata().apply(meta));
+            return ok(new MapToMetadata().apply(ImmutableMap.of(key, v)));
 
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("server", getServerId(), rnfe);
@@ -188,7 +199,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     }
 
     @Override
-    public Response delete(@PathParam("key") String key) {
+    public Response delete(String key) {
         // get all the values and replace the given one with the given value
         try {
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();

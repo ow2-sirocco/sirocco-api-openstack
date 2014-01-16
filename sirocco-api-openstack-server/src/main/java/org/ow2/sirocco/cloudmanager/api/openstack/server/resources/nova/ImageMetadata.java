@@ -40,6 +40,7 @@ import java.util.Map;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notFound;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
 import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
@@ -154,19 +155,29 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
         }    }
 
     @Override
-    public Response set(String key, String value) {
+    public Response setValue(Metadata value) {
+        if (value == null || value.getMetadata() == null || value.getMetadata() == null) {
+            return badRequest("Null metadata value", "Payload is null or empty");
+        }
+
+        String key = getPathParamValue("key");
+        if (key == null || key.length() == 0) {
+            return badRequest("Null key value", "Key is null or empty");
+        }
+
         // get all the values and replace the given one with the given value
         try {
+            String v = value.getMetadata().get(key);
+            if (v == null) {
+                return badRequest("Metadata Error", "Can not retrieve metadata value from request");
+            }
+
             Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
             if (meta.get(key) != null) {
-                meta.put(key, value);
+                meta.put(key, v);
                 manager.updateMachineImageAttributes(getImageId(), ImmutableMap.<String, Object>of("properties", meta));
             }
-            // FIXME : What if the input key/value is not available? Add it or not.
-            // The openstack documentation does not specify what to do.
-            // FIXME : Need to query the backend to get new values
-            // FIXME : What is the return code in this case?
-            return ok(new MapToMetadata().apply(meta));
+            return ok(new MapToMetadata().apply(ImmutableMap.of(key, v)));
 
         } catch (ResourceNotFoundException rnfe) {
             return resourceNotFoundException("image", getImageId(), rnfe);
