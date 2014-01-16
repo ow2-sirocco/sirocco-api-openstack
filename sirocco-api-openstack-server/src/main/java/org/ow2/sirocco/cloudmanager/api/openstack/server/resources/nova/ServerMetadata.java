@@ -137,7 +137,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     }
 
     @Override
-    public Response get(@PathParam("key") String key) {
+    public Response get(String key) {
         try {
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta != null && meta.get(key) != null) {

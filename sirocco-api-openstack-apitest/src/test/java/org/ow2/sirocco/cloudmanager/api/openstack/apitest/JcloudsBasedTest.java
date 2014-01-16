@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@ import org.jclouds.compute.ComputeServiceContext;
 import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
 import org.jclouds.openstack.nova.v2_0.NovaApi;
 import org.jclouds.openstack.nova.v2_0.NovaAsyncApi;
+import org.jclouds.openstack.nova.v2_0.features.ServerApi;
 import org.jclouds.openstack.v2_0.domain.Link;
 import org.jclouds.openstack.v2_0.domain.Resource;
 import org.jclouds.openstack.v2_0.predicates.LinkPredicates;
@@ -74,6 +75,10 @@ public abstract class JcloudsBasedTest extends AbstractOpenStackTest {
         compute = context.getComputeService();
         nova = context.unwrap();
         //zones = jclouds.getApi().getConfiguredZones();
+    }
+
+    protected ServerApi serverApi() {
+        return nova.getApi().getServerApiForZone(getZone());
     }
 
     /**

@@ -338,6 +338,7 @@ public class AbstractOpenStackTest {
         machine.setDescription("Machine description " + name);
         machine.setName(name);
         machine.setLocation("FR");
+        machine.setProperties(props );
         machine.setMachineTemplate(template);
         Job job = machineManager.createMachine(machine);
 
