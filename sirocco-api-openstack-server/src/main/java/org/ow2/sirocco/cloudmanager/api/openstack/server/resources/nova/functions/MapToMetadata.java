@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -35,7 +35,9 @@ public class MapToMetadata implements Function<Map<String, String>, Metadata> {
 
     @Override
     public Metadata apply(Map<String, String> input) {
-        return new Metadata(input);
+        Metadata result = new Metadata();
+        result.putAll(input);
+        return result;
     }
 
 }

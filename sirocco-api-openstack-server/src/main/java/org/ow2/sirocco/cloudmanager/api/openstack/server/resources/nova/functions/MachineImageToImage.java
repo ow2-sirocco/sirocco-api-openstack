@@ -78,7 +78,9 @@ public class MachineImageToImage implements Function<MachineImage, Image> {
             }
 
             if (input.getProperties() != null) {
-                image.setMetadata(new Metadata(input.getProperties()));
+                Metadata meta = new Metadata();
+                meta.putAll(input.getProperties());
+                image.setMetadata(meta);
             }
             image.setStatus(mapping.get(input.getState()));
             image.setUpdated(input.getUpdated());

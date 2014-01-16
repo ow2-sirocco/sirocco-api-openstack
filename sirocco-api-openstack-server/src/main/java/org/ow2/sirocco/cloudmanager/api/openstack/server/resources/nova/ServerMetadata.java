@@ -82,16 +82,18 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     public Response update(Metadata metadata) {
         // current core component does not allow to update properties but just replace them
         // so we need to merge them from the client
+        if (metadata == null) {
+            return badRequest("Null", "metadata is null");
+        }
 
         try {
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
-            Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
             // update operation will update the properties which are already set and do not modify other
             // It will not add any metadata which is not already in, we are just in update mode, node add
             // to add, check the #set method.
-            Map<String, String> updated =  MapHelper.updateMap(meta, input);
+            Map<String, String> updated =  MapHelper.updateMap(meta, metadata);
             machineManager.updateMachineAttributes(getServerId(), ImmutableMap.<String, Object>of("properties", updated));
 
             // FIXME : Need to query the backend to get new values
@@ -112,13 +114,16 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
 
     @Override
     public Response set(Metadata metadata) {
+        if (metadata == null) {
+            return badRequest("Null", "metadata is null");
+        }
+
         try {
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
-            Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
             // set operation will replace properties that match incoming request and removes items not specified in the request.
-            Map<String, String> updated = MapHelper.replaceMap(meta, input);
+            Map<String, String> updated = MapHelper.replaceMap(meta, metadata);
             machineManager.updateMachineAttributes(getServerId(), ImmutableMap.<String, Object>of("properties", updated));
 
             // FIXME : Need to query the backend to get new values
@@ -142,7 +147,9 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
         try {
             Map<String, String> meta = machineManager.getMachineByUuid(getServerId()).getProperties();
             if (meta != null && meta.get(key) != null) {
-                return ok(new Meta(ImmutableMap.of(key, meta.get(key))));
+                Meta result = new Meta();
+                result.put(key, meta.get(key));
+                return ok(result);
             } else {
                 return notFound();
             }
@@ -162,7 +169,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
     @Override
     public Response setValue(Metadata value) {
 
-        if (value == null || value.getMetadata() == null) {
+        if (value == null) {
             return badRequest("Metadata Error", "Payload is null or empty");
         }
 
@@ -173,7 +180,7 @@ public class ServerMetadata extends AbstractResource implements org.ow2.sirocco.
 
         // get all the values and replace the given one with the given value
         try {
-            String v = value.getMetadata().get(key);
+            String v = value.get(key);
             if (v == null) {
                 return badRequest("Metadata Error", "Can not retrieve metadata value from request");
             }

@@ -21,38 +21,14 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 
-import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("metadata")
-public class Metadata implements Serializable {
+public class Metadata extends HashMap<String, String> {
 
-    private Map<String, String> metadata;
-
-    public Metadata() {
-        this.metadata = new HashMap<String, String>();
-    }
-
-    public Metadata(Map<String, String> metadata) {
-        this.metadata = metadata;
-    }
-
-    /**
-     * @return the metadata
-     */
-    @JsonValue
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Map<String, String> metadata) {
-        this.metadata = metadata;
-    }
 }

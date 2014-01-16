@@ -21,12 +21,9 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.nova.model;
 
-import org.codehaus.jackson.annotate.JsonValue;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
-import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Metadata hack. Result of the metadata get operation returns {"meta": {"foo": "bar"}}
@@ -34,26 +31,5 @@ import java.util.Map;
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 @JsonRootName("meta")
-public class Meta implements Serializable {
-    private Map<String, String> data;
-
-    public Meta() {
-        this.data = new HashMap<String, String>();
-    }
-
-    public Meta(Map<String, String> data) {
-        this.data = data;
-    }
-
-    /**
-     * @return the metadata
-     */
-    @JsonValue
-    public Map<String, String> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, String> data) {
-        this.data = data;
-    }
+public class Meta extends HashMap<String, String> {
 }

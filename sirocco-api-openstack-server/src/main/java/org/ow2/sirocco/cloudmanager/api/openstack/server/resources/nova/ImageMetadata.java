@@ -81,13 +81,12 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     public Response update(Metadata metadata) {
         try {
             Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
-            Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
             // update operation will update the properties which are already set and do not modify other
             // It will not add any metadata which is not already in, we are just in update mode, node add
             // to add, check the #set method.
-            Map<String, String> updated =  MapHelper.updateMap(meta, input);
+            Map<String, String> updated =  MapHelper.updateMap(meta, metadata);
             manager.updateMachineImageAttributes(getImageId(), ImmutableMap.<String, Object>of("properties", updated));
 
             // FIXME : Need to query the backend to get new values
@@ -110,11 +109,10 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
     public Response set(Metadata metadata) {
         try {
             Map<String, String> meta = manager.getMachineImageByUuid(getImageId()).getProperties();
-            Map<String, String> input = metadata.getMetadata();
 
             // According to the openstack documentation
             // set operation will replace properties that match incoming request and removes items not specified in the request.
-            Map<String, String> updated = MapHelper.replaceMap(meta, input);
+            Map<String, String> updated = MapHelper.replaceMap(meta, metadata);
             manager.updateMachineImageAttributes(getImageId(), ImmutableMap.<String, Object>of("properties", updated));
 
             // FIXME : Need to query the backend to get new values
@@ -156,7 +154,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
 
     @Override
     public Response setValue(Metadata value) {
-        if (value == null || value.getMetadata() == null || value.getMetadata() == null) {
+        if (value == null) {
             return badRequest("Null metadata value", "Payload is null or empty");
         }
 
@@ -167,7 +165,7 @@ public class ImageMetadata extends AbstractResource implements org.ow2.sirocco.c
 
         // get all the values and replace the given one with the given value
         try {
-            String v = value.getMetadata().get(key);
+            String v = value.get(key);
             if (v == null) {
                 return badRequest("Metadata Error", "Can not retrieve metadata value from request");
             }

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -28,12 +28,15 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -118,6 +122,55 @@ public class MetadataJerseyTest extends JerseyTest {
           }
         }
         */
+    }
+
+    @Test
+    public void testGetMeta() throws CloudProviderException {
+        Map<String, String> meta = Maps.newHashMap();
+        meta.put("foo", "bar");
+        meta.put("bar", "baz");
+
+        Machine machine = new Machine();
+        machine.setUuid("123");
+        machine.setName("foobar");
+        machine.setState(Machine.State.STARTED);
+        machine.setProperties(meta);
+
+        EasyMock.expect(this.service.getMachineByUuid(machine.getUuid())).andReturn(machine).once();
+        EasyMock.replay(this.service);
+
+        Response response = this.target().path("/v2/tenant_123/servers/" + machine.getUuid() + "/metadata/foo").request(MediaType.APPLICATION_JSON_TYPE).get();
+        EasyMock.verify(this.service);
+        LOGGER.info("Response status %s", response.getStatus());
+        assertEquals(200, response.getStatus());
+        String out = response.readEntity(String.class);
+        System.out.println(out);
+        assertTrue(out.contains("\"meta\""));
+    }
+
+    @Test
+    @Ignore
+    public void testSetMeta() throws CloudProviderException {
+        Map<String, String> meta = Maps.newHashMap();
+        meta.put("foo", "bar");
+        meta.put("bar", "baz");
+
+        Machine machine = new Machine();
+        machine.setUuid("123");
+        machine.setName("foobar");
+        machine.setState(Machine.State.STARTED);
+        machine.setProperties(meta);
+
+        EasyMock.expect(this.service.getMachineByUuid(machine.getUuid())).andReturn(machine).once();
+        EasyMock.replay(this.service);
+
+        String payload = "{ \"metadata\" : { \"foo\" : \"update\" }}";
+        Response response = this.target().path("/v2/tenant_123/servers/" + machine.getUuid() + "/metadata/foo").request(MediaType.APPLICATION_JSON_TYPE).put(Entity.json(payload));
+      //  EasyMock.verify(this.service);
+        LOGGER.info("Response status %s", response.getStatus());
+        String out = response.readEntity(String.class);
+        System.out.println(out);
+        assertEquals(200, response.getStatus());
     }
 
 }
