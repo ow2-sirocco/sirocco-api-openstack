@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -51,6 +51,17 @@ public class NetworkToNetwork implements Function<Network, org.ow2.sirocco.cloud
         }
 
         if (details) {
+            /* FIXME : Need subnet ID
+            if (input.getSubnets() != null && input.getSubnets().size() > 0) {
+                result.setSubnets(Lists.newArrayList(Iterables.transform(input.getSubnets(), new Function<Subnet, String> () {
+
+                    @Override
+                    public String apply(Subnet input) {
+                        return input.getUUID();
+                    }
+                })));
+            }
+            */
 
         }
 
