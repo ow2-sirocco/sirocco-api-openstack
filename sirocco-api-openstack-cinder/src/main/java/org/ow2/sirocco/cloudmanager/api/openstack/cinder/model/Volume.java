@@ -35,7 +35,7 @@ import java.util.List;
 @JsonRootName("volume")
 public class Volume extends Resource {
 
-    // TODO : Attachments
+    private VolumeAttachments attachments;
 
     private String status;
 
@@ -175,5 +175,13 @@ public class Volume extends Resource {
 
     public void setSize(int size) {
         this.size = size;
+    }
+
+    public VolumeAttachments getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(VolumeAttachments attachments) {
+        this.attachments = attachments;
     }
 }

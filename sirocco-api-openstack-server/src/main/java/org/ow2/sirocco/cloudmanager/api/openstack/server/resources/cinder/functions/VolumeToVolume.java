@@ -22,8 +22,11 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.functions;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.Metadata;
+import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.VolumeAttachments;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.Status;
 import org.ow2.sirocco.cloudmanager.model.cimi.Volume;
 import org.slf4j.Logger;
@@ -89,13 +92,18 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
                 status = Status.IN_USE;
             }
 
-            System.out.println("###ZZ SET STATUS " + status.value());
             result.setStatus(status.value());
 
             //result.setTenantId();
             result.setVolumeType(NONE);
             // zone is required
             result.setAvailabilityZone("");
+
+            if (input.getAttachments() != null) {
+                VolumeAttachments attachments = new VolumeAttachments();
+                attachments.setList(Lists.newArrayList(Iterables.transform(input.getAttachments(), new MachineVolumeToVolumeAttachment())));
+                result.setAttachments(attachments);
+            }
         }
         return result;
     }

@@ -40,10 +40,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds.nova.FlavorsTe
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
-import org.ow2.sirocco.cloudmanager.model.cimi.Job;
-import org.ow2.sirocco.cloudmanager.model.cimi.VolumeConfiguration;
-import org.ow2.sirocco.cloudmanager.model.cimi.VolumeCreate;
-import org.ow2.sirocco.cloudmanager.model.cimi.VolumeTemplate;
+import org.ow2.sirocco.cloudmanager.model.cimi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,6 +116,25 @@ public class VolumesTest extends JcloudsBasedTest {
         }
 
         assertTrue("Volume is not in DELETED or DELETING state " + v.getState(), (v.getState() == org.ow2.sirocco.cloudmanager.model.cimi.Volume.State.DELETED) || (v.getState() == org.ow2.sirocco.cloudmanager.model.cimi.Volume.State.DELETING));
+    }
+
+    @Test
+    public void testAttachment() throws Exception {
+        org.ow2.sirocco.cloudmanager.model.cimi.Volume volume = createVolume("testAttachment");
+        Machine machine = createMachine("testAttachment", "image", 1, 512, null, true);
+
+        MachineVolume mv = new MachineVolume();
+        mv.setVolume(volume);
+        mv.setInitialLocation("/dev");
+        mv.setName("name");
+        Job job = machineManager.addVolumeToMachine(machine.getUuid(), mv);
+        waitForJobCompletion(job);
+
+        Volume v = api().get(volume.getUuid());
+
+        assertNotNull(v);
+        assertNotNull(v.getAttachments());
+        assertEquals(1, v.getAttachments().size());
     }
 
     protected org.ow2.sirocco.cloudmanager.model.cimi.Volume createVolume(String name) throws Exception {
