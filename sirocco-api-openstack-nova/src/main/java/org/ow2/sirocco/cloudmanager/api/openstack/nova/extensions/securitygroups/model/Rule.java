@@ -51,6 +51,16 @@ public class Rule {
     @JsonProperty("ip_range")
     private IpRange ipRange = new IpRange();
 
+    private Group group;
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
+    }
+
     public String getId() {
         return id;
     }
