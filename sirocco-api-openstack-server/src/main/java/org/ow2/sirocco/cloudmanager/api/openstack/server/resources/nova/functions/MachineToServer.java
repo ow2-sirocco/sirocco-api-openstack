@@ -22,8 +22,14 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroups;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
+import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup;
+
+import java.util.List;
 
 /**
  * Transform a Sirocco Machine to an Openstack Server
@@ -73,7 +79,6 @@ public class MachineToServer implements Function<Machine, Server> {
             server.accessIPv4 = "";
             server.accessIPv6 = "";
 
-            // TODO : Mapping
             if (machine.getState() != null) {
                 server.status = machine.getState().toString();
             }
@@ -92,6 +97,20 @@ public class MachineToServer implements Function<Machine, Server> {
 
             if (machine.getProperties() != null) {
                 server.metadata = new MapToMetadata().apply(machine.getProperties());
+            }
+
+            if (machine.getSecurityGroups() != null) {
+                List<org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroup> groups = Lists.newArrayList(Iterables.transform(machine.getSecurityGroups(), new Function<SecurityGroup, org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroup>() {
+                    @Override
+                    public org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroup apply(SecurityGroup input) {
+                        org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroup result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroup();
+                        result.setName(input.getName());
+                        return result;
+                    }
+                }));
+                SecurityGroups securityGroups = new SecurityGroups();
+                securityGroups.setGroups(groups);
+                server.securityGroups = securityGroups;
             }
         }
         return server;

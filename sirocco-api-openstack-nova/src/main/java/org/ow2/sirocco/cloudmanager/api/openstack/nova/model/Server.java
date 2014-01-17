@@ -26,6 +26,7 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.domain.AsynchronousFault;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.Resource;
+import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroups;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -74,6 +75,9 @@ public class Server extends Resource {
 
     public String adminPass;
 
+    @JsonProperty("security_groups")
+    public SecurityGroups securityGroups;
+
     @JsonProperty("fault")
     public AsynchronousFault fault;
 
@@ -96,6 +100,7 @@ public class Server extends Resource {
                 ", updated='" + updated + '\'' +
                 ", userId='" + userId + '\'' +
                 ", adminPass='" + adminPass + '\'' +
+                ", securityGroups='" + securityGroups + '\'' +
                 '}';
     }
 }
