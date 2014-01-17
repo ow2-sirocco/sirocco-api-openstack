@@ -1,0 +1,308 @@
+{"servers": [
+    {
+        "status": "ACTIVE",
+        "updated": "2014-01-13T11:15:32Z",
+        "hostId": "66ac0cbb3e7c51570f9305edb82a6d8fe786acd6db20fa07083c6100",
+        "addresses": {
+            "Demo": [
+                {
+                    "version": 4,
+                    "addr": "9.9.0.7",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ],
+            "PetalsNetwork": [
+                {
+                    "version": 4,
+                    "addr": "192.168.0.7",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ]
+        },
+        "links": [
+            {
+                "href": "http://localhost:8774/v2/bf6110e105824ae2b412c7db53d4d79a/servers/b564a8d3-25b7-42e3-8e14-2ccdb17e460f",
+                "rel": "self"
+            },
+            {
+                "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/servers/b564a8d3-25b7-42e3-8e14-2ccdb17e460f",
+                "rel": "bookmark"
+            }
+        ],
+        "key_name": null,
+        "image": {
+            "id": "2584d0f5-b44c-4290-a7d2-8ecd2621141f",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/images/2584d0f5-b44c-4290-a7d2-8ecd2621141f",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "OS-EXT-STS:task_state": null,
+        "OS-EXT-STS:vm_state": "active",
+        "flavor": {
+            "id": "1",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/flavors/1",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "id": "b564a8d3-25b7-42e3-8e14-2ccdb17e460f",
+        "security_groups": [
+            {
+                "name": "demo"
+            },
+            {
+                "name": "demo"
+            }
+        ],
+        "OS-EXT-AZ:availability_zone": "nova",
+        "user_id": "613d775694b14bfba3bef7fbddc9fcfe",
+        "name": "testme",
+        "created": "2014-01-13T11:14:46Z",
+        "tenant_id": "bf6110e105824ae2b412c7db53d4d79a",
+        "OS-DCF:diskConfig": "MANUAL",
+        "accessIPv4": "",
+        "accessIPv6": "",
+        "progress": 0,
+        "OS-EXT-STS:power_state": 1,
+        "config_drive": "",
+        "metadata": {}
+    },
+    {
+        "status": "ACTIVE",
+        "updated": "2013-09-09T14:15:02Z",
+        "hostId": "8b1ef80967fcdde698f62ea35014308250fb7248d82e39a2a25441c5",
+        "addresses": {
+            "Demo": [
+                {
+                    "version": 4,
+                    "addr": "9.9.0.5",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ],
+            "PetalsNetwork": [
+                {
+                    "version": 4,
+                    "addr": "192.168.0.5",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ]
+        },
+        "links": [
+            {
+                "href": "http://localhost:8774/v2/bf6110e105824ae2b412c7db53d4d79a/servers/aad28978-7e92-4373-8c97-341066d34c81",
+                "rel": "self"
+            },
+            {
+                "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/servers/aad28978-7e92-4373-8c97-341066d34c81",
+                "rel": "bookmark"
+            }
+        ],
+        "key_name": null,
+        "image": {
+            "id": "700f61ef-00a9-4065-8080-01a7458bb157",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/images/700f61ef-00a9-4065-8080-01a7458bb157",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "OS-EXT-STS:task_state": null,
+        "OS-EXT-STS:vm_state": "active",
+        "flavor": {
+            "id": "1",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/flavors/1",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "id": "aad28978-7e92-4373-8c97-341066d34c81",
+        "security_groups": [
+            {
+                "name": "default"
+            },
+            {
+                "name": "default"
+            }
+        ],
+        "OS-EXT-AZ:availability_zone": "nova",
+        "user_id": "613d775694b14bfba3bef7fbddc9fcfe",
+        "name": "master",
+        "created": "2013-09-09T14:14:55Z",
+        "tenant_id": "bf6110e105824ae2b412c7db53d4d79a",
+        "OS-DCF:diskConfig": "MANUAL",
+        "accessIPv4": "",
+        "accessIPv6": "",
+        "progress": 0,
+        "OS-EXT-STS:power_state": 1,
+        "config_drive": "",
+        "metadata": {
+            "priority": "0",
+            "petals.controller.endpoint": "http://localhost:5555/controller/{{node.id}}",
+            "petals.virtual.id": "{{petals.virtual.id}}",
+            "petals.container.id": "{{petals.container.id}}",
+            "petals.topology.url": "http://localhost:5555/topology/{{node.id}}"
+        }
+    },
+    {
+        "status": "ACTIVE",
+        "updated": "2013-09-09T14:01:27Z",
+        "hostId": "8b1ef80967fcdde698f62ea35014308250fb7248d82e39a2a25441c5",
+        "addresses": {
+            "Demo": [
+                {
+                    "version": 4,
+                    "addr": "9.9.0.4",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ],
+            "PetalsNetwork": [
+                {
+                    "version": 4,
+                    "addr": "192.168.0.4",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ]
+        },
+        "links": [
+            {
+                "href": "http://localhost:8774/v2/bf6110e105824ae2b412c7db53d4d79a/servers/5a42e2e1-ad62-4397-91b3-f54eea46a7b0",
+                "rel": "self"
+            },
+            {
+                "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/servers/5a42e2e1-ad62-4397-91b3-f54eea46a7b0",
+                "rel": "bookmark"
+            }
+        ],
+        "key_name": null,
+        "image": {
+            "id": "700f61ef-00a9-4065-8080-01a7458bb157",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/images/700f61ef-00a9-4065-8080-01a7458bb157",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "OS-EXT-STS:task_state": null,
+        "OS-EXT-STS:vm_state": "active",
+        "flavor": {
+            "id": "1",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/flavors/1",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "id": "5a42e2e1-ad62-4397-91b3-f54eea46a7b0",
+        "security_groups": [
+            {
+                "name": "default"
+            },
+            {
+                "name": "default"
+            }
+        ],
+        "OS-EXT-AZ:availability_zone": "nova",
+        "user_id": "613d775694b14bfba3bef7fbddc9fcfe",
+        "name": "master",
+        "created": "2013-09-09T14:01:08Z",
+        "tenant_id": "bf6110e105824ae2b412c7db53d4d79a",
+        "OS-DCF:diskConfig": "MANUAL",
+        "accessIPv4": "",
+        "accessIPv6": "",
+        "progress": 0,
+        "OS-EXT-STS:power_state": 1,
+        "config_drive": "",
+        "metadata": {
+            "priority": "0",
+            "petals.controller.endpoint": "http://localhost:5555/controller/{{node.id}}",
+            "petals.virtual.id": "{{petals.virtual.id}}",
+            "petals.container.id": "{{petals.container.id}}",
+            "petals.topology.url": "http://localhost:5555/topology/{{node.id}}"
+        }
+    },
+    {
+        "status": "ACTIVE",
+        "updated": "2013-09-06T15:52:51Z",
+        "hostId": "66ac0cbb3e7c51570f9305edb82a6d8fe786acd6db20fa07083c6100",
+        "addresses": {
+            "Demo": [
+                {
+                    "version": 4,
+                    "addr": "9.9.0.2",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ],
+            "PetalsNetwork": [
+                {
+                    "version": 4,
+                    "addr": "192.168.0.3",
+                    "OS-EXT-IPS:type": "fixed"
+                }
+            ]
+        },
+        "links": [
+            {
+                "href": "http://localhost:8774/v2/bf6110e105824ae2b412c7db53d4d79a/servers/96d8e0dc-434b-4268-b46b-cfee6bad7127",
+                "rel": "self"
+            },
+            {
+                "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/servers/96d8e0dc-434b-4268-b46b-cfee6bad7127",
+                "rel": "bookmark"
+            }
+        ],
+        "key_name": null,
+        "image": {
+            "id": "700f61ef-00a9-4065-8080-01a7458bb157",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/images/700f61ef-00a9-4065-8080-01a7458bb157",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "OS-EXT-STS:task_state": null,
+        "OS-EXT-STS:vm_state": "active",
+        "flavor": {
+            "id": "1",
+            "links": [
+                {
+                    "href": "http://localhost:8774/bf6110e105824ae2b412c7db53d4d79a/flavors/1",
+                    "rel": "bookmark"
+                }
+            ]
+        },
+        "id": "96d8e0dc-434b-4268-b46b-cfee6bad7127",
+        "security_groups": [
+            {
+                "name": "default"
+            },
+            {
+                "name": "default"
+            }
+        ],
+        "OS-EXT-AZ:availability_zone": "nova",
+        "user_id": "613d775694b14bfba3bef7fbddc9fcfe",
+        "name": "AHAHAH",
+        "created": "2013-09-06T14:27:41Z",
+        "tenant_id": "bf6110e105824ae2b412c7db53d4d79a",
+        "OS-DCF:diskConfig": "MANUAL",
+        "accessIPv4": "",
+        "accessIPv6": "",
+        "progress": 0,
+        "OS-EXT-STS:power_state": 1,
+        "config_drive": "",
+        "metadata": {
+            "foo": "bar"
+        }
+    }
+]}
