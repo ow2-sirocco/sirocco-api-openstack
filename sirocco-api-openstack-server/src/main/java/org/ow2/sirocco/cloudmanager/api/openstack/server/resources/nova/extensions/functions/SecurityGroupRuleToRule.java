@@ -46,6 +46,14 @@ public class SecurityGroupRuleToRule implements Function<SecurityGroupRule, Rule
         if (input.getParentGroup() != null) {
             rule.setParentGroupId(input.getParentGroup().getId());
         }
+        if (input.getSourceGroup() != null) {
+            Rule.Group group = new Rule.Group();
+            if (input.getSourceGroup().getTenant() != null) {
+                group.setTenantId(input.getSourceGroup().getTenant().getUuid());
+            }
+            group.setName(input.getSourceGroup().getName());
+            rule.setGroup(group);
+        }
         return rule;
     }
 }
