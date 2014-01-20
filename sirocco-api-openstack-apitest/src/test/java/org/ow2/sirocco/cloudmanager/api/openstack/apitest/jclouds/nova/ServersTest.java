@@ -231,7 +231,7 @@ public class ServersTest extends JcloudsBasedTest {
                 throw new Exception("Machine name update time out");
             }
         }
-        assertEquals(newName, getUpdatedMachine(machine));
+        assertEquals(newName, getUpdatedMachine(machine).getName());
     }
 
     /**
