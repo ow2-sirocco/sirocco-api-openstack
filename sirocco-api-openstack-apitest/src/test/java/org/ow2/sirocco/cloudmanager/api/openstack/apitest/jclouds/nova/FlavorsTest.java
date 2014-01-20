@@ -56,7 +56,7 @@ public class FlavorsTest extends JcloudsBasedTest {
 
     @Test
     public void testGetSingleFlavor() throws CloudProviderException {
-        MachineConfiguration config = createMachineConfiguration("testGetSingleFlavor", 1024, 512, null);
+        MachineConfiguration config = createMachineConfiguration("testGetSingleFlavor", 1024, 1024, null);
         Flavor flavor = nova.getApi().getFlavorApiForZone(getZone()).get(config.getUuid());
         assertNotNull(flavor);
         assertEquals(config.getName(), flavor.getName());
@@ -65,8 +65,8 @@ public class FlavorsTest extends JcloudsBasedTest {
 
     @Test
     public void testList() throws CloudProviderException {
-        MachineConfiguration config1 = createMachineConfiguration("testFlavorList1", 1024, 512, null);
-        MachineConfiguration config2 = createMachineConfiguration("testFlavorList2", 1024, 512, null);
+        MachineConfiguration config1 = createMachineConfiguration("testFlavorList1", 1024, 1024, null);
+        MachineConfiguration config2 = createMachineConfiguration("testFlavorList2", 1024, 1024, null);
 
         PagedIterable<? extends Resource> result = nova.getApi().getFlavorApiForZone(getZone()).list();
         assertEquals(2, result.concat().size());
@@ -82,8 +82,8 @@ public class FlavorsTest extends JcloudsBasedTest {
     public void testListDetails() throws CloudProviderException {
         LOG.info("Test get list details");
 
-        MachineConfiguration config1 = createMachineConfiguration("testListDetails1", 1024, 512, null);
-        MachineConfiguration config2 = createMachineConfiguration("testListDetails2", 1024, 512, null);
+        MachineConfiguration config1 = createMachineConfiguration("testListDetails1", 1024, 1024, null);
+        MachineConfiguration config2 = createMachineConfiguration("testListDetails2", 1024, 1024, null);
 
         PagedIterable<? extends Flavor> result = nova.getApi().getFlavorApiForZone(getZone()).listInDetail();
         assertEquals(2, result.concat().size());

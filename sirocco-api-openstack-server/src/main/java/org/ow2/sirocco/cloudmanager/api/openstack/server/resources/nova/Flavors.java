@@ -29,6 +29,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavor;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.MachineConfigurationToFlavor;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.FlavorListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
+import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
@@ -92,7 +93,13 @@ public class Flavors extends AbstractResource implements org.ow2.sirocco.cloudma
     protected Response getFlavors(boolean details) {
         org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavors result = new org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Flavors();
         try {
-            List<MachineConfiguration> configs = machineManager.getMachineConfigurations(new FlavorListQuery().apply(getJaxRsRequestInfo())).getItems();
+            List<MachineConfiguration> configs = null;
+            QueryParams params = new FlavorListQuery().apply(getJaxRsRequestInfo());
+            if (params == null) {
+                configs = machineManager.getMachineConfigurations().getItems();
+            } else {
+                configs = machineManager.getMachineConfigurations(params).getItems();
+            }
             if (configs == null || configs.size() == 0) {
                 return ok(result);
             } else {
