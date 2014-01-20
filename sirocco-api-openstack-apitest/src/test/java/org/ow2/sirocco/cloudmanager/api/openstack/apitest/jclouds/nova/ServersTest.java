@@ -174,7 +174,6 @@ public class ServersTest extends JcloudsBasedTest {
 
         Server server = nova.getApi().getServerApiForZone(getZone()).get(machine.getUuid());
         assertNotNull(server);
-        assertEquals(machine.getUuid(), server.getUuid());
         assertTrue(checkServer(server));
     }
 
