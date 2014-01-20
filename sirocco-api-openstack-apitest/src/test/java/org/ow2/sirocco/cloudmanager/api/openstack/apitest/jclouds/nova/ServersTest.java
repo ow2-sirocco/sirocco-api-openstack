@@ -147,7 +147,7 @@ public class ServersTest extends JcloudsBasedTest {
         try {
             waitMachineState(machineManager.getMachineByUuid(machine.getUuid()), Machine.State.DELETED, timeout(30));
         } catch (Exception e) {
-            fail("Can not get the machine in deleted state after timeout..., state is " + machineManager.getMachineByUuid(machine.getUuid()).getState());
+            // Ignore the exception, the machine may be in another delete-compliant state
         }
         assertTrue((machineManager.getMachineByUuid(machine.getUuid()) == null) || (machineManager.getMachineByUuid(machine.getUuid()).getState().equals(Machine.State.DELETED)) || (machineManager.getMachineByUuid(machine.getUuid()).getState().equals(Machine.State.DELETING)));
     }
