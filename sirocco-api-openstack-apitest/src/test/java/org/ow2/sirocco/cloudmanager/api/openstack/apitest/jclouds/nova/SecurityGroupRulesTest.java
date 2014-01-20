@@ -138,9 +138,20 @@ public class SecurityGroupRulesTest extends JcloudsBasedTest {
 
         SecurityGroup group = networkManager.getSecurityGroupByUuid(targetId);
         assertTrue(group.getRules() != null && group.getRules().size() == 1);
+
         api().deleteRule(group.getRules().get(0).getUuid());
 
-        LOG.info("POST DELETE :  " + networkManager.getSecurityGroupByUuid(targetId));
-        assertEquals("Rule has not be deleted (still in the security group)", 0, group.getRules().size());
+        // await...
+        int counter = timeout(60);
+        while (true) {
+            LOG.info("Waiting for the rule to be deleted");
+            if (networkManager.getSecurityGroupByUuid(targetId).getRules().size() == 0) {
+                break;
+            }
+            Thread.sleep(1000);
+            if (counter-- == 0) {
+                fail("Rule has not be deleted");
+            }
+        }
     }
 }
