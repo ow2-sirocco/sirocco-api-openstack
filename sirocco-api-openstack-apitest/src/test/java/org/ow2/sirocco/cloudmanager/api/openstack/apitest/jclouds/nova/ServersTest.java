@@ -201,8 +201,8 @@ public class ServersTest extends JcloudsBasedTest {
         Machine machine = createMachine("details", "imagesdetails", 1, 512, null, true);
 
         PagedIterable<? extends Server> result = nova.getApi().getServerApiForZone(getZone()).listInDetail();
-        assertEquals(size, result.concat().size());
-        assertTrue(result.concat().allMatch(new Predicate<Server>() {
+        assertEquals("Size does not match", size, result.concat().size());
+        assertTrue("All the returned server does not match resource", result.concat().allMatch(new Predicate<Server>() {
             @Override
             public boolean apply(Server input) {
                 return checkServer(input);
