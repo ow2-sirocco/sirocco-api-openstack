@@ -34,7 +34,7 @@ public class MachineVolumeToVolumeAttachment implements Function<MachineVolume, 
     @Override
     public VolumeAttachment apply(MachineVolume input) {
         VolumeAttachment result = new VolumeAttachment();
-        result.setDevice(input.getSystemVolumeName());
+        result.setDevice(input.getInitialLocation());
         result.setId(input.getUuid());
         if (input.getOwner() != null) {
             result.setServerId(input.getOwner().getUuid());
