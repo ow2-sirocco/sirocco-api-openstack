@@ -58,6 +58,19 @@ public class ServerForCreate implements Serializable {
         }
     }
 
+    /**
+     * Network for create.
+     * From the nova command line client (--nic option):
+     *
+     * <pre>
+     * Create a NIC on the server. Specify option multiple
+     * times to create multiple NICs. net-id: attach NIC to
+     * network with this UUID (required if no port-id), v4
+     * -fixed-ip: IPv4 fixed address for NIC (optional),
+     * port-id: attach NIC to port with this UUID (required
+     * if no net-id)
+     * </pre>
+     */
     public static final class Network implements Serializable {
 
         private String uuid;

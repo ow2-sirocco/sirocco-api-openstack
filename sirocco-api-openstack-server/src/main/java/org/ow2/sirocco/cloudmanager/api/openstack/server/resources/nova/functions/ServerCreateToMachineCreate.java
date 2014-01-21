@@ -24,6 +24,7 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functio
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
 import org.ow2.sirocco.cloudmanager.core.api.ICredentialsManager;
@@ -31,13 +32,12 @@ import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
-import org.ow2.sirocco.cloudmanager.model.cimi.Credentials;
-import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
-import org.ow2.sirocco.cloudmanager.model.cimi.MachineCreate;
-import org.ow2.sirocco.cloudmanager.model.cimi.MachineTemplate;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.ow2.sirocco.cloudmanager.model.cimi.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -86,7 +86,6 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
             LOG.warn("Can not get imageRef from input create server bean");
         }
 
-        // TODO : handle URLs in resources
         if (flavor != null) {
             if (flavor.startsWith("http") && flavor.contains("/")) {
                 flavor = flavor.substring(flavor.lastIndexOf('/') + 1);
@@ -127,8 +126,41 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
             }
         }
 
-        // network
+        if (server.getNetworks() != null) {
+            // Keep only the networks with UUID and the ones which are available in sirocco.
+            // Other operations are not supported in sirocco.
+            Iterator<ServerForCreate.Network> keep = Iterators.filter(server.getNetworks().iterator(), new Predicate<ServerForCreate.Network>() {
+                @Override
+                public boolean apply(ServerForCreate.Network input) {
+                    if (input.getUuid() != null) {
+                        try {
+                            networkManager.getNetworkByUuid(input.getUuid());
+                            return true;
+                        } catch (ResourceNotFoundException e) {
+                            // TODO : Throw exception since the user specified a network which is not available
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                }
+            });
 
+            Iterator<MachineTemplateNetworkInterface> out = Iterators.transform(keep, new Function<ServerForCreate.Network, MachineTemplateNetworkInterface>() {
+                @Override
+                public MachineTemplateNetworkInterface apply(ServerForCreate.Network network) {
+                    MachineTemplateNetworkInterface result = new MachineTemplateNetworkInterface();
+                    if (network.getUuid() != null) {
+                        try {
+                            result.setNetwork(networkManager.getNetworkByUuid(network.getUuid()));
+                        } catch (ResourceNotFoundException e) {
+                        }
+                    }
+                    return result;
+                }
+            });
+            template.setNetworkInterfaces(Lists.newArrayList(out));
+        }
 
 //        template.setCredential(credentials);
 //        template.setEventLogTemplate(eventLogTemplate);
@@ -158,5 +190,12 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
         }
 
         return machine;
+    }
+
+    private class NetworkToMachineTemplateNetworkInterface implements Function<ServerForCreate.Network, MachineTemplateNetworkInterface> {
+            @Override
+            public MachineTemplateNetworkInterface apply(ServerForCreate.Network input) {
+                return null;
+            }
     }
 }
