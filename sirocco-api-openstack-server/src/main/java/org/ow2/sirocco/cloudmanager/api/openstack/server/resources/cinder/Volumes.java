@@ -104,7 +104,6 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
         try {
             org.ow2.sirocco.cloudmanager.model.cimi.Volume volume = volumeManager.getVolumeByUuid(id);
             Volume v = new VolumeToVolume(true).apply(volume);
-            v.setTenantId(getPathParamValue(Constants.Nova.TENANT_ID_PATH_PARAMETER));
             v.getLinks().add(LinkHelper.self(getUriInfo().getAbsolutePath().toString(), null, null));
             v.getLinks().add(LinkHelper.bookmark(getUriInfo().getAbsolutePath().toString(), null, null));
             return ok(v);

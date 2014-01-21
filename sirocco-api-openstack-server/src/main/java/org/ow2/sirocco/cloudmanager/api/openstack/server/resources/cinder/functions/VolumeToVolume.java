@@ -94,7 +94,10 @@ public class VolumeToVolume implements Function<Volume, org.ow2.sirocco.cloudman
 
             result.setStatus(status.value());
 
-            //result.setTenantId();
+            if (input.getTenant() != null && input.getTenant().getUuid() != null) {
+                result.setTenantId(input.getTenant().getUuid());
+            }
+
             result.setVolumeType(NONE);
             // zone is required
             result.setAvailabilityZone("");

@@ -21,6 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import java.io.Serializable;
@@ -33,8 +34,10 @@ public class VolumeAttachment implements Serializable {
 
     private String id;
 
+    @JsonProperty("volume_id")
     private String volumeId;
 
+    @JsonProperty("server_id")
     private String serverId;
 
     private String device;

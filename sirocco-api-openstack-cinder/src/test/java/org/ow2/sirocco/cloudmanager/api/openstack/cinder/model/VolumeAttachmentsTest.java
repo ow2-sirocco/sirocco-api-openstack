@@ -21,46 +21,20 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
 
 import java.io.IOException;
 import java.util.UUID;
 
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
-public class VolumeTest {
-
-    /**
-     * Check that we can serialize the right way since volume override name attribute with a new annotation.
-     */
-    @Test
-    public void testSerialize() throws IOException {
-        Volume volume = new Volume();
-        volume.setName("foo");
-        volume.setDescription("bar");
-
-        JacksonConfigurator configurator = new JacksonConfigurator();
-        String out = configurator.getContext(Volume.class).writeValueAsString(volume);
-
-        System.out.println(out);
-
-        assertNotNull(out);
-        assertTrue(out.contains("display_name"));
-        assertTrue(out.contains("display_description"));
-    }
+public class VolumeAttachmentsTest {
 
     @Test
-    public void testAttachments() throws IOException {
-
-        Volume volume = new Volume();
-        volume.setName("foo");
-        volume.setDescription("bar");
-
+    public void testArray() throws IOException {
         VolumeAttachment attachment = new VolumeAttachment();
         attachment.setVolumeId(UUID.randomUUID().toString());
         attachment.setDevice("/dev/vdb");
@@ -69,17 +43,13 @@ public class VolumeTest {
 
         VolumeAttachments attachments = new VolumeAttachments();
         attachments.getList().add(attachment);
-        volume.setAttachments(attachments);
 
         JacksonConfigurator configurator = new JacksonConfigurator();
-        String out = configurator.getContext(Volume.class).writeValueAsString(volume);
+        String out = configurator.getContext(VolumeAttachments.class).writeValueAsString(attachments);
 
         System.out.println(out);
 
-        assertNotNull(out);
-        assertTrue(out.contains("display_name"));
-        assertTrue(out.contains("display_description"));
-
-
+        Assert.assertTrue(out.contains("\"attachments\""));
+        // TODO : JSON Test
     }
 }

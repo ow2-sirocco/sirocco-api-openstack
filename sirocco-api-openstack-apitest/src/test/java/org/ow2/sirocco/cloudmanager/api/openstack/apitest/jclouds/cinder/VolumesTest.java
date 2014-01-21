@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -102,16 +103,27 @@ public class VolumesTest extends JcloudsBasedTest {
 
     @Test
     public void testDelete() throws Exception {
-        org.ow2.sirocco.cloudmanager.model.cimi.Volume create = createVolume("delete");
+        org.ow2.sirocco.cloudmanager.model.cimi.Volume create = null;
+        try {
+            create = createVolume("delete");
+        } catch (Exception e) {
+            fail("Can not create volume");
+        }
+
         api().delete(create.getUuid());
+
+        // TODO : Wait for the volume to be deleted
+
         org.ow2.sirocco.cloudmanager.model.cimi.Volume v = null;
         try {
             v = volumeManager.getVolumeByUuid(create.getUuid());
         } catch (ResourceNotFoundException e) {
+            LOG.info("Volume has not been found, delete is OK");
             return;
         }
 
         if (v == null) {
+            LOG.info("Volume is null, delete is OK");
             return;
         }
 
@@ -151,7 +163,7 @@ public class VolumesTest extends JcloudsBasedTest {
 
         create.setVolumeTemplate(template);
         Job job = volumeManager.createVolume(create);
-        //waitForJobCompletion(job);
+        waitForJobCompletion(job);
         return volumeManager.getVolumeByUuid(job.getTargetResource().getUuid());
     }
 }

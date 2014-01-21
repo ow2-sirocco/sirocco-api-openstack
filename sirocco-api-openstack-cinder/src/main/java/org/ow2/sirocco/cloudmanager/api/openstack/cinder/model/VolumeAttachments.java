@@ -21,18 +21,25 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.cinder.model;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonRootName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
+@JsonRootName("attachments")
 public class VolumeAttachments {
 
-    @JsonProperty("volumeAttachments")
     private List<VolumeAttachment> list;
 
+    public VolumeAttachments() {
+        this.list = new ArrayList<>();
+    }
+
+    @JsonValue
     public List<VolumeAttachment> getList() {
         return list;
     }
