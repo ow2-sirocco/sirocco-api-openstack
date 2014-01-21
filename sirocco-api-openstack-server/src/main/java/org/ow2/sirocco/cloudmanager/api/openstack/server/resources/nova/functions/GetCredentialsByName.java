@@ -22,16 +22,15 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import org.ow2.sirocco.cloudmanager.core.api.ICredentialsManager;
+import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
+import org.ow2.sirocco.cloudmanager.core.api.QueryResult;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * FIXME : Missing getCredentials(query). Use name filter in 'raw mode'...
  *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
@@ -52,15 +51,13 @@ public class GetCredentialsByName implements Function<String, Credentials> {
         }
 
         try {
-            return Iterables.tryFind(credentialsManager.getCredentials(), new Predicate<Credentials>() {
-                @Override
-                public boolean apply(Credentials input) {
-                    return name.equals(input.getName());
-                }
-            }).orNull();
+            QueryResult<Credentials> query = credentialsManager.getCredentials(new QueryParams.Builder().filter("name='" + name + "'").build());
+            if (query.getItems() != null && query.getItems().size() > 0) {
+                return query.getItems().get(0);
+            }
         } catch (CloudProviderException e) {
             LOG.warn("Error while getting credentials, returning null", e);
-            return null;
         }
+        return null;
     }
 }
