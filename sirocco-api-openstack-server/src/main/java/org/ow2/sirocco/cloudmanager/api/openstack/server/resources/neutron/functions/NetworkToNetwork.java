@@ -22,7 +22,10 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.model.cimi.Network;
+import org.ow2.sirocco.cloudmanager.model.cimi.Subnet;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -51,18 +54,14 @@ public class NetworkToNetwork implements Function<Network, org.ow2.sirocco.cloud
         }
 
         if (details) {
-            /* FIXME : Need subnet ID
             if (input.getSubnets() != null && input.getSubnets().size() > 0) {
-                result.setSubnets(Lists.newArrayList(Iterables.transform(input.getSubnets(), new Function<Subnet, String> () {
-
+                result.setSubnets(Lists.newArrayList(Iterables.transform(input.getSubnets(), new Function<Subnet, String>() {
                     @Override
                     public String apply(Subnet input) {
-                        return input.getUUID();
+                        return input.getUuid();
                     }
                 })));
             }
-            */
-
         }
 
         return result;
