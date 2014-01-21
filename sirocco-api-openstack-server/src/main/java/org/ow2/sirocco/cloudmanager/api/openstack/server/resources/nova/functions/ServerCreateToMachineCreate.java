@@ -162,6 +162,10 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
             template.setNetworkInterfaces(Lists.newArrayList(out));
         }
 
+        if (server.getUserData() != null) {
+            template.setUserData(server.getUserData());
+        }
+
 //        template.setCredential(credentials);
 //        template.setEventLogTemplate(eventLogTemplate);
 //        template.setInitialState(state);
