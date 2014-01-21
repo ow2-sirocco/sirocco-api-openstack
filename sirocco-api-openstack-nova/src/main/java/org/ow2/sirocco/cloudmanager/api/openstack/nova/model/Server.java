@@ -81,15 +81,22 @@ public class Server extends Resource {
     @JsonProperty("fault")
     public AsynchronousFault fault;
 
+    @JsonProperty("OS-EXT-STS:task_state")
+    public String taskState;
+
+    @JsonProperty("OS-EXT-STS:power_state")
+    public String powerState;
+
+    @JsonProperty("OS-EXT-STS:vm_state")
+    public String vmState;
+
     @Override
     public String toString() {
         return "Server{" +
-                "name='" + name + '\'' +
-                ", links=" + links +
-                ", accessIPv4='" + accessIPv4 + '\'' +
+                "accessIPv4='" + accessIPv4 + '\'' +
                 ", accessIPv6='" + accessIPv6 + '\'' +
                 ", addresses=" + addresses +
-                ", created='" + created + '\'' +
+                ", created=" + created +
                 ", flavor=" + flavor +
                 ", hostId='" + hostId + '\'' +
                 ", image=" + image +
@@ -97,10 +104,14 @@ public class Server extends Resource {
                 ", progress=" + progress +
                 ", status='" + status + '\'' +
                 ", tenantId='" + tenantId + '\'' +
-                ", updated='" + updated + '\'' +
+                ", updated=" + updated +
                 ", userId='" + userId + '\'' +
                 ", adminPass='" + adminPass + '\'' +
-                ", securityGroups='" + securityGroups + '\'' +
+                ", securityGroups=" + securityGroups +
+                ", fault=" + fault +
+                ", taskState='" + taskState + '\'' +
+                ", powerState='" + powerState + '\'' +
+                ", vmState='" + vmState + '\'' +
                 '}';
     }
 }

@@ -24,18 +24,39 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functio
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.securitygroups.model.SecurityGroups;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.Server;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.ow2.sirocco.cloudmanager.model.cimi.extension.SecurityGroup;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Transform a Sirocco Machine to an Openstack Server
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public class MachineToServer implements Function<Machine, Server> {
+
+    static Map<Machine.State, State> MAPPING;
+
+    static {
+        MAPPING = Maps.newHashMap();
+        MAPPING.put(Machine.State.CREATING, new State("BUILD", "building", "None"));
+        MAPPING.put(Machine.State.DELETED, new State("DELETED", "deleted", "None"));
+        MAPPING.put(Machine.State.DELETING, new State("ACTIVE", "active", "deleting"));
+        MAPPING.put(Machine.State.ERROR, new State("ERROR", "error", "None"));
+        MAPPING.put(Machine.State.PAUSED, new State("PAUSED", "paused", "None"));
+        MAPPING.put(Machine.State.PAUSING, new State("ACTIVE", "active", "pausing"));
+        MAPPING.put(Machine.State.STARTED, new State("ACTIVE", "active", "None"));
+        MAPPING.put(Machine.State.STARTING, new State("SHUTOFF", "stopped", "powering-on"));
+        MAPPING.put(Machine.State.STOPPED, new State("SHUTOFF", "stopped", "None"));
+        MAPPING.put(Machine.State.STOPPING, new State("ACTIVE", "active", "powering-off"));
+        MAPPING.put(Machine.State.SUSPENDED, new State("SUSPENDED", "suspended", "None"));
+        MAPPING.put(Machine.State.SUSPENDING, new State("ACTIVE", "active", "suspending"));
+        MAPPING.put(Machine.State.UNKNOWN, new State("UNKNOWN", "unknown", "None"));
+    }
 
     boolean details;
 
@@ -79,10 +100,6 @@ public class MachineToServer implements Function<Machine, Server> {
             server.accessIPv4 = "";
             server.accessIPv6 = "";
 
-            if (machine.getState() != null) {
-                server.status = machine.getState().toString();
-            }
-
             if (machine.getImage() != null) {
                 server.image = new MachineImageToImage(true).apply(machine.getImage());
             }
@@ -112,7 +129,27 @@ public class MachineToServer implements Function<Machine, Server> {
                 securityGroups.setGroups(groups);
                 server.securityGroups = securityGroups;
             }
+
+            State state = MAPPING.get(Machine.State.UNKNOWN);
+            if (machine.getState() != null) {
+                state = MAPPING.get(machine.getState());
+            }
+            server.status = state.server;
+            server.vmState = state.vm;
+            server.taskState = state.task;
         }
         return server;
+    }
+
+    public static class State {
+        public String server;
+        public String vm;
+        public String task;
+
+        public State(String server, String vm, String task) {
+            this.server = server;
+            this.vm = vm;
+            this.task = task;
+        }
     }
 }
