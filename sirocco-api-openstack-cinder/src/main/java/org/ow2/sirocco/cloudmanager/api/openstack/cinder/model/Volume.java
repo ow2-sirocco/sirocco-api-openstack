@@ -35,6 +35,9 @@ import java.util.List;
 @JsonRootName("volume")
 public class Volume extends Resource {
 
+    @JsonProperty("display_name")
+    private String name;
+
     private VolumeAttachments attachments;
 
     private String status;
@@ -50,6 +53,7 @@ public class Volume extends Resource {
     @JsonProperty("snapshot_id")
     private String snapshotId;
 
+    @JsonProperty("display_description")
     private String description;
 
     @JsonProperty("created_at")

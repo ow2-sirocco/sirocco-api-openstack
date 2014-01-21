@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   SIROCCO
-  Copyright (C) 2013 France Telecom
+  Copyright (C) 2014 France Telecom
   Contact: sirocco@ow2.org
 
   This library is free software; you can redistribute it and/or
@@ -33,6 +33,13 @@
     <artifactId>sirocco-api-openstack-cinder</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.ow2.sirocco.cloudmanager</groupId>
             <artifactId>sirocco-api-openstack-commons</artifactId>
