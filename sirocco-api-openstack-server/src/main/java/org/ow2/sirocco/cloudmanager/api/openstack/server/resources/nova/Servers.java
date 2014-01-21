@@ -33,10 +33,7 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.MachineToServer;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.ServerCreateToMachineCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.ServerListQuery;
-import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
-import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
-import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
-import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
+import org.ow2.sirocco.cloudmanager.core.api.*;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Job;
@@ -70,6 +67,9 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Inject
     private INetworkManager networkManager;
+
+    @Inject
+    private ICredentialsManager credentialsManager;
 
     public Servers() {
         super();
@@ -133,7 +133,7 @@ public class Servers extends AbstractResource implements org.ow2.sirocco.cloudma
         }
 
         try {
-            Job job = machineManager.createMachine(new ServerCreateToMachineCreate(machineManager, networkManager, machineImageManager).apply(server));
+            Job job = machineManager.createMachine(new ServerCreateToMachineCreate(machineManager, networkManager, machineImageManager, credentialsManager).apply(server));
             Machine machine = (Machine) job.getTargetResource();
             Server result = new MachineToServer(false).apply(machine);
 

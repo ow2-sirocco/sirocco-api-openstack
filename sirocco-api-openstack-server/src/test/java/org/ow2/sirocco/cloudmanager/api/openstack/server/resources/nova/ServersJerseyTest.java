@@ -61,6 +61,7 @@ public class ServersJerseyTest extends JerseyTest {
     static IMachineManager service = EasyMock.createMock(IMachineManager.class);
     static INetworkManager network = EasyMock.createMock(INetworkManager.class);
     static IMachineImageManager image = EasyMock.createMock(IMachineImageManager.class);
+    static ICredentialsManager credentials = EasyMock.createMock(ICredentialsManager.class);
 
     @Override
     protected Application configure() {
@@ -88,6 +89,7 @@ public class ServersJerseyTest extends JerseyTest {
                 bind(service).to(IMachineManager.class);
                 bind(network).to(INetworkManager.class);
                 bind(image).to(IMachineImageManager.class);
+                bind(credentials).to(ICredentialsManager.class);
             }
         };
         app.registerInstances(binder, filter);
@@ -101,6 +103,7 @@ public class ServersJerseyTest extends JerseyTest {
         EasyMock.reset(this.service);
         EasyMock.reset(this.network);
         EasyMock.reset(this.image);
+        EasyMock.reset(this.credentials);
     }
 
     @Test

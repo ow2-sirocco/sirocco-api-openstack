@@ -26,10 +26,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.model.ServerForCreate;
+import org.ow2.sirocco.cloudmanager.core.api.ICredentialsManager;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineImageManager;
 import org.ow2.sirocco.cloudmanager.core.api.IMachineManager;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.model.cimi.Credentials;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineCreate;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineTemplate;
@@ -51,10 +53,13 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
 
     private final INetworkManager networkManager;
 
-    public ServerCreateToMachineCreate(IMachineManager machineManager, INetworkManager networkManager, IMachineImageManager machineImageManager) {
+    private final ICredentialsManager credentialsManager;
+
+    public ServerCreateToMachineCreate(IMachineManager machineManager, INetworkManager networkManager, IMachineImageManager machineImageManager, ICredentialsManager credentialsManager) {
         this.machineManager = machineManager;
         this.networkManager = networkManager;
         this.machineImageManager = machineImageManager;
+        this.credentialsManager = credentialsManager;
     }
 
     @Override
@@ -112,7 +117,15 @@ public class ServerCreateToMachineCreate implements Function<ServerForCreate, Ma
         }));
         template.setSecurityGroupUuids(groups);
 
-        // keypair
+        if (server.getKeyName() != null) {
+            Credentials credentials = new GetCredentialsByName(credentialsManager).apply(server.getKeyName());
+            if (credentials != null) {
+                template.setCredential(credentials);
+            } else {
+                // should throw an exception
+                LOG.warn("No credentials found for key name " + server.getKeyName());
+            }
+        }
 
         // network
 
