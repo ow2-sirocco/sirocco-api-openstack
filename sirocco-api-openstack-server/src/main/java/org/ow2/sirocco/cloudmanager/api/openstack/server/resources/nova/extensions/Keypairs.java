@@ -30,10 +30,12 @@ import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.ExtensionProvi
 import org.ow2.sirocco.cloudmanager.api.openstack.nova.extensions.keypairs.model.KeypairForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.CredentialsToKeyPair;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.extensions.functions.KeypairForCreateToCredentialsCreate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.GetCredentialsByName;
 import org.ow2.sirocco.cloudmanager.core.api.ICredentialsManager;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
+import org.ow2.sirocco.cloudmanager.model.cimi.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,9 +106,12 @@ public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response delete(String name) {
-        // As defined in https://github.com/ow2-sirocco/sirocco-api-openstack/issues/17, we use the UUID as name
         try {
-            credentialsManager.deleteCredentials(name);
+            Credentials c = new GetCredentialsByName(credentialsManager).apply(name);
+            if (c == null) {
+                return resourceNotFoundException("keypair", name, null);
+            }
+            credentialsManager.deleteCredentials(c.getUuid());
             return deleted();
         } catch (InvalidRequestException ire) {
             return badRequest("keypair", "delete");
@@ -125,21 +130,11 @@ public class Keypairs extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response get(String name) {
-        // As defined in https://github.com/ow2-sirocco/sirocco-api-openstack/issues/17, we use the UUID as name
-        try {
-            return ok(new CredentialsToKeyPair().apply(credentialsManager.getCredentialsByUuid(name)));
-        } catch (InvalidRequestException ire) {
-            return badRequest("keypair", "get");
-        } catch (ResourceNotFoundException rnfe) {
-            return resourceNotFoundException("keypair", name, rnfe);
-        } catch (CloudProviderException e) {
-            final String error = "Error while retrieving keypair";
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(error, e);
-            } else {
-                LOG.error(error);
-            }
-            return computeFault(500, "Server Error", e.getMessage());
+        Credentials c = new GetCredentialsByName(credentialsManager).apply(name);
+        if (c == null) {
+            return resourceNotFoundException("keypair", name, null);
+        } else {
+            return (ok(new CredentialsToKeyPair().apply(c)));
         }
     }
 

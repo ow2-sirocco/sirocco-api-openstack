@@ -40,8 +40,7 @@ public class CredentialsToKeyPair implements Function<Credentials, Keypair> {
     @Override
     public Keypair apply(Credentials input) {
         Keypair result = new Keypair();
-        // we use the UUID as keypair name
-        result.setName(input.getUuid());
+        result.setName(input.getName());
         result.setPublicKey(input.getPublicKey());
         result.setFingerprint(input.getFingerprint());
         return result;

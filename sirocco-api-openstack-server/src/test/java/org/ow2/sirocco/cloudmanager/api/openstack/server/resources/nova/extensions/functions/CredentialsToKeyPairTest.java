@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -53,6 +53,6 @@ public class CredentialsToKeyPairTest {
         Keypair out = f.apply(input);
 
         assertEquals(input.getPublicKey(), out.getPublicKey());
-        assertEquals(input.getUuid(), out.getName());
+        assertEquals(input.getName(), out.getName());
     }
 }
