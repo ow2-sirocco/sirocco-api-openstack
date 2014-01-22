@@ -23,8 +23,6 @@ package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.cinder.funct
 
 import com.google.common.base.Function;
 import org.ow2.sirocco.cloudmanager.api.openstack.cinder.model.VolumeForCreate;
-import org.ow2.sirocco.cloudmanager.core.api.IVolumeManager;
-import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.VolumeConfiguration;
 import org.ow2.sirocco.cloudmanager.model.cimi.VolumeCreate;
 import org.ow2.sirocco.cloudmanager.model.cimi.VolumeTemplate;
@@ -34,11 +32,9 @@ import org.ow2.sirocco.cloudmanager.model.cimi.VolumeTemplate;
  */
 public class VolumeForCreateToVolumeCreate implements Function<VolumeForCreate, VolumeCreate> {
 
-    private final IVolumeManager volumeManager;
     private final String providerAccountId;
 
-    public VolumeForCreateToVolumeCreate(IVolumeManager volumeManager, String providerAccountId) {
-        this.volumeManager = volumeManager;
+    public VolumeForCreateToVolumeCreate(String providerAccountId) {
         this.providerAccountId = providerAccountId;
     }
 
@@ -47,15 +43,6 @@ public class VolumeForCreateToVolumeCreate implements Function<VolumeForCreate, 
         VolumeCreate create = new VolumeCreate();
         create.setDescription(input.getDescription());
         create.setName(input.getName());
-
-        if (input.getType() != null) {
-            try {
-                create.setVolumeTemplate(volumeManager.getVolumeTemplateByUuid(input.getType()));
-            } catch (CloudProviderException e) {
-                // handle
-                e.printStackTrace();
-            }
-        }
 
         create.setLocation(input.getAvailabilityZone());
 

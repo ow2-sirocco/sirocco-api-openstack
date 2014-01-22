@@ -65,7 +65,7 @@ public class Volumes extends AbstractResource implements org.ow2.sirocco.cloudma
         LOG.info("Provider is set to null, Sirocco will choose the best one (#34)");
         String provider = null;
         try {
-            Job job = volumeManager.createVolume(new VolumeForCreateToVolumeCreate(volumeManager, provider).apply(volumeCreate));
+            Job job = volumeManager.createVolume(new VolumeForCreateToVolumeCreate(provider).apply(volumeCreate));
             Volume result = new VolumeToVolume(true).apply(volumeManager.getVolumeByUuid(job.getTargetResource().getUuid()));
 
             Volume out = new Function<Volume, Volume>() {
