@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -30,8 +30,10 @@ import org.codehaus.jackson.map.annotate.JsonRootName;
 @JsonRootName("volume")
 public class VolumeForCreate {
 
+    @JsonProperty("display_name")
     private String name;
 
+    @JsonProperty("display_description")
     private String description;
 
     private int size;
