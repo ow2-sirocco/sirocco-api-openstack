@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,42 +19,28 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
 import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import java.io.Serializable;
 
-@JsonRootName("OS-KSADM:service")
-public class Service implements Serializable {
+@JsonRootName("role")
+public class Role implements Serializable {
 
 	private String id;
-	
-	private String type;
 	
 	private String name;
 	
 	private String description;
+	
+	private String enabled;
 
 	/**
 	 * @return the id
 	 */
 	public String getId() {
 		return id;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-	/**
-	 * @param type the type to set
-	 */
-	public void setType(String type) {
-		this.type = type;
 	}
 
 	/**
@@ -85,17 +71,21 @@ public class Service implements Serializable {
 		this.description = description;
 	}
 
+	/**
+	 * @return the enabled
+	 */
+	public String getEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(String enabled) {
+		this.enabled = enabled;
+	}
+
     public void setId(String id) {
         this.id = id;
     }
-
-    /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-	@Override
-	public String toString() {
-		return "Service [id=" + id + ", type=" + type + ", name=" + name
-				+ ", description=" + description + "]";
-	}
-	
 }

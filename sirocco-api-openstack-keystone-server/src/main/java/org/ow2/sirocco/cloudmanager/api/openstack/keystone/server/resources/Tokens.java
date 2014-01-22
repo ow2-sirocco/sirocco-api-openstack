@@ -21,10 +21,10 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.resources;
 
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Tenant;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Token;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.authentication.UsernamePassword;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.Access;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.Tenant;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.Token;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.authentication.UsernamePassword;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -27,19 +27,19 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-public class Services implements Iterable<Service>,  Serializable {
+public class Users implements Iterable<User>, Serializable {
 
-	@JsonProperty("OS-KSADM:services")
-	private List<Service> list;
+	@JsonProperty("users")
+	private List<User> list;
 
 	/**
 	 * @return the list
 	 */
-	public List<Service> getList() {
+	public List<User> getList() {
 		return list;
 	}
 
-    public void setList(List<Service> list) {
+    public void setList(List<User> list) {
         this.list = list;
     }
 
@@ -48,11 +48,11 @@ public class Services implements Iterable<Service>,  Serializable {
          */
 	@Override
 	public String toString() {
-		return "Services [list=" + list + "]";
+		return "Users [list=" + list + "]";
 	}
 
 	@Override
-	public Iterator<Service> iterator() {
+	public Iterator<User> iterator() {
 		return list.iterator();
 	}
 	

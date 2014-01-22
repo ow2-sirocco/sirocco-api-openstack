@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,49 +19,57 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
 import java.io.Serializable;
 
-public abstract class Authentication implements Serializable {
+public class Link implements Serializable {
 
-	private String tenantId;
+	private String rel;
 	
-	private String tenantName;
+	private String href;
+	
+	private String type;
 
 	/**
-	 * @return the tenantId
+	 * @return the rel
 	 */
-	public String getTenantId() {
-		return tenantId;
+	public String getRel() {
+		return rel;
 	}
 
 	/**
-	 * @param tenantId the tenantId to set
+	 * @return the href
 	 */
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
+	public String getHref() {
+		return href;
 	}
 
 	/**
-	 * @return the tenantName
+	 * @return the type
 	 */
-	public String getTenantName() {
-		return tenantName;
+	public String getType() {
+		return type;
 	}
 
-	/**
-	 * @param tenantName the tenantName to set
-	 */
-	public void setTenantName(String tenantName) {
-		this.tenantName = tenantName;
-	}
-
-    @Override
-    public String toString() {
-        return "Authentication{" +
-                "tenantId='" + tenantId + '\'' +
-                ", tenantName='" + tenantName + '\'' +
-                '}';
+    public void setRel(String rel) {
+        this.rel = rel;
     }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+	@Override
+	public String toString() {
+		return "Link [rel=" + rel + ", href=" + href + ", type=" + type + "]";
+	}
+	
 }

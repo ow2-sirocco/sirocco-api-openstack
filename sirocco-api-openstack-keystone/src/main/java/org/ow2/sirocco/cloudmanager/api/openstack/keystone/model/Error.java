@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,28 +19,52 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
 
-public class Roles implements Iterable<Role>, Serializable {
+@JsonRootName("error")
+public class Error implements Serializable {
 
-	@JsonProperty("roles")
-	private List<Role> list;
+	private Integer code;
+	
+	private String title;
+	
+	private String message;
 
 	/**
-	 * @return the list
+	 * @return the code
 	 */
-	public List<Role> getList() {
-		return list;
+	public Integer getCode() {
+		return code;
 	}
 
-    public void setList(List<Role> list) {
-        this.list = list;
+	/**
+	 * @return the title
+	 */
+	public String getTitle() {
+		return title;
+	}
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
+	}
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /* (non-Javadoc)
@@ -48,12 +72,8 @@ public class Roles implements Iterable<Role>, Serializable {
          */
 	@Override
 	public String toString() {
-		return "Roles [list=" + list + "]";
-	}
-
-	@Override
-	public Iterator<Role> iterator() {
-		return list.iterator();
+		return "Error [code=" + code + ", title=" + title + ", message="
+				+ message + "]";
 	}
 	
 }

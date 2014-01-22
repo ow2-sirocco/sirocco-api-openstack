@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,7 +19,7 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 
@@ -27,19 +27,19 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
-public class Endpoints implements Iterable<Endpoint>, Serializable {
+public class Roles implements Iterable<Role>, Serializable {
 
-	@JsonProperty("endpoints")
-	private List<Endpoint> list;
+	@JsonProperty("roles")
+	private List<Role> list;
 
 	/**
 	 * @return the list
 	 */
-	public List<Endpoint> getList() {
+	public List<Role> getList() {
 		return list;
 	}
 
-    public void setList(List<Endpoint> list) {
+    public void setList(List<Role> list) {
         this.list = list;
     }
 
@@ -48,11 +48,11 @@ public class Endpoints implements Iterable<Endpoint>, Serializable {
          */
 	@Override
 	public String toString() {
-		return "Endpoints [list=" + list + "]";
+		return "Roles [list=" + list + "]";
 	}
 
 	@Override
-	public Iterator<Endpoint> iterator() {
+	public Iterator<Role> iterator() {
 		return list.iterator();
 	}
 	

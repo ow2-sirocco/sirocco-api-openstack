@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,49 +19,28 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
-public class Link implements Serializable {
+public class Services implements Iterable<Service>,  Serializable {
 
-	private String rel;
-	
-	private String href;
-	
-	private String type;
-
-	/**
-	 * @return the rel
-	 */
-	public String getRel() {
-		return rel;
-	}
+	@JsonProperty("OS-KSADM:services")
+	private List<Service> list;
 
 	/**
-	 * @return the href
+	 * @return the list
 	 */
-	public String getHref() {
-		return href;
+	public List<Service> getList() {
+		return list;
 	}
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
-	}
-
-    public void setRel(String rel) {
-        this.rel = rel;
-    }
-
-    public void setHref(String href) {
-        this.href = href;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setList(List<Service> list) {
+        this.list = list;
     }
 
     /* (non-Javadoc)
@@ -69,7 +48,12 @@ public class Link implements Serializable {
          */
 	@Override
 	public String toString() {
-		return "Link [rel=" + rel + ", href=" + href + ", type=" + type + "]";
+		return "Services [list=" + list + "]";
+	}
+
+	@Override
+	public Iterator<Service> iterator() {
+		return list.iterator();
 	}
 	
 }

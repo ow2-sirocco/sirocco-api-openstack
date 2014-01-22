@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -21,7 +21,7 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.api.resources;
 
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.authentication.UsernamePassword;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.authentication.UsernamePassword;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

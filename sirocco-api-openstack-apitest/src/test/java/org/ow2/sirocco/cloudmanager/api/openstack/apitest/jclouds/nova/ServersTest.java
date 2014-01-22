@@ -38,7 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JcloudsBasedTest;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.Access;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.ow2.sirocco.cloudmanager.model.cimi.MachineConfiguration;

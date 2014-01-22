@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -19,52 +19,28 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model;
+package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
-import org.codehaus.jackson.map.annotate.JsonRootName;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
 
-@JsonRootName("error")
-public class Error implements Serializable {
+public class Endpoints implements Iterable<Endpoint>, Serializable {
 
-	private Integer code;
-	
-	private String title;
-	
-	private String message;
+	@JsonProperty("endpoints")
+	private List<Endpoint> list;
 
 	/**
-	 * @return the code
+	 * @return the list
 	 */
-	public Integer getCode() {
-		return code;
+	public List<Endpoint> getList() {
+		return list;
 	}
 
-	/**
-	 * @return the title
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * @return the message
-	 */
-	public String getMessage() {
-		return message;
-	}
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setList(List<Endpoint> list) {
+        this.list = list;
     }
 
     /* (non-Javadoc)
@@ -72,8 +48,12 @@ public class Error implements Serializable {
          */
 	@Override
 	public String toString() {
-		return "Error [code=" + code + ", title=" + title + ", message="
-				+ message + "]";
+		return "Endpoints [list=" + list + "]";
+	}
+
+	@Override
+	public Iterator<Endpoint> iterator() {
+		return list.iterator();
 	}
 	
 }

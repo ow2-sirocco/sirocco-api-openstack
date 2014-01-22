@@ -1,6 +1,6 @@
 /**
  * SIROCCO
- * Copyright (C) 2013 France Telecom
+ * Copyright (C) 2014 France Telecom
  * Contact: sirocco@ow2.org
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JAXRSBasedTest;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.JcloudsBasedTest;
 import org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.Archives;
-import org.ow2.sirocco.cloudmanager.api.openstack.keystone.server.model.Access;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.Access;
 
 import javax.inject.Inject;
 import javax.ws.rs.client.Entity;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   SIROCCO
-  Copyright (C) 2013 France Telecom
+  Copyright (C) 2014 France Telecom
   Contact: sirocco@ow2.org
 
   This library is free software; you can redistribute it and/or
@@ -58,10 +58,20 @@
             <version>1.0.0.Alpha3</version>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>1.9.11</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.11</version>
         </dependency>
     </dependencies>
 </project>
