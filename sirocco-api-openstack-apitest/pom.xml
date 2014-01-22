@@ -353,7 +353,7 @@
                                     <goal>test</goal>
                                 </goals>
                                 <configuration>
-                                    <groups>org.ow2.sirocco.cloudmanager.api.openstack.apitest.utils.LiveTest</groups>
+                                    <groups>org.ow2.sirocco.cloudmanager.api.openstack.apitest.jclouds.LiveTest</groups>
                                     <systemPropertyVariables>
                                         <test.openstack-jclouds.endpoint>${test.openstack-jclouds.endpoint}</test.openstack-jclouds.endpoint>
                                         <test.openstack-jclouds.api-version>${test.openstack-jclouds.api-version}</test.openstack-jclouds.api-version>

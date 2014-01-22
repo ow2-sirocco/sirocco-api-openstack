@@ -30,12 +30,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>sirocco-api-openstack-keystone-utils</artifactId>
-    <description>Keystone utils</description>
-
-    <properties>
-        <jclouds.version>1.6.3</jclouds.version>
-    </properties>
+    <artifactId>sirocco-api-openstack-filters</artifactId>
 
     <dependencies>
         <dependency>
@@ -51,24 +46,12 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- JClouds -->
+        <dependency>
+            <groupId>org.ow2.sirocco.cloudmanager</groupId>
+            <artifactId>sirocco-api-openstack-keystone</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
-        <dependency>
-            <groupId>org.apache.jclouds.api</groupId>
-            <artifactId>openstack-keystone</artifactId>
-            <version>${jclouds.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.ws.rs</groupId>
-                    <artifactId>jsr311-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.jclouds.driver</groupId>
-            <artifactId>jclouds-slf4j</artifactId>
-            <version>${jclouds.version}</version>
-        </dependency>
         <dependency>
             <groupId>javax.ws.rs</groupId>
             <artifactId>javax.ws.rs-api</artifactId>
@@ -85,7 +68,10 @@
             <version>1.9.13</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>15.0</version>
+        </dependency>
     </dependencies>
-
-
 </project>

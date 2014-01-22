@@ -19,20 +19,16 @@
  * USA
  */
 
-package org.ow2.sirocco.cloudmanager.api.openstack.keystone.utils.filter;
+package org.ow2.sirocco.cloudmanager.api.openstack.filters;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ImmutableSet;
-import com.google.inject.Module;
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.map.annotate.JsonRootName;
-import org.jclouds.ContextBuilder;
-import org.jclouds.logging.slf4j.config.SLF4JLoggingModule;
-import org.jclouds.openstack.keystone.v2_0.KeystoneApi;
-import org.jclouds.openstack.keystone.v2_0.domain.Token;
-import org.jclouds.openstack.keystone.v2_0.domain.User;
-import org.jclouds.openstack.keystone.v2_0.features.TokenApi;
+import org.ow2.sirocco.cloudmanager.api.openstack.commons.provider.JacksonConfigurator;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.Access;
+import org.ow2.sirocco.cloudmanager.api.openstack.keystone.model.authentication.UsernamePassword;
 import org.ow2.sirocco.cloudmanager.core.api.IConfigManager;
 import org.ow2.sirocco.cloudmanager.core.api.IdentityContext;
 import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
@@ -40,15 +36,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 /**
- * Delegate authentication to a real keystone instance using jclouds.
- *
  * @author Christophe Hamerling - chamerling@linagora.com
  */
 public class KeystoneDelegateFilter implements ContainerRequestFilter {
@@ -79,18 +78,17 @@ public class KeystoneDelegateFilter implements ContainerRequestFilter {
     @Inject
     IdentityContext identityContext;
 
-    private LoadingCache<OpenstackAdmin, KeystoneApi> cache;
+    private LoadingCache<OpenstackAdmin, Client> cache;
 
     public KeystoneDelegateFilter() {
         cache = CacheBuilder.newBuilder()
                 .maximumSize(10)
-                .build(new CacheLoader<OpenstackAdmin, KeystoneApi>() {
+                .build(new CacheLoader<OpenstackAdmin, Client>() {
                     @Override
-                    public KeystoneApi load(OpenstackAdmin admin) {
-                        return ContextBuilder.newBuilder("openstack-keystone")
-                                .endpoint(admin.keystone)
-                                .credentials(admin.user, admin.password)
-                                .modules(ImmutableSet.<Module>of(new SLF4JLoggingModule())).buildApi(KeystoneApi.class);
+                    public Client load(OpenstackAdmin admin) {
+                        Client client = javax.ws.rs.client.ClientBuilder.newClient();
+                        client.register(JacksonJsonProvider.class).register(JacksonConfigurator.class);
+                        return client;
                     }
                 });
     }
@@ -116,35 +114,70 @@ public class KeystoneDelegateFilter implements ContainerRequestFilter {
                         .build());
             }
 
-            TokenApi api = null;
+            Client client = null;
             try {
-                api = cache.get(admin).getTokenApi().get();
+                client = cache.get(admin);
             } catch (ExecutionException e) {
-                LOG.error("Unable to load keystone client from guava cache", e);
+                LOG.error("Unable to load keystone client from cache", e);
                 requestContext.abortWith(Response
                         .status(Response.Status.SERVICE_UNAVAILABLE)
                         .entity(new ServiceUnavailableFault("Client Error", "Unable to retrieve valid client from sirocco"))
                         .build());
             }
 
-            // NOTE : Jclouds does not provide access to the Access bean due to client side filtering
-            // In order to get the token information and the user, we need to make 2 successive calls.
             try {
-                Token t = api.get(token);
-                User u = api.getUserOfToken(token);
-
-                identityContext.setUserName(u.getName());
-                identityContext.setTenantId(t.getTenant().get().getId());
-                identityContext.setTenantName(t.getTenant().get().getName());
+                String adminToken = getToken(admin);
+                WebTarget target = client.target(admin.keystone).path("/tokens/" + token);
+                Invocation.Builder invocation = target.request(MediaType.APPLICATION_JSON_TYPE).header(X_AUTH_TOKEN_HEADER, adminToken);
+                Access response = invocation.get(Access.class);
+                if (response != null && response.getToken() != null && response.getUser() != null) {
+                    identityContext.setUserName(response.getUser().getName());
+                    if (response.getToken().getTenant() != null) {
+                        identityContext.setTenantId(response.getToken().getTenant().getId());
+                        identityContext.setTenantName(response.getToken().getTenant().getName());
+                    }
+                } else {
+                    requestContext.abortWith(Response
+                            .status(Response.Status.INTERNAL_SERVER_ERROR)
+                            .entity(new UnauthorizedFault("Server error", "Can not get the keystone response"))
+                            .build());
+                }
 
             } catch (Exception e) {
-                LOG.info("Keystone request error", e);
+                LOG.error("Keystone request error", e);
                 requestContext.abortWith(Response
                         .status(Response.Status.UNAUTHORIZED)
                         .entity(new UnauthorizedFault("Not authorized", "Unable to retrieve valid information from keystone"))
                         .build());
             }
         }
+    }
+
+    /**
+     * Get the token from the admin.
+     * TODO : Cache it. Use the expire date
+     *
+     * @param admin
+     * @return
+     * @throws Exception
+     */
+    protected String getToken(OpenstackAdmin admin) throws Exception {
+        // $ curl -d '{"auth":{"passwordCredentials":{"username": "joeuser", "password": "secrete"}}}' -H "Content-type: application/json" http://localhost:35357/v2.0/tokens
+        UsernamePassword password = new UsernamePassword();
+        UsernamePassword.PasswordCredentials credentials = new UsernamePassword.PasswordCredentials();
+        credentials.setPassword(admin.password);
+        credentials.setUsername(admin.user);
+        password.setPasswordCredentials(credentials);
+        password.setTenantId(admin.tenant);
+
+        Client client = cache.get(admin);
+        WebTarget target = client.target(admin.keystone).path("/tokens");
+        Access access = target.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(password), Access.class);
+
+        if (access == null || access.getToken() == null || access.getToken().getId() == null) {
+            throw new Exception("Can not get admin token");
+        }
+        return access.getToken().getId();
     }
 
     @JsonRootName("unauthorized")

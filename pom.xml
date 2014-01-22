@@ -43,6 +43,7 @@
     <properties>
         <jersey.version>2.2</jersey.version>
         <sirocco.version>0.6.1-SNAPSHOT</sirocco.version>
+        <guava.version>15.0</guava.version>
     </properties>
 
     <modules>
@@ -55,7 +56,8 @@
         <module>sirocco-api-openstack-keystone-server</module>
         <module>sirocco-api-openstack-neutron</module>
         <module>sirocco-api-openstack-cinder</module>
-        <module>sirocco-api-openstack-keystone-utils</module>
+        <module>sirocco-api-openstack-keystone-jclouds</module>
+        <module>sirocco-api-openstack-filters</module>
     </modules>
 
     <profiles>

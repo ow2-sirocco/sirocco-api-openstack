@@ -4,7 +4,7 @@
 
 JAXRS2 filters to be used as Sirocco API filter.
 
-### org.ow2.sirocco.cloudmanager.api.openstack.keystone.utils.filter.KeystoneDelegateFilter
+### org.ow2.sirocco.cloudmanager.api.openstack.keystone.jclouds.filter.KeystoneDelegateFilter
 
 This filter is in charge of validating the incoming request by getting the X-Auth-Token HTTP header and sending it to a keystone instance.
 
