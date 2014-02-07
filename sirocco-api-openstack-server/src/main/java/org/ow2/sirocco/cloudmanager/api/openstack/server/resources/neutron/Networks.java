@@ -21,7 +21,17 @@
 
 package org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron;
 
-import com.google.common.collect.Lists;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
+import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
+
+import java.util.List;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.Constants;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResource;
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
@@ -29,24 +39,20 @@ import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.NetworkForCreate
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.NetworkForUpdate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions.NetworkForCreateToNetworkCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions.NetworkToNetwork;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.nova.functions.queries.NetworkListQuery;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
 import org.ow2.sirocco.cloudmanager.core.api.ITenantManager;
+import org.ow2.sirocco.cloudmanager.core.api.QueryParams;
 import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
 import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.ow2.sirocco.cloudmanager.model.cimi.Job;
+import org.ow2.sirocco.cloudmanager.model.cimi.Machine;
 import org.ow2.sirocco.cloudmanager.model.cimi.Network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.core.Response;
-
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.deleted;
-import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
-import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
-import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
+import com.google.common.collect.Lists;
 
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
@@ -65,9 +71,16 @@ public class Networks extends AbstractResource implements org.ow2.sirocco.cloudm
 
     @Override
     public Response list() {
-        org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Networks networks = new org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Networks();
         try {
-            networks.setList(Lists.transform(networkManager.getNetworks().getItems(), new NetworkToNetwork(true)));
+        	 org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Networks networks = new org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Networks();
+             QueryParams query = new NetworkListQuery().apply(getJaxRsRequestInfo());
+             List<Network> nets = null;
+             if (query == null) {
+                 nets = networkManager.getNetworks().getItems();
+             } else {
+                 nets = networkManager.getNetworks(query).getItems();
+             }
+            networks.setList(Lists.transform(nets, new NetworkToNetwork(true)));
             return ok(networks);
         } catch (InvalidRequestException ire) {
             return badRequest("network", "get");
