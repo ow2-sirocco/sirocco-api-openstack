@@ -42,6 +42,10 @@
             <param-name>jersey.config.disableMoxyJson</param-name>
             <param-value>true</param-value>
         </init-param>
+        <init-param>
+            <param-name>jersey.config.server.mediaTypeMappings</param-name>
+            <param-value>json : application/json , xml : application/xml</param-value>
+        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
