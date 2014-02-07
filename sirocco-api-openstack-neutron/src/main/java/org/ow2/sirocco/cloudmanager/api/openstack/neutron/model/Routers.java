@@ -22,6 +22,8 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.neutron.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -30,14 +32,15 @@ import java.util.List;
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
+@JsonRootName("routers")
 public class Routers implements Iterable<Router>, Serializable {
 
-    @JsonProperty("routers")
     private List<Router> list;
 
     /**
      * @return the list
      */
+    @JsonValue
     public List<Router> getList() {
         return list;
     }

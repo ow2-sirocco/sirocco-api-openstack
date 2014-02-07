@@ -22,6 +22,8 @@
 package org.ow2.sirocco.cloudmanager.api.openstack.neutron.model;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonRootName;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -30,14 +32,15 @@ import java.util.List;
 /**
  * @author Christophe Hamerling - chamerling@linagora.com
  */
+@JsonRootName("subnets")
 public class Subnets implements Serializable, Iterable<Subnet> {
 	
-	@JsonProperty("subnets")
 	private List<Subnet> list;
 	
 	/**
 	 * @return the list
 	 */
+	@JsonValue
 	public List<Subnet> getList() {
 		return list;
 	}
