@@ -25,15 +25,24 @@ import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.AbstractResou
 import org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResourceInterceptorBinding;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.SubnetForCreate;
 import org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.SubnetForUpdate;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions.NetworkToNetwork;
+import org.ow2.sirocco.cloudmanager.api.openstack.server.resources.neutron.functions.SubnetToSubnet;
 import org.ow2.sirocco.cloudmanager.core.api.INetworkManager;
+import org.ow2.sirocco.cloudmanager.core.api.exception.CloudProviderException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.InvalidRequestException;
+import org.ow2.sirocco.cloudmanager.core.api.exception.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import static org.ow2.sirocco.cloudmanager.api.openstack.commons.resource.ResponseHelper.notImplemented;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.badRequest;
+import static org.ow2.sirocco.cloudmanager.api.openstack.nova.helpers.ResponseHelper.computeFault;
 
 /**
  * Subnets are not supported since there is no direct mathing in sirocco. See issue #38
@@ -51,7 +60,21 @@ public class Subnets extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response list() {
-        return notImplemented(Subnets.class.getName(), "list");
+    	 org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Subnets subnets = new org.ow2.sirocco.cloudmanager.api.openstack.neutron.model.Subnets();
+         try {
+        	 subnets.setList(Lists.transform(networkManager.getSubnets().getItems(), new SubnetToSubnet()));
+             return ok(subnets);
+         } catch (InvalidRequestException ire) {
+             return badRequest("subnet", "get");
+         } catch (CloudProviderException e) {
+             final String error = "Error while getting subnet details";
+             if (LOG.isDebugEnabled()) {
+                 LOG.debug(error, e);
+             } else {
+                 LOG.error(error);
+             }
+             return computeFault("Subnet Error", e.getMessage());
+         }
     }
 
     @Override
@@ -61,7 +84,19 @@ public class Subnets extends AbstractResource implements org.ow2.sirocco.cloudma
 
     @Override
     public Response get(String id) {
-        return notImplemented(Subnets.class.getName(), "get");
+    	try {
+            return ok(new SubnetToSubnet().apply(networkManager.getSubnetByUuid(id)));
+        } catch (ResourceNotFoundException rnfe) {
+            return resourceNotFoundException("volume", id, rnfe);
+        } catch (CloudProviderException e) {
+            final String error = "Error while getting subnet details";
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(error, e);
+            } else {
+                LOG.error(error);
+            }
+            return computeFault("Subnet Error", e.getMessage());
+        }
     }
 
     @Override
