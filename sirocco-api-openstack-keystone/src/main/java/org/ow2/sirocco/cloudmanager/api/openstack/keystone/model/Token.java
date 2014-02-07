@@ -24,6 +24,8 @@ package org.ow2.sirocco.cloudmanager.api.openstack.keystone.model;
 
 import java.util.Calendar;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public final class Token {
 
 	private String id;
@@ -44,6 +46,7 @@ public final class Token {
 	/**
 	 * @return the issued_at
 	 */
+	@JsonIgnore
 	public Calendar getIssued_at() {
 	  return issued_at;
 	}
@@ -51,6 +54,7 @@ public final class Token {
 	/**
 	 * @return the expires
 	 */
+	
 	public Calendar getExpires() {
 		return expires;
 	}
